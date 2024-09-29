@@ -18,7 +18,7 @@ import { FaPlus } from "react-icons/fa6";
 
 const generateApiKey = () => {
   const characters =
-    "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+    "ABCDEFGHIJKLMPQRSVWXYZadefghijklmnoqrstuvwxyz0123456789";
   let result = "";
   const length = 32;
   for (let i = 0; i < length; i++) {
