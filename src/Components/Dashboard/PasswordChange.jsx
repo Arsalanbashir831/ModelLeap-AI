@@ -22,7 +22,7 @@ const PasswordChange = () => {
   return (
     <Flex justify="center" align="center">
       <Box
-      bg={"white"}
+        bg={"white"}
         p={8}
         rounded="lg"
         shadow="lg"
@@ -79,8 +79,16 @@ const PasswordChange = () => {
           </InputGroup>
         </FormControl>
 
-
-        <Button colorScheme="blue" w="100%" mt={4}>
+        <Button
+          bg={"#29ABE3"}
+          textColor={"white"}
+          w="100%"
+          mt={4}
+          _hover={{
+            backgroundColor: "#0070BC",
+            color: "white",
+          }}
+        >
           Save Changes
         </Button>
       </Box>
