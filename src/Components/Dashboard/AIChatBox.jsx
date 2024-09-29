@@ -42,11 +42,11 @@ const AIChatBox = ({ aiLogo }) => {
 
   return (
     <Flex direction="column" h="400px" w="100%">
-      <VStack spacing="4" align="start" w="full" h="full">
-        <Text fontSize="lg" fontWeight="bold">
+      <VStack spacing="1" align="start" w="full" h="full">
+        <Text fontSize="xl" fontWeight="bold">
           Try It Out
         </Text>
-        <Text fontSize="sm" color="gray.600">
+        <Text fontSize="md" color="gray.600">
           Use the toolbar on the right to apply various settings and manage the results.
         </Text>
 

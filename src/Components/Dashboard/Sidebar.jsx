@@ -7,7 +7,7 @@ import {
   Divider,
   Text,
 } from "@chakra-ui/react";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom"; // Import useLocation
 import {
   FaKey,
   FaMoneyBill,
@@ -20,6 +20,10 @@ import {
 import logo from "../../../public/model_leap.png";
 
 const Sidebar = () => {
+  const location = useLocation(); // Get the current location
+
+  const isActive = (path) => location.pathname === path; // Function to check if a path is active
+
   return (
     <Box
       w="250px"
@@ -36,8 +40,8 @@ const Sidebar = () => {
         <VStack mt={"4"} spacing="1" align="stretch">
           <Button
             as={Link}
-            to="/app" 
-            variant="ghost"
+            to="/app"
+            variant={isActive("/app") ? "solid" : "ghost"} // Highlight if active
             justifyContent="flex-start"
             leftIcon={<FaRobot />}
             fontWeight="normal"
@@ -47,7 +51,7 @@ const Sidebar = () => {
           <Button
             as={Link}
             to="/app/keymanagement"
-            variant="ghost"
+            variant={isActive("/app/keymanagement") ? "solid" : "ghost"} // Highlight if active
             justifyContent="flex-start"
             leftIcon={<FaKey />}
             fontWeight="normal"
@@ -57,7 +61,7 @@ const Sidebar = () => {
           <Button
             as={Link}
             to="/app/billing"
-            variant="ghost"
+            variant={isActive("/app/billing") ? "solid" : "ghost"} // Highlight if active
             justifyContent="flex-start"
             leftIcon={<FaMoneyBill />}
             fontWeight="normal"
@@ -74,7 +78,7 @@ const Sidebar = () => {
           <Button
             as={Link}
             to="/app/settings"
-            variant="ghost"
+            variant={isActive("/app/settings") ? "solid" : "ghost"} // Highlight if active
             justifyContent="flex-start"
             leftIcon={<FaCog />}
             fontWeight="normal"
@@ -84,7 +88,7 @@ const Sidebar = () => {
           <Button
             as={Link}
             to="/app/helpcenter"
-            variant="ghost"
+            variant={isActive("/app/helpcenter") ? "solid" : "ghost"} // Highlight if active
             justifyContent="flex-start"
             leftIcon={<FaQuestionCircle />}
             fontWeight="normal"
@@ -94,7 +98,7 @@ const Sidebar = () => {
           <Button
             as={Link}
             to="/app/documentation"
-            variant="ghost"
+            variant={isActive("/app/documentation") ? "solid" : "ghost"} // Highlight if active
             justifyContent="flex-start"
             leftIcon={<FaBook />}
             fontWeight="normal"
@@ -105,7 +109,7 @@ const Sidebar = () => {
           <Button
             as={Link}
             to="/"
-            variant="ghost"
+            variant={isActive("/") ? "solid" : "ghost"} // Highlight if active
             justifyContent="flex-start"
             leftIcon={<FaSignOutAlt />}
             fontWeight="normal"

@@ -23,7 +23,7 @@ const AI = () => {
         </Box>
       </Box>
 
-      <Flex mt={6} mr={8} ml={8} justify="space-between" gap={6} align="start">
+      <Flex mt={6} mr={8} ml={6} justify="space-between" gap={6} align="start">
         <Box flex="2" maxW="60%" boxShadow="lg" p={5} borderRadius="lg" bg="white">
           {activeTab === "Chat" && <AIChatBox aiLogo={logo} />}
           {activeTab === "Code" && <AIChatBox aiLogo={logo} />}
