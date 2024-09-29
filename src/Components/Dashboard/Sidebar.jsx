@@ -17,12 +17,12 @@ import {
   FaSignOutAlt,
   FaRobot,
 } from "react-icons/fa";
-import logo from "../../../public/model_leap.png";
+// import logo from "../../../public/model_leap.png";
 
 const Sidebar = () => {
-  const location = useLocation(); // Get the current location
+  const location = useLocation(); 
 
-  const isActive = (path) => location.pathname === path; // Function to check if a path is active
+  const isActive = (path) => location.pathname === path; 
 
   return (
     <Box
@@ -36,7 +36,7 @@ const Sidebar = () => {
       justifyContent="space-between"
     >
       <Box display="flex" flexDirection="column">
-        <Image src={logo} alt="Model Leap Logo" width={"80%"} />
+        <Image src="/model_leap.png" alt="Model Leap Logo" width={"80%"} />
         <VStack mt={"4"} spacing="1" align="stretch">
           <Button
             as={Link}
