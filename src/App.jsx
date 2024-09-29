@@ -4,6 +4,7 @@ import DashboardLayout from './DashboardLayout'
 import AI from './Pages/PlayGround/AI'
 import APIkey from './Pages/KeyManagement/APIkey'
 import Settings from './Pages/Settings/Settings'
+import Integration from './Pages/Documentation/Integration'
 
 const router = createBrowserRouter([
   {
@@ -14,6 +15,7 @@ const router = createBrowserRouter([
       { path: '/app', element: <AI /> },
       {path: '/app/keymanagement', element: <APIkey />},
       {path: '/app/settings', element: <Settings />},
+      {path: '/app/documentation', element: <Integration />},
     ]
   },
 ])

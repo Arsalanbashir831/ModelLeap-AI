@@ -6,7 +6,7 @@ const Header = ({ title }) => {
     <Box
       as="header"
       w="100%"
-      p="4"
+      p="3"
       bg="transparent" 
       boxShadow="none" 
     >
