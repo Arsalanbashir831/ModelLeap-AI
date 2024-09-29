@@ -14,7 +14,7 @@ import {
 } from '@chakra-ui/react';
 import { FaPaperPlane } from 'react-icons/fa';
 
-const AIChatBox = ({ aiLogo }) => {
+const AiChatBox = ({ aiLogo }) => {
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState('');
   const [initState, setInitState] = useState(true);
@@ -158,4 +158,4 @@ const AIChatBox = ({ aiLogo }) => {
   );
 };
 
-export default AIChatBox;
+export default AiChatBox;

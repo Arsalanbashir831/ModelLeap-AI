@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import Header from "../../Components/Dashboard/Header";
 import { Container, Box, Flex } from "@chakra-ui/react";
 import MenuTabs from "../../Components/Dashboard/MenuTabs";
-import AIChatBox from "../../Components/Dashboard/AiChatBox";
+import AiChatBox from "../../Components/Dashboard/AiChatBox";
 import logo from "../../../public/model_leap_favicon.png";
 import ModelSelection from "../../Components/Dashboard/ModelSelection";
 
@@ -25,10 +25,10 @@ const AI = () => {
 
       <Flex mt={6} mr={8} ml={6} justify="space-between" gap={6} align="start">
         <Box flex="2" maxW="60%" boxShadow="lg" p={5} borderRadius="lg" bg="white">
-          {activeTab === "Chat" && <AIChatBox aiLogo={logo} />}
-          {activeTab === "Code" && <AIChatBox aiLogo={logo} />}
-          {activeTab === "Language" && <AIChatBox aiLogo={logo} />}
-          {activeTab === "Image" && <AIChatBox aiLogo={logo} />}
+          {activeTab === "Chat" && <AiChatBox aiLogo={logo} />}
+          {activeTab === "Code" && <AiChatBox aiLogo={logo} />}
+          {activeTab === "Language" && <AiChatBox aiLogo={logo} />}
+          {activeTab === "Image" && <AiChatBox aiLogo={logo} />}
         </Box>
 
         <Box flex="1" ml="2" maxW="35%" boxShadow="lg" p={5} borderRadius="lg" bg="white">
