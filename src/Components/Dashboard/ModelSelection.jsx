@@ -19,7 +19,7 @@ import { FcApproval } from "react-icons/fc";
 
 const ModelSelection = () => {
   const [model, setModel] = useState("GPT 4o mini");
-  const [outputLength, setOutputLength] = useState(774); // Matching the slider from image
+  const [outputLength, setOutputLength] = useState(774);
   const [temperature, setTemperature] = useState(0.7);
   const [topP, setTopP] = useState(0.7);
   const [topK, setTopK] = useState(50);
@@ -35,7 +35,6 @@ const ModelSelection = () => {
       margin="auto"
       overflowY="auto"
       css={{
-        // Custom scrollbar styles
         '&::-webkit-scrollbar': {
           width: '5px',
         },
