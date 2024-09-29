@@ -14,7 +14,7 @@ import { FaCheckCircle } from 'react-icons/fa';
 
 const BillingCard = ({ title, price, features, selected, onClick }) => {
   return (
-    <Box  cursor={'pointer'}
+    <Box 
       borderWidth={selected ? '3px' : '1px'}
       borderColor={selected ? '#0070BE' : 'gray.200'}
       borderRadius="lg"
