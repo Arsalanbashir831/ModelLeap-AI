@@ -7,7 +7,7 @@ import {
   Divider,
   Text,
 } from "@chakra-ui/react";
-import { Link, useLocation } from "react-router-dom"; // Import useLocation
+import { Link, useLocation } from "react-router-dom"; 
 import {
   FaKey,
   FaMoneyBill,
@@ -41,7 +41,7 @@ const Sidebar = () => {
           <Button
             as={Link}
             to="/app"
-            variant={isActive("/app") ? "solid" : "ghost"} // Highlight if active
+            variant={isActive("/app") ? "solid" : "ghost"} 
             justifyContent="flex-start"
             leftIcon={<FaRobot />}
             fontWeight="normal"
@@ -51,7 +51,7 @@ const Sidebar = () => {
           <Button
             as={Link}
             to="/app/keymanagement"
-            variant={isActive("/app/keymanagement") ? "solid" : "ghost"} // Highlight if active
+            variant={isActive("/app/keymanagement") ? "solid" : "ghost"} 
             justifyContent="flex-start"
             leftIcon={<FaKey />}
             fontWeight="normal"
@@ -61,7 +61,7 @@ const Sidebar = () => {
           <Button
             as={Link}
             to="/app/billing"
-            variant={isActive("/app/billing") ? "solid" : "ghost"} // Highlight if active
+            variant={isActive("/app/billing") ? "solid" : "ghost"}
             justifyContent="flex-start"
             leftIcon={<FaMoneyBill />}
             fontWeight="normal"
@@ -78,7 +78,7 @@ const Sidebar = () => {
           <Button
             as={Link}
             to="/app/settings"
-            variant={isActive("/app/settings") ? "solid" : "ghost"} // Highlight if active
+            variant={isActive("/app/settings") ? "solid" : "ghost"}
             justifyContent="flex-start"
             leftIcon={<FaCog />}
             fontWeight="normal"
@@ -88,7 +88,7 @@ const Sidebar = () => {
           <Button
             as={Link}
             to="/app/helpcenter"
-            variant={isActive("/app/helpcenter") ? "solid" : "ghost"} // Highlight if active
+            variant={isActive("/app/helpcenter") ? "solid" : "ghost"} 
             justifyContent="flex-start"
             leftIcon={<FaQuestionCircle />}
             fontWeight="normal"
@@ -98,7 +98,7 @@ const Sidebar = () => {
           <Button
             as={Link}
             to="/app/documentation"
-            variant={isActive("/app/documentation") ? "solid" : "ghost"} // Highlight if active
+            variant={isActive("/app/documentation") ? "solid" : "ghost"} 
             justifyContent="flex-start"
             leftIcon={<FaBook />}
             fontWeight="normal"
@@ -109,7 +109,7 @@ const Sidebar = () => {
           <Button
             as={Link}
             to="/"
-            variant={isActive("/") ? "solid" : "ghost"} // Highlight if active
+            variant={isActive("/") ? "solid" : "ghost"} 
             justifyContent="flex-start"
             leftIcon={<FaSignOutAlt />}
             fontWeight="normal"
