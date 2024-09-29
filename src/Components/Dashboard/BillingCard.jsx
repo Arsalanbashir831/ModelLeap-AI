@@ -8,12 +8,13 @@ import {
   Icon,
   Flex,
   Spacer,
+  background,
 } from '@chakra-ui/react';
 import { FaCheckCircle } from 'react-icons/fa';
 
 const BillingCard = ({ title, price, features, selected, onClick }) => {
   return (
-    <Box
+    <Box  cursor={'pointer'}
       borderWidth={selected ? '3px' : '1px'}
       borderColor={selected ? '#0070BE' : 'gray.200'}
       borderRadius="lg"
@@ -25,7 +26,7 @@ const BillingCard = ({ title, price, features, selected, onClick }) => {
       display="flex"
       flexDirection="column"
       justifyContent="space-between"
-      h="100%"
+      h="100%" background='white'
     >
       {selected && (
         <Box
@@ -67,9 +68,9 @@ const BillingCard = ({ title, price, features, selected, onClick }) => {
         <Spacer />
 
         <Button
-          onClick={onClick}
-          colorScheme="blackAlpha"
-          variant="outline"
+          // onClick={onClick}
+          colorScheme="blue"
+          // variant="outline"
           size="lg"
           mt="auto"
           rightIcon={<Icon as={FaCheckCircle} />}

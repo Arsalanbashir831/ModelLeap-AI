@@ -6,11 +6,13 @@ import APIkey from './Pages/KeyManagement/APIkey'
 import Settings from './Pages/Settings/Settings'
 import Integration from './Pages/Documentation/Integration'
 import Plans from './Pages/Billing/Plans'
+import NotFound from './Pages/NotFound'
+import Landing from './Pages/Landing/Landing'
 
 const router = createBrowserRouter([
   {
 
-    path: "/app",
+    path: "/app", // lets set / for the time being when we complete the landing page than we can update it to /app
     element: <DashboardLayout></DashboardLayout>,
     children: [
       { path: '/app', element: <AI /> },
@@ -19,7 +21,8 @@ const router = createBrowserRouter([
       {path: '/app/settings', element: <Settings />},
       {path: '/app/documentation', element: <Integration />},
     ]
-  },
+  },  { path: '*', element: <NotFound /> },
+   { path: '/', element: <Landing /> },
 ])
 
 
