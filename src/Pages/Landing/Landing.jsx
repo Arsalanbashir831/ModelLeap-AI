@@ -1,51 +1,49 @@
-import React from 'react';
+import React from "react";
 import {
   Box,
-  Text,
-  Heading,
-  Container,
-  VStack,
-  Button,
-  CircularProgress,
-  CircularProgressLabel,
   Flex,
-} from '@chakra-ui/react';
-import { Link } from 'react-router-dom';
+  VStack,
+  Text,
+  Button,
+  Stack,
+  Image,
+} from "@chakra-ui/react";
+import Navbar from "../../Components/LandingPage/Navbar";
+import Hero from "../../Components/LandingPage/Hero";
 
-const Landing = () => {
+const LandingPage = () => {
   return (
-    <Container maxW="container.lg" h="100vh" display="flex" justifyContent="center" alignItems="center">
-      <VStack spacing={6} textAlign="center">
-        {/* Progress Indicator */}
-        {/* <CircularProgress isIndeterminate size="120px" color="blue.500">
-          <CircularProgressLabel>Loading</CircularProgressLabel>
-        </CircularProgress> */}
-
-        {/* Heading */}
-        <Heading
-          as="h1"
-          fontSize="5xl"
-          fontWeight="bold"
-          bgGradient="linear(to-r, blue.400, blue.600)"
-          bgClip="text"
+    <>
+      <Navbar />
+      <Box
+        as="section"
+        w={"full"}
+        pt={'65px'}
+        textAlign="center"
+        h="100%"
+        bgGradient="linear-gradient(
+    305deg,
+    hsl(297deg 79% 77%) 0%,
+    hsl(318deg 100% 81%) 0%,
+    hsl(331deg 100% 84%) 1%,
+    hsl(344deg 100% 86%) 2%,
+    hsl(359deg 100% 90%) 6%,
+    hsl(11deg 100% 91%) 30%,
+    hsl(19deg 100% 94%) 73%,
+    hsl(23deg 100% 97%) 100%
+  )" 
+      >
+        <Flex
+          direction="column"
+          justifyContent="center"
+          alignItems="center"
+          height="100%"
         >
-          Landing Page
-        </Heading>
-
-        {/* Description */}
-        <Text fontSize="lg" color="gray.500">
-          Our landing page is under development. We're working hard to bring something awesome to you!
-        </Text>
-
-        {/* Button to navigate elsewhere */}
-        <Link to="/app">
-          <Button colorScheme="blue" size="lg" mt={4}>
-            Go to Dashboard
-          </Button>
-        </Link>
-      </VStack>
-    </Container>
+        <Hero />
+        </Flex>
+      </Box>
+    </>
   );
 };
 
-export default Landing;
+export default LandingPage;
