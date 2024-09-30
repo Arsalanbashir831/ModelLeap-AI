@@ -10,6 +10,7 @@ import {
 } from "@chakra-ui/react";
 import Navbar from "../../Components/LandingPage/Navbar";
 import Hero from "../../Components/LandingPage/Hero";
+import InfoSection from "../../Components/LandingPage/InfoSection";
 
 const LandingPage = () => {
   return (
@@ -18,7 +19,7 @@ const LandingPage = () => {
       <Box
         as="section"
         w={"full"}
-        pt={'65px'}
+        pt={"65px"}
         textAlign="center"
         h="100%"
         bgGradient="linear-gradient(
@@ -31,15 +32,17 @@ const LandingPage = () => {
     hsl(11deg 100% 91%) 30%,
     hsl(19deg 100% 94%) 73%,
     hsl(23deg 100% 97%) 100%
-  )" 
+  )"
       >
         <Flex
+          w={"full"}
           direction="column"
           justifyContent="center"
           alignItems="center"
           height="100%"
         >
-        <Hero />
+          <Hero />
+          <InfoSection />
         </Flex>
       </Box>
     </>

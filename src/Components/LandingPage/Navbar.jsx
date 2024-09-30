@@ -12,10 +12,12 @@ import {
   MenuButton,
   MenuList,
   MenuItem,
+  Text,
 } from "@chakra-ui/react";
 import { HamburgerIcon, CloseIcon, ChevronDownIcon } from "@chakra-ui/icons";
 import logo from "../../../public/model_leap_favicon.png";
 import { Link } from "react-router-dom";
+import { primaryColorOrange, primaryColorPurple } from "../../colorCodes";
 
 const Navbar = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -24,9 +26,9 @@ const Navbar = () => {
     <Box
       position="fixed"
       w="100%"
-      backdropFilter="blur(10px)"
+      backdropFilter="blur(13px)"
       zIndex="9999"
-      boxShadow="lg"
+      boxShadow="md"
     >
       <Flex
         h={16}
@@ -36,11 +38,11 @@ const Navbar = () => {
         maxW="1200px"
         mx="auto"
       >
-        <HStack spacing={8} alignItems="center">
+        <HStack spacing={4} alignItems="center">
           <Box>
-            <Image src={logo} alt="Logo" boxSize="40px" />
+            <Image src={logo} alt="Logo" boxSize="50px" />
           </Box>
-          <Box fontWeight="bold" fontSize="lg">
+          <Box fontWeight="bold" fontSize="xl" mt={1} color={primaryColorPurple} _hover={{ color: "black" }}>
             Model Leap AI
           </Box>
         </HStack>
@@ -58,6 +60,7 @@ const Navbar = () => {
               variant="link"
               fontWeight="normal"
               rightIcon={<ChevronDownIcon />}
+              _hover={{ textDecoration: "none", color: "black" }}
             >
               AI APIs
             </MenuButton>
@@ -66,8 +69,8 @@ const Navbar = () => {
               <MenuItem>API 2</MenuItem>
             </MenuList>
           </Menu>
-          <Link to="#" >Enterprise</Link>
-          <Link to="#">Pricing</Link>
+          <Link to="#" ><Text mt={1} fontWeight="normal" _hover={{ textDecoration: "none", color: "black" }}>Enterprise</Text></Link>
+          <Link to="#"><Text mt={1} fontWeight="normal" _hover={{ textDecoration: "none", color: "black" }}>Pricing</Text></Link>
 
           <Menu>
             <MenuButton
@@ -75,6 +78,7 @@ const Navbar = () => {
               variant="link"
               fontWeight="normal"
               rightIcon={<ChevronDownIcon />}
+              _hover={{ textDecoration: "none", color: "black" }}
             >
               Developer
             </MenuButton>
@@ -90,6 +94,7 @@ const Navbar = () => {
               variant="link"
               fontWeight="normal"
               rightIcon={<ChevronDownIcon />}
+              _hover={{ textDecoration: "none", color: "black" }}
             >
               Resources
             </MenuButton>
@@ -103,9 +108,9 @@ const Navbar = () => {
         <HStack spacing={6}>
           <Link to="/app">
             <Button
-              bg="black"
+              bg={primaryColorPurple}
               color="white"
-              _hover={{ bg: "gray.700" }}
+              _hover={{ bg: "black" }}
               borderRadius="md"
               px={5}
             >
