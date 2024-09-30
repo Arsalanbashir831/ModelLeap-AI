@@ -23,15 +23,14 @@ const LandingPage = () => {
         textAlign="center"
         h="100%"
         bgGradient="linear-gradient(
-    305deg,
-    hsl(297deg 79% 77%) 0%,
-    hsl(318deg 100% 81%) 0%,
-    hsl(331deg 100% 84%) 1%,
-    hsl(344deg 100% 86%) 2%,
-    hsl(359deg 100% 90%) 6%,
-    hsl(11deg 100% 91%) 30%,
-    hsl(19deg 100% 94%) 73%,
-    hsl(23deg 100% 97%) 100%
+    300deg,
+    hsl(298deg 62% 85%) 0%,
+    hsl(298deg 62% 87%) 3%,
+    hsl(298deg 62% 90%) 9%,
+    hsl(299deg 62% 92%) 20%,
+    hsl(299deg 62% 95%) 41%,
+    hsl(299deg 62% 97%) 77%,
+    hsl(0deg 0% 100%) 100%
   )"
       >
         <Flex
