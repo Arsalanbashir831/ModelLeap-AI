@@ -72,11 +72,11 @@ const Features = () => {
         costs.
       </MotionText>
 
-      <SimpleGrid columns={{ base: 1, md: 2 }} spacing={5} maxW="800px" mx="auto">
+      <SimpleGrid columns={{ base: 1, md: 2 }} spacing={5} maxW="700px" mx="auto">
         <FeatureCard number="200+" label="AI Models" color={primaryColorPurple} delay={0.8} />
         <FeatureCard number="#1" label="Data Security" color={primaryColorOrange} delay={1.0} />
-        <FeatureCard number="99%" label="Uptime" color={primaryColorOrange} delay={1.2} />
-        <FeatureCard number="24/7" label="Support" color={primaryColorPurple} delay={1.4} />
+        <FeatureCard number="99%" label="Uptime" color={primaryColorPurple} delay={1.2} />
+        <FeatureCard number="24/7" label="Support" color={primaryColorOrange} delay={1.4} />
       </SimpleGrid>
     </Box>
   );

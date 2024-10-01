@@ -70,7 +70,7 @@ const FooterSection = ({ title, links }) => (
 
 const Footer = () => {
   return (
-    <Box bg="gray.100" py={10} px={5} w="100%">
+    <Box bg="white" py={10} px={5} w="100%">
       <SimpleGrid
         columns={{ base: 1, md: 2, lg: 5 }}
         spacing={10}
