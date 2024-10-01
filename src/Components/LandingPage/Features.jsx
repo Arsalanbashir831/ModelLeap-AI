@@ -39,7 +39,7 @@ const Features = () => {
     <Box pt={16} pb={16} w="100%" textAlign="center">
       <MotionText
         fontSize="sm"
-        color="blue.400"
+        color={primaryColorPurple}
         mb={2}
         textTransform="uppercase"
         initial={{ opacity: 0, y: 50 }}
