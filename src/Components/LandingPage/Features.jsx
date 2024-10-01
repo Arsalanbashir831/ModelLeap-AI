@@ -68,7 +68,7 @@ const Features = () => {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.8, delay: 0.6 }}
       >
-        Top-tier serverless infrastructure reduces deployment and maintenance
+        Top-tier serverless infrastructure <br></br> reduces deployment and maintenance<br></br> 
         costs.
       </MotionText>
 
