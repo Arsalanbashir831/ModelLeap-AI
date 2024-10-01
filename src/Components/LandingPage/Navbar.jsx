@@ -78,12 +78,20 @@ const Navbar = () => {
             </MenuList>
           </Menu>
           <Link to="#">
-            <Text mt={1} fontWeight="normal" _hover={{ textDecoration: "none", color: "black" }}>
+            <Text
+              mt={1}
+              fontWeight="normal"
+              _hover={{ textDecoration: "none", color: "black" }}
+            >
               Enterprise
             </Text>
           </Link>
           <Link to="#">
-            <Text mt={1} fontWeight="normal" _hover={{ textDecoration: "none", color: "black" }}>
+            <Text
+              mt={1}
+              fontWeight="normal"
+              _hover={{ textDecoration: "none", color: "black" }}
+            >
               Pricing
             </Text>
           </Link>
@@ -135,10 +143,20 @@ const Navbar = () => {
           </Link>
           <IconButton
             size="md"
-            icon={isOpen ? <CloseIcon /> : <HamburgerIcon />}
+            icon={
+              isOpen ? (
+                <CloseIcon color={primaryColorOrange} />
+              ) : (
+                <HamburgerIcon color="white" />
+              )
+            }
             aria-label="Open Menu"
+            bg={isOpen ? "transparent" : primaryColorPurple}
             display={{ md: "none" }}
             onClick={isOpen ? onClose : onOpen}
+            _hover={{
+              bg: isOpen ? "transparent" : primaryColorPurple, 
+            }}
           />
         </HStack>
       </Flex>
