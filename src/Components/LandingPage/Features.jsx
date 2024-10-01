@@ -15,7 +15,7 @@ const FeatureCard = ({ number, label, color, delay }) => {
       bg="rgba(255, 255, 255, 0.7)"
       borderRadius="xl"
       backdropFilter="blur(15px)"
-      boxShadow="lg"
+      boxShadow="xl"
       textAlign="center"
       w="100%"
       initial={{ opacity: 0, y: 50 }}
