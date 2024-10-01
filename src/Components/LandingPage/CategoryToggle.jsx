@@ -11,7 +11,7 @@ const CategoryToggle = ({ categories, selectedCategory, onSelect }) => (
           borderRadius="full"
           w={{ base: '100%', sm: 'auto' }}
           onClick={() => onSelect(category)}
-          bg={selectedCategory === category ? primaryColorOrange : 'white'}
+          bg={selectedCategory === category ? primaryColorOrange : 'gray.50'}
           borderColor="gray.200"
           color={selectedCategory === category ? 'white' : 'black'}
           _hover={{
