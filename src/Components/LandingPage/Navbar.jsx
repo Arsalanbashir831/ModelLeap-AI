@@ -13,6 +13,8 @@ import {
   MenuList,
   MenuItem,
   Text,
+  Collapse,
+  Link as ChakraLink,
 } from "@chakra-ui/react";
 import { HamburgerIcon, CloseIcon, ChevronDownIcon } from "@chakra-ui/icons";
 import logo from "../../../public/model_leap_favicon.png";
@@ -42,7 +44,13 @@ const Navbar = () => {
           <Box>
             <Image src={logo} alt="Logo" boxSize="50px" />
           </Box>
-          <Box fontWeight="bold" fontSize="xl" mt={1} color={primaryColorPurple} _hover={{ color: "black" }}>
+          <Box
+            fontWeight="bold"
+            fontSize="xl"
+            mt={1}
+            color={primaryColorPurple}
+            _hover={{ color: "black" }}
+          >
             Model Leap AI
           </Box>
         </HStack>
@@ -69,8 +77,16 @@ const Navbar = () => {
               <MenuItem>API 2</MenuItem>
             </MenuList>
           </Menu>
-          <Link to="#" ><Text mt={1} fontWeight="normal" _hover={{ textDecoration: "none", color: "black" }}>Enterprise</Text></Link>
-          <Link to="#"><Text mt={1} fontWeight="normal" _hover={{ textDecoration: "none", color: "black" }}>Pricing</Text></Link>
+          <Link to="#">
+            <Text mt={1} fontWeight="normal" _hover={{ textDecoration: "none", color: "black" }}>
+              Enterprise
+            </Text>
+          </Link>
+          <Link to="#">
+            <Text mt={1} fontWeight="normal" _hover={{ textDecoration: "none", color: "black" }}>
+              Pricing
+            </Text>
+          </Link>
 
           <Menu>
             <MenuButton
@@ -126,21 +142,34 @@ const Navbar = () => {
           />
         </HStack>
       </Flex>
-      {isOpen ? (
-        <Box pb={4} display={"flex"} bg="white" justifyContent={'center'}>
-          <Stack as="nav" spacing={4}>
-            <Link to="#">AI APIs</Link>
+
+      <Collapse in={isOpen} animateOpacity>
+        <Box
+          pb={4}
+          display={{ md: "none" }}
+          bg="white"
+          borderBottom="1px solid #e2e8f0"
+          shadow="md"
+        >
+          <Stack as="nav" spacing={4} align="center">
+            <Menu>
+              <MenuButton as={ChakraLink}>AI APIs</MenuButton>
+              <MenuList>
+                <MenuItem>API 1</MenuItem>
+                <MenuItem>API 2</MenuItem>
+              </MenuList>
+            </Menu>
             <Link to="#">Enterprise</Link>
             <Link to="#">Pricing</Link>
             <Menu>
-              <MenuButton as={Link}>Developer</MenuButton>
+              <MenuButton as={ChakraLink}>Developer</MenuButton>
               <MenuList>
                 <MenuItem>Docs</MenuItem>
                 <MenuItem>Community</MenuItem>
               </MenuList>
             </Menu>
             <Menu>
-              <MenuButton as={Link}>Resources</MenuButton>
+              <MenuButton as={ChakraLink}>Resources</MenuButton>
               <MenuList>
                 <MenuItem>Blog</MenuItem>
                 <MenuItem>Guides</MenuItem>
@@ -158,7 +187,7 @@ const Navbar = () => {
             </Link>
           </Stack>
         </Box>
-      ) : null}
+      </Collapse>
     </Box>
   );
 };

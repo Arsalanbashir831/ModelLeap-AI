@@ -14,6 +14,7 @@ import InfoSection from "../../Components/LandingPage/InfoSection";
 import SlideShow from "../../Components/LandingPage/SlideShow";
 import Features from "../../Components/LandingPage/Features";
 import Footer from "../../Components/LandingPage/Footer";
+import ModelsSection from "../../Components/LandingPage/ModelsSelection";
 
 const LandingPage = () => {
   return (
@@ -87,6 +88,24 @@ const LandingPage = () => {
         w={"full"}
         textAlign="center"
         h="100%"
+        
+      >
+        <Flex
+          w={"full"}
+          direction="column"
+          justifyContent="center"
+          alignItems="center"
+          height="100%"
+        >
+          <ModelsSection/>
+        </Flex>
+      </Box>
+
+      <Box
+        as="section"
+        w={"full"}
+        textAlign="center"
+        h="100%"
         bgGradient="linear-gradient(
     50deg,
     hsl(298deg 50% 89%) 0%,
@@ -114,6 +133,9 @@ const LandingPage = () => {
           <Footer />
         </Flex>
       </Box>
+
+
+      
     </>
   );
 };
