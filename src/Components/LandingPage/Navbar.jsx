@@ -15,7 +15,7 @@ import {
   Link as ChakraLink,
 } from "@chakra-ui/react";
 import { HamburgerIcon, CloseIcon, ChevronDownIcon } from "@chakra-ui/icons";
-import { motion } from "framer-motion"; // Importing Framer Motion
+import { motion } from "framer-motion";
 import logo from "../../../public/model_leap_favicon.png";
 import { Link } from "react-router-dom";
 import { primaryColorOrange, primaryColorPurple } from "../../colorCodes";
@@ -179,12 +179,12 @@ const Navbar = () => {
         <Box
           pb={4}
           display={{ md: "none" }}
-          backdropFilter="blur(16px)"
+          backdropFilter="blur(10px)"
           shadow="md"
         >
           <Stack as="nav" spacing={4} align="center">
             <Menu>
-              <MenuButton as={ChakraLink}>AI APIs</MenuButton>
+              <MenuButton as={ChakraLink} _hover={{ textDecoration: "none", color: "gray.500" }}>AI APIs</MenuButton>
               <MenuList>
                 <MenuItem>API 1</MenuItem>
                 <MenuItem>API 2</MenuItem>
