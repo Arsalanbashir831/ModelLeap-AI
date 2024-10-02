@@ -64,7 +64,7 @@ const ModelCard = ({ model }) => {
           mt={[2, 0]}
 
         >
-          <Text fontSize="xs" fontWeight="medium" color="gray.500">
+          <Text fontSize="xs" whiteSpace={"nowrap"} wrap="noWrap" fontWeight="medium" color="gray.500">
             Model type
           </Text>
           <Badge
@@ -72,9 +72,9 @@ const ModelCard = ({ model }) => {
             bg={primaryColorOrange}
             variant="solid"
             borderRadius="full"
-            px={1}
+            px={2}
             color={"white"}
-            py={1}
+            py={2}
             mt={1}
             fontSize={["sm", "sm"]}
             alignContent={"left"}
@@ -97,9 +97,9 @@ const ModelCard = ({ model }) => {
             bg={primaryColorPurple}
             variant="solid"
             borderRadius="full"
-            px={1}
+            px={2}
             color={"white"}
-            py={1}
+            py={2}
             mt={1}
             fontSize={["sm", "sm"]}
             alignContent={"left"}>
