@@ -38,7 +38,7 @@ const Hero = () => {
             fontSize={{ base: "4xl", md: "6xl", lg: "7xl" }}
             fontWeight="bold"
             lineHeight="shorter"
-            color="black"
+            color={"black"}
           >
             One API <br /> 200+ AI Models <br /> Uptime 99%
           </Text>
@@ -73,7 +73,7 @@ const Hero = () => {
               variant="solid"
               px={10}
               py={8}
-              _hover={{ bg: primaryColorOrange, color: "white" }}
+              _hover={{ bg: primaryColorOrange, color: "white", boxShadow: "lg" }}
             >
               Get API Key
             </Button>
@@ -82,11 +82,11 @@ const Hero = () => {
               borderRadius={"full"}
               colorScheme="gray"
               size="lg"
-              boxShadow={"md"}
+              boxShadow={'md'}
               variant="outline"
               px={10}
               py={8}
-              _hover={{ bg: primaryColorOrange, color: "white", border: "none" }}
+              _hover={{ bg: primaryColorOrange, color: "white", border: "none", boxShadow: "lg" }}
             >
               Contact Sales
             </Button>

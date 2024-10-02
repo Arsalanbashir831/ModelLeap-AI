@@ -49,12 +49,14 @@ const Navbar = () => {
           <Box>
             <Image src={logo} alt="Logo" boxSize="50px" />
           </Box>
+
           <Box
             fontWeight="bold"
             fontSize="xl"
             mt={1}
             color={primaryColorPurple}
             _hover={{ color: "black" }}
+            display={{ base: "none", sm: "block" }} 
           >
             Model Leap AI
           </Box>
@@ -184,23 +186,42 @@ const Navbar = () => {
         >
           <Stack as="nav" spacing={4} align="center">
             <Menu>
-              <MenuButton as={ChakraLink} _hover={{ textDecoration: "none", color: "gray.500" }}>AI APIs</MenuButton>
+              <MenuButton
+                as={ChakraLink}
+                _hover={{ textDecoration: "none", color: "gray.500" }}
+              >
+                AI APIs
+              </MenuButton>
               <MenuList>
                 <MenuItem>API 1</MenuItem>
                 <MenuItem>API 2</MenuItem>
               </MenuList>
             </Menu>
-            <Link to="#" _hover={{ textDecoration: "none", color: "gray.500" }}>Enterprise</Link>
-            <Link to="#" _hover={{ textDecoration: "none", color: "gray.500" }}>Pricing</Link>
+            <Link to="#" _hover={{ textDecoration: "none", color: "gray.500" }}>
+              Enterprise
+            </Link>
+            <Link to="#" _hover={{ textDecoration: "none", color: "gray.500" }}>
+              Pricing
+            </Link>
             <Menu>
-              <MenuButton as={ChakraLink} _hover={{ textDecoration: "none", color: "gray.500" }}>Developer</MenuButton>
+              <MenuButton
+                as={ChakraLink}
+                _hover={{ textDecoration: "none", color: "gray.500" }}
+              >
+                Developer
+              </MenuButton>
               <MenuList>
                 <MenuItem>Docs</MenuItem>
                 <MenuItem>Community</MenuItem>
               </MenuList>
             </Menu>
             <Menu>
-              <MenuButton as={ChakraLink} _hover={{ textDecoration: "none", color: "gray.500" }}>Resources</MenuButton>
+              <MenuButton
+                as={ChakraLink}
+                _hover={{ textDecoration: "none", color: "gray.500" }}
+              >
+                Resources
+              </MenuButton>
               <MenuList>
                 <MenuItem>Blog</MenuItem>
                 <MenuItem>Guides</MenuItem>
@@ -208,9 +229,9 @@ const Navbar = () => {
             </Menu>
             <Link to="/app">
               <Button
-                bg="black"
+                bg={primaryColorPurple}
                 color="white"
-                _hover={{ bg: primaryColorPurple }}
+                _hover={{ bg: primaryColorOrange }}
                 borderRadius="md"
               >
                 AI Playground

@@ -112,10 +112,10 @@ const ModelsSection = () => {
       </SimpleGrid>
 
       <Flex justifyContent="center" mt={8}>
-        <Button mr={4} borderRadius="full" variant="outline">
+        <Button mr={4} borderRadius="full" variant="outline" bg={primaryColorPurple} color={'white'} _hover={{ bg: primaryColorOrange }}>
           Load More
         </Button>
-        <Button borderRadius="full" bg="black" color="white">
+        <Button borderRadius="full" bg={'white'} color="black" boxShadow={'lg'} _hover={{bg: primaryColorOrange, color: "white"}} >
           Explore All
         </Button>
       </Flex>
