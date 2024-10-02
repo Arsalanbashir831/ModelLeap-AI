@@ -8,7 +8,7 @@ const Footnote = () => {
       w="100%"
       textAlign="center"
       py={4}
-      px={7}
+      px={12}
       bg="gray.50"
       borderTop="1px solid"
       borderColor="gray.200"
