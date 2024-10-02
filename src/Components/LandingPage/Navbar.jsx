@@ -193,7 +193,7 @@ const Navbar = () => {
             <Link to="#">Enterprise</Link>
             <Link to="#">Pricing</Link>
             <Menu>
-              <MenuButton as={ChakraLink}>Developer</MenuButton>
+              <MenuButton as={ChakraLink} _hover={{ textDecoration: "none", color: "gray.500" }}>Developer</MenuButton>
               <MenuList>
                 <MenuItem>Docs</MenuItem>
                 <MenuItem>Community</MenuItem>
