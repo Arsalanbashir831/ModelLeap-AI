@@ -5,7 +5,6 @@ import {
   HStack,
   IconButton,
   Button,
-  useDisclosure,
   Stack,
   Image,
   Menu,
@@ -13,16 +12,22 @@ import {
   MenuList,
   MenuItem,
   Text,
-  Collapse,
   Link as ChakraLink,
 } from "@chakra-ui/react";
 import { HamburgerIcon, CloseIcon, ChevronDownIcon } from "@chakra-ui/icons";
+import { motion } from "framer-motion"; // Importing Framer Motion
 import logo from "../../../public/model_leap_favicon.png";
 import { Link } from "react-router-dom";
 import { primaryColorOrange, primaryColorPurple } from "../../colorCodes";
 
+const MotionBox = motion(Box);
+
 const Navbar = () => {
-  const { isOpen, onOpen, onClose } = useDisclosure();
+  const [isOpen, setIsOpen] = React.useState(false);
+
+  const toggleMenu = () => {
+    setIsOpen(!isOpen);
+  };
 
   return (
     <Box
@@ -153,20 +158,28 @@ const Navbar = () => {
             aria-label="Open Menu"
             bg={isOpen ? "transparent" : primaryColorPurple}
             display={{ md: "none" }}
-            onClick={isOpen ? onClose : onOpen}
+            onClick={toggleMenu}
             _hover={{
-              bg: isOpen ? "transparent" : primaryColorPurple, 
+              bg: isOpen ? "transparent" : primaryColorPurple,
             }}
           />
         </HStack>
       </Flex>
 
-      <Collapse in={isOpen} animateOpacity>
+      <MotionBox
+        initial={false}
+        animate={isOpen ? "open" : "closed"}
+        variants={{
+          open: { opacity: 1, height: "auto" },
+          closed: { opacity: 0, height: 0 },
+        }}
+        transition={{ duration: 0.5, ease: "easeInOut" }}
+        overflow="hidden"
+      >
         <Box
           pb={4}
           display={{ md: "none" }}
-          bg="white"
-          borderBottom="1px solid #e2e8f0"
+          backdropFilter="blur(16px)"
           shadow="md"
         >
           <Stack as="nav" spacing={4} align="center">
@@ -197,7 +210,7 @@ const Navbar = () => {
               <Button
                 bg="black"
                 color="white"
-                _hover={{ bg: "gray.700" }}
+                _hover={{ bg: primaryColorPurple }}
                 borderRadius="md"
               >
                 AI Playground
@@ -205,7 +218,7 @@ const Navbar = () => {
             </Link>
           </Stack>
         </Box>
-      </Collapse>
+      </MotionBox>
     </Box>
   );
 };
