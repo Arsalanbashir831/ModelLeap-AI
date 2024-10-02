@@ -13,7 +13,9 @@ const FeatureCard = ({ number, label, color, delay }) => {
     <MotionBox
       p={8}
       bg="rgba(255, 255, 255, 0.7)"
-      borderRadius="xl"
+      borderRadius="full"
+      // borderRightRadius={'full'}
+      // borderLeftRadius={'full'}
       backdropFilter="blur(15px)"
       boxShadow="xl"
       textAlign="center"

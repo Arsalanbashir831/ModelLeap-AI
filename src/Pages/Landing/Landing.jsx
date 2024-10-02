@@ -56,6 +56,7 @@ const LandingPage = () => {
         as="section"
         w={"full"}
         pt={"10px"}
+        // borderTopRightRadius={"full"}
         textAlign="center"
         h="100%"
         bgGradient="linear-gradient(
@@ -95,6 +96,7 @@ const LandingPage = () => {
         w={"full"}
         textAlign="center"
         h="100%"
+      //  borderTopLeftRadius={'full'}
         bgGradient="linear-gradient(
         50deg,
         hsl(298deg 50% 89%) 0%,

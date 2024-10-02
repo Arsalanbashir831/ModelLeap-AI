@@ -68,6 +68,7 @@ const Hero = () => {
             <Button
               bg={primaryColorPurple}
               size="lg"
+              borderRadius={"full"}
               textColor={"white"}
               variant="solid"
               px={10}
@@ -77,7 +78,8 @@ const Hero = () => {
               Get API Key
             </Button>
             <Button
-              border={"1px solid gray"}
+              // border={"1px solid gray"}
+              borderRadius={"full"}
               colorScheme="gray"
               size="lg"
               boxShadow={"md"}
