@@ -25,7 +25,7 @@ const ModelCard = ({ model }) => {
       cursor="pointer"
       bg="white"
       maxW="full"
-      overflow="hidden" // Prevent overflow
+      overflow="hidden"
     >
       <Flex
         justifyContent="flex-start"
