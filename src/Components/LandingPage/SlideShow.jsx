@@ -1,5 +1,5 @@
 import React from 'react';
-import { Box, Flex, Image, Text } from '@chakra-ui/react';
+import { Box, Flex, Image, Text, useBreakpointValue } from '@chakra-ui/react';
 import { motion } from 'framer-motion';
 
 const MotionFlex = motion(Flex);
@@ -29,7 +29,12 @@ const logosRow2 = [
 const duplicateLogos = (logos) => [...logos, ...logos];
 
 const SlideShow = () => {
-  const animationDuration = 25; 
+  const animationDuration = 25;
+
+  const logoSize = useBreakpointValue({ base: 8, md: 12 });
+  const spacing = useBreakpointValue({ base: 2, md: 4 });
+  const textSize = useBreakpointValue({ base: 'sm', md: 'md' });
+  const minWidthValue = useBreakpointValue({ base: '110px', md: '150px' });
 
   return (
     <Box overflow="hidden" w="100%" bg="white" py={4}>
@@ -47,9 +52,9 @@ const SlideShow = () => {
         }}
       >
         {duplicateLogos(logosRow1).map((logo, index) => (
-          <Flex key={index} mx={4} alignItems="center">
-            <Image src={logo.src} alt={logo.label} h={12} />
-            <Text ml={4} fontSize="md" fontWeight="bold" color="gray.800">
+          <Flex key={index} mx={spacing} alignItems="center" minWidth={minWidthValue}>
+            <Image src={logo.src} alt={logo.label} h={logoSize} />
+            <Text ml={spacing} fontSize={textSize} fontWeight="bold" color="gray.800">
               {logo.label}
             </Text>
           </Flex>
@@ -70,9 +75,9 @@ const SlideShow = () => {
         mt={6}
       >
         {duplicateLogos(logosRow2).map((logo, index) => (
-          <Flex key={index} mx={4} alignItems="center">
-            <Image src={logo.src} alt={logo.label} h={12} />
-            <Text ml={4} fontSize="md" fontWeight="bold" color="gray.800">
+          <Flex key={index} mx={spacing} alignItems="center" minWidth={minWidthValue}>
+            <Image src={logo.src} alt={logo.label} h={logoSize} />
+            <Text ml={spacing} fontSize={textSize} fontWeight="bold" color="gray.800">
               {logo.label}
             </Text>
           </Flex>

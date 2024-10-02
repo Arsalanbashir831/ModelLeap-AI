@@ -25,14 +25,14 @@ const ModelCard = ({ model }) => {
       cursor="pointer"
       bg="white"
       maxW="full"
+      overflow="hidden" // Prevent overflow
     >
       <Flex
         justifyContent="flex-start"
         alignItems="center"
         mb={[3, 10]}
-        wrap="row"
+        wrap="nowrap"
         h={100}
-
       >
         <Image boxSize={["40px", "48px"]} src={model.image} alt={model.name} />
         <Flex flexDir="column" ml={[2, 3]} mt={[2, 0]}>
@@ -40,7 +40,7 @@ const ModelCard = ({ model }) => {
             fontSize={["md", "lg"]}
             fontWeight="bold"
             lineHeight="short"
-            whiteSpace="wrap"
+            whiteSpace="nowrap"
             align={"left"}
           >
             {model.name}
@@ -51,63 +51,61 @@ const ModelCard = ({ model }) => {
         </Flex>
       </Flex>
 
-      <HStack
-        spacing={[2, 4]}
-        mb={[1, 1]}
+      <Flex
+        direction={["row", "row"]}
         justifyContent="space-between"
-        wrap="none"
+        alignItems={["flex-start", "center"]}
+        mb={[1, 1]}
+        wrap="nowrap"
       >
         <Flex
-          alignItems="left"
           flexDir="column"
-          ml={[2, 3]}
-          mt={[2, 0]}
-
+          maxW="50%"
         >
-          <Text fontSize="xs" whiteSpace={"nowrap"} wrap="noWrap" fontWeight="medium" color="gray.500">
+          <Text fontSize="xs" fontWeight="medium" color="gray.500">
             Model type
           </Text>
           <Badge
-            size={"sm"}
             bg={primaryColorOrange}
             variant="solid"
             borderRadius="full"
             px={2}
             color={"white"}
-            py={2}
+            py={1}
             mt={1}
-            fontSize={["sm", "sm"]}
-            alignContent={"left"}
+            fontSize="sm"
           >
             {model.type}
           </Badge>
         </Flex>
 
         <Flex
-          alignItems="left"
           flexDir="column"
-          ml={[2, 3]}
-          mt={[0, 0]}
-
+          maxW="50%"
         >
-          <Text fontSize="xs" fontWeight="medium" color="gray.500" mr={2}>
+          <Text fontSize="xs" fontWeight="medium" color="gray.500">
             Context
           </Text>
-          <Badge size={"sm"}
+          <Badge
             bg={primaryColorPurple}
             variant="solid"
             borderRadius="full"
             px={2}
             color={"white"}
-            py={2}
+            py={1}
             mt={1}
-            fontSize={["sm", "sm"]}
-            alignContent={"left"}>
+            fontSize="sm"
+          >
             {model.context}
+
           </Badge>
         </Flex>
 
-        <Flex justifyContent="flex-end">
+        <Flex
+          justifyContent="flex-end"
+          alignItems="center"
+          mt={[3, 0]}
+        >
           <Button
             rightIcon={<ArrowForwardIcon />}
             colorScheme="black"
@@ -121,9 +119,10 @@ const ModelCard = ({ model }) => {
             _hover={{ bg: "orange.400" }}
           />
         </Flex>
-      </HStack>
+      </Flex>
     </Box>
   );
 };
 
 export default ModelCard;
+
