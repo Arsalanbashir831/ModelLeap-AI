@@ -66,7 +66,7 @@ const Hero = () => {
         >
           <Stack direction={{ base: "column", md: "row" }} spacing={4}>
             <Button
-              bg={"black"}
+              bg={primaryColorPurple}
               size="lg"
               textColor={"white"}
               variant="solid"
@@ -80,10 +80,11 @@ const Hero = () => {
               border={"1px solid gray"}
               colorScheme="gray"
               size="lg"
+              boxShadow={"md"}
               variant="outline"
               px={10}
               py={8}
-              _hover={{ bg: primaryColorPurple, color: "white" }}
+              _hover={{ bg: primaryColorOrange, color: "white", border: "none" }}
             >
               Contact Sales
             </Button>
