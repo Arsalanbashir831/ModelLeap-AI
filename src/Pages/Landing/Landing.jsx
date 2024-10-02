@@ -125,6 +125,7 @@ const LandingPage = () => {
       >
         <Flex
           w={"full"}
+          // pt={"1px"}
           direction="column"
           justifyContent="center"
           alignItems="center"

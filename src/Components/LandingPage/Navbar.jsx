@@ -28,8 +28,8 @@ const Navbar = () => {
     <Box
       position="fixed"
       w="100%"
-      backdropFilter="blur(13px)"
-      zIndex="9999"
+      backdropFilter="blur(10px)"
+      zIndex="1000"
       boxShadow="md"
     >
       <Flex
