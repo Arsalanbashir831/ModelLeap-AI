@@ -190,8 +190,8 @@ const Navbar = () => {
                 <MenuItem>API 2</MenuItem>
               </MenuList>
             </Menu>
-            <Link to="#">Enterprise</Link>
-            <Link to="#">Pricing</Link>
+            <Link to="#" _hover={{ textDecoration: "none", color: "gray.500" }}>Enterprise</Link>
+            <Link to="#" _hover={{ textDecoration: "none", color: "gray.500" }}>Pricing</Link>
             <Menu>
               <MenuButton as={ChakraLink} _hover={{ textDecoration: "none", color: "gray.500" }}>Developer</MenuButton>
               <MenuList>
@@ -200,7 +200,7 @@ const Navbar = () => {
               </MenuList>
             </Menu>
             <Menu>
-              <MenuButton as={ChakraLink}>Resources</MenuButton>
+              <MenuButton as={ChakraLink} _hover={{ textDecoration: "none", color: "gray.500" }}>Resources</MenuButton>
               <MenuList>
                 <MenuItem>Blog</MenuItem>
                 <MenuItem>Guides</MenuItem>
