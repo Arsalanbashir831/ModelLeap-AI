@@ -46,10 +46,11 @@ const LandingPage = () => {
 
         <Flex
           w={"full"}
+          // border={"1px  solid black"} 
           direction="column"
           justifyContent="center"
           alignItems="center"
-          minHeight={["60vh", "80vh"]} 
+          // minHeight={["60vh", "100vh"]} 
         >
           <SlideShow />
         </Flex>
