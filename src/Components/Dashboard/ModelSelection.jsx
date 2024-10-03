@@ -88,7 +88,7 @@ const ModelSelection = () => {
           <optgroup label="Anthropic">
             <option value="Claude 3 Haiku">
               Claude 3 Haiku
-              <Badge colorScheme="blue" ml="2" py="1">
+              <Badge colorScheme="blue" ml="2px" py="1">
                 PRO
               </Badge>
             </option>

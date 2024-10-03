@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState } from "react";
 import {
   Box,
   Text,
@@ -11,12 +11,13 @@ import {
   InputRightElement,
   Link,
   Flex,
-} from '@chakra-ui/react';
-import { FaPaperPlane } from 'react-icons/fa';
+} from "@chakra-ui/react";
+import { FaPaperPlane } from "react-icons/fa";
+import { primaryColorOrange, primaryColorPurple } from "../../colorCodes";
 
 const AiChatBox = ({ aiLogo }) => {
   const [messages, setMessages] = useState([]);
-  const [input, setInput] = useState('');
+  const [input, setInput] = useState("");
   const [initState, setInitState] = useState(true);
 
   const handleSend = () => {
@@ -25,18 +26,18 @@ const AiChatBox = ({ aiLogo }) => {
 
       setMessages((prevMessages) => [
         ...prevMessages,
-        { type: 'user', text: input },
+        { type: "user", text: input },
       ]);
 
       setTimeout(() => {
         setMessages((prevMessages) => [
           ...prevMessages,
-          { type: 'user', text: input },
-          { type: 'ai', text: 'Hello! How can I assist you today?' },
+          { type: "user", text: input },
+          { type: "ai", text: "Hello! How can I assist you today?" },
         ]);
       }, 1000);
 
-      setInput('');
+      setInput("");
     }
   };
 
@@ -47,7 +48,8 @@ const AiChatBox = ({ aiLogo }) => {
           Try It Out
         </Text>
         <Text fontSize="md" color="gray.600">
-          Use the toolbar on the right to apply various settings and manage the results.
+          Use the toolbar on the right to apply various settings and manage the
+          results.
         </Text>
 
         <Box flex="1" w="full" overflowY="auto">
@@ -62,7 +64,11 @@ const AiChatBox = ({ aiLogo }) => {
                 bg="gray.50"
                 borderRadius="md"
               >
-                <Text fontSize="md" fontWeight="bold">
+                <Text
+                  fontSize="md"
+                  fontWeight="bold"
+                  color={primaryColorOrange}
+                >
                   Learn how to incorporate our AI models into your app
                 </Text>
                 <Link color="blue.400" href="#">
@@ -81,11 +87,17 @@ const AiChatBox = ({ aiLogo }) => {
                 bg="gray.50"
                 borderRadius="md"
               >
-                <Text fontSize="md" fontWeight="bold">
+                <Text
+                  fontSize="md"
+                  fontWeight="bold"
+                  color={primaryColorOrange}
+                >
                   Type a prompt or try out the examples
                 </Text>
-                <Link color="blue.400" href="#">
-                  Draft an Email
+                <Link href="#" _hover={{ textDecoration: "none" }}>
+                  <Text fontSize="sm" _hover={{ color: primaryColorPurple }}>
+                    Draft an Email
+                  </Text>
                 </Link>
                 <Link color="blue.400" href="#">
                   Plan a trip
@@ -108,9 +120,11 @@ const AiChatBox = ({ aiLogo }) => {
               {messages.map((message, index) => (
                 <HStack
                   key={index}
-                  alignSelf={message.type === 'user' ? 'flex-end' : 'flex-start'}
+                  alignSelf={
+                    message.type === "user" ? "flex-end" : "flex-start"
+                  }
                 >
-                  {message.type === 'user' ? (
+                  {message.type === "user" ? (
                     <>
                       <Avatar name="You" bg="yellow.400" size="sm" />
                       <Box bg="gray.100" p="2" borderRadius="md">
@@ -140,7 +154,7 @@ const AiChatBox = ({ aiLogo }) => {
             bg="white"
             border="1px solid"
             borderColor="gray.200"
-            _focus={{ borderColor: '#29ABE3' }}
+            _focus={{ borderColor: "#29ABE3" }}
           />
           <InputRightElement>
             <IconButton
@@ -149,7 +163,7 @@ const AiChatBox = ({ aiLogo }) => {
               onClick={handleSend}
               bg="#29ABE3"
               color="white"
-              _hover={{ bg: '#0070BC' }}
+              _hover={{ bg: "#0070BC" }}
             />
           </InputRightElement>
         </InputGroup>

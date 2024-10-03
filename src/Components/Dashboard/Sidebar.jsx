@@ -17,7 +17,7 @@ import {
   FaSignOutAlt,
   FaRobot,
 } from "react-icons/fa";
-// import logo from "../../../public/model_leap.png";
+
 
 const Sidebar = () => {
   const location = useLocation(); 
