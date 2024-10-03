@@ -23,7 +23,6 @@ const AiChatBox = ({ aiLogo }) => {
   const handleSend = () => {
     if (input.trim()) {
       setInitState(false);
-
       setMessages((prevMessages) => [
         ...prevMessages,
         { type: "user", text: input },
@@ -32,7 +31,6 @@ const AiChatBox = ({ aiLogo }) => {
       setTimeout(() => {
         setMessages((prevMessages) => [
           ...prevMessages,
-          { type: "user", text: input },
           { type: "ai", text: "Hello! How can I assist you today?" },
         ]);
       }, 1000);
@@ -42,19 +40,18 @@ const AiChatBox = ({ aiLogo }) => {
   };
 
   return (
-    <Flex direction="column" h="400px" w="100%">
+    <Flex direction="column" h={["300px", "400px"]} w="100%">
       <VStack spacing="1" align="start" w="full" h="full">
-        <Text fontSize="xl" fontWeight="bold">
+        <Text fontSize={["lg", "xl"]} fontWeight="bold">
           Try It Out
         </Text>
-        <Text fontSize="md" color="gray.600">
-          Use the toolbar on the right to apply various settings and manage the
-          results.
+        <Text fontSize={["sm", "md"]} color={primaryColorOrange}>
+          Use the toolbar on the right to apply various settings and manage the results.
         </Text>
 
         <Box flex="1" w="full" overflowY="auto">
           {initState ? (
-            <HStack justify="space-between" w="full" h="100%">
+            <HStack justify="space-between" w="full" h="100%" flexDirection={["column", "row"]}>
               <VStack
                 align="start"
                 spacing="2"
@@ -63,19 +60,24 @@ const AiChatBox = ({ aiLogo }) => {
                 p="4"
                 bg="gray.50"
                 borderRadius="md"
+                w={["full", "48%"]}
               >
                 <Text
-                  fontSize="md"
+                  fontSize={["sm", "md"]}
                   fontWeight="bold"
                   color={primaryColorOrange}
                 >
                   Learn how to incorporate our AI models into your app
                 </Text>
-                <Link color="blue.400" href="#">
+                <Link href="#" _hover={{ textDecoration: "none" }}>
+                  <Text fontSize="sm" _hover={{ color: primaryColorPurple }}>
                   API Documentation
+                  </Text>
                 </Link>
-                <Link color="blue.400" href="#">
+                <Link href="#" _hover={{ textDecoration: "none" }}>
+                  <Text fontSize="sm" _hover={{ color: primaryColorPurple }}>
                   Ask your question
+                  </Text>
                 </Link>
               </VStack>
               <VStack
@@ -86,9 +88,11 @@ const AiChatBox = ({ aiLogo }) => {
                 p="4"
                 bg="gray.50"
                 borderRadius="md"
+                w={["full", "48%"]}
+                mt={["4", "0"]}
               >
                 <Text
-                  fontSize="md"
+                  fontSize={["sm", "md"]}
                   fontWeight="bold"
                   color={primaryColorOrange}
                 >
@@ -99,8 +103,10 @@ const AiChatBox = ({ aiLogo }) => {
                     Draft an Email
                   </Text>
                 </Link>
-                <Link color="blue.400" href="#">
+                <Link href="#" _hover={{ textDecoration: "none" }}>
+                  <Text fontSize="sm" _hover={{ color: primaryColorPurple }}>
                   Plan a trip
+                  </Text>
                 </Link>
               </VStack>
             </HStack>
@@ -150,20 +156,22 @@ const AiChatBox = ({ aiLogo }) => {
             placeholder="Type your prompt here..."
             value={input}
             onChange={(e) => setInput(e.target.value)}
-            borderRadius="md"
-            bg="white"
-            border="1px solid"
-            borderColor="gray.200"
-            _focus={{ borderColor: "#29ABE3" }}
+            borderRadius="lg"
+            bg="transparent"
+            border="0.5px solid"
+            borderColor={primaryColorOrange}
+            _focus={{ borderColor: primaryColorOrange }}
+            _hover={{ borderColor: primaryColorOrange }}
+            fontSize={["sm", "md"]}
           />
           <InputRightElement>
             <IconButton
               aria-label="Send"
               icon={<FaPaperPlane />}
               onClick={handleSend}
-              bg="#29ABE3"
+              bg={primaryColorOrange}
               color="white"
-              _hover={{ bg: "#0070BC" }}
+              _hover={{ bg: primaryColorPurple }}
             />
           </InputRightElement>
         </InputGroup>

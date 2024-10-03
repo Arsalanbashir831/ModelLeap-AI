@@ -15,23 +15,47 @@ const AI = () => {
 
   return (
     <>
-
-      <Box mt={8} p={"3"}>
+      <Box mt={[4, 8]} p={["2", "3"]}>
         <Header title={"AI Playground"} />
         <Box ml={3}>
           <MenuTabs onTabChange={handleTabChange} />
         </Box>
       </Box>
 
-      <Flex mt={6} mr={8} ml={6} justify="space-between" gap={6} align="start">
-        <Box flex="2" maxW="60%" boxShadow="lg" p={5} borderRadius="lg" bg="white">
+      <Flex
+        mt={6}
+        mr={8}
+        ml={6}
+        justify="space-between"
+        gap={6}
+        align="start"
+        flexDirection={["column", "row"]}
+      >
+
+        <Box
+          flex="2"
+          maxW={["100%", "60%"]}
+          boxShadow="lg"
+          p={5}
+          borderRadius="lg"
+          bg="white"
+        >
           {activeTab === "Chat" && <AiChatBox aiLogo={logo} />}
           {activeTab === "Code" && <AiChatBox aiLogo={logo} />}
           {activeTab === "Language" && <AiChatBox aiLogo={logo} />}
           {activeTab === "Image" && <AiChatBox aiLogo={logo} />}
         </Box>
 
-        <Box flex="1" ml="2" maxW="35%" boxShadow="lg" p={5} borderRadius="lg" bg="white">
+        <Box
+          flex="1"
+          ml={["0", "2"]}
+          mt={["4", "0"]}  
+          maxW={["100%", "35%"]}
+          boxShadow="lg"
+          p={5}
+          borderRadius="lg"
+          bg="white"
+        >
           {activeTab === "Chat" && <ModelSelection />}
           {activeTab === "Code" && <ModelSelection />}
           {activeTab === "Language" && <ModelSelection />}

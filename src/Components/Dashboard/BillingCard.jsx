@@ -8,25 +8,27 @@ import {
   Icon,
   Flex,
   Spacer,
-  background,
 } from '@chakra-ui/react';
 import { FaCheckCircle } from 'react-icons/fa';
+import { primaryColorOrange, primaryColorPurple } from '../../colorCodes';
 
 const BillingCard = ({ title, price, features, selected, onClick }) => {
   return (
-    <Box 
+    <Box
       borderWidth={selected ? '3px' : '1px'}
-      borderColor={selected ? '#0070BE' : 'gray.200'}
+      borderColor={selected ? primaryColorOrange : 'gray.200'}
       borderRadius="lg"
-      p={6}
-      maxW="300px"
+      p={{ base: 4, md: 6 }}
+      maxW={{ base: '100%', md: '300px' }} 
       textAlign="center"
       boxShadow={selected ? 'lg' : 'md'}
       position="relative"
       display="flex"
       flexDirection="column"
       justifyContent="space-between"
-      h="100%" background='white'
+      h="100%"
+      background="white"
+      mx={{ base: 'auto', md: 0 }}
     >
       {selected && (
         <Box
@@ -34,12 +36,12 @@ const BillingCard = ({ title, price, features, selected, onClick }) => {
           top={-3}
           left="50%"
           transform="translateX(-50%)"
-          bg="#0070BE"
+          bg={primaryColorPurple}
           color="white"
           borderRadius="full"
           px={4}
           py={1}
-          fontSize="sm"
+          fontSize={{ base: 'xs', md: 'sm' }}
           fontWeight="bold"
         >
           Current plan
@@ -48,15 +50,32 @@ const BillingCard = ({ title, price, features, selected, onClick }) => {
 
       <Flex direction="column" flex="1" justify="space-between">
         <Box mb={4}>
-          <Heading as="h4" size="md" mb={2} color="gray.700">
+          <Heading
+            as="h4"
+            size="md"
+            mb={2}
+            color="gray.700"
+            fontSize={{ base: 'lg', md: 'md' }}
+          >
             {title}
           </Heading>
-          <Heading as="h1" size="2xl" mb={4} color="black">
+          <Heading
+            as="h1"
+            size="2xl"
+            mb={4}
+            color="black"
+            fontSize={{ base: '2xl', md: '2xl' }} 
+          >
             {price}
           </Heading>
         </Box>
 
-        <VStack spacing={3} alignItems="start" mb={6}>
+        <VStack
+          spacing={5}
+          alignItems="start"
+          mb={6}
+          fontSize={{ base: 'sm', md: 'md' }} 
+        >
           {features.map((feature, index) => (
             <Flex key={index} align="center">
               <Icon as={FaCheckCircle} color="green.400" mr={2} />
@@ -68,11 +87,13 @@ const BillingCard = ({ title, price, features, selected, onClick }) => {
         <Spacer />
 
         <Button
-          // onClick={onClick}
-          colorScheme="blue"
-          // variant="outline"
-          size="lg"
+          onClick={onClick}
+          bg={primaryColorPurple}
+          size={{ base: 'sm', md: 'lg' }}
+          color="white"
+          _hover={{ bg: primaryColorOrange }}
           mt="auto"
+          width="100%" 
           rightIcon={<Icon as={FaCheckCircle} />}
         >
           View Usage →

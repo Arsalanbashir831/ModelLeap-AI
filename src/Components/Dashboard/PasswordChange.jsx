@@ -11,6 +11,8 @@ import {
   Icon,
 } from "@chakra-ui/react";
 import { FaEye, FaEyeSlash, FaLock } from "react-icons/fa";
+import { primaryColorOrange, primaryColorPurple } from "../../colorCodes";
+
 
 const PasswordChange = () => {
   const [showOldPassword, setShowOldPassword] = useState(false);
@@ -36,7 +38,7 @@ const PasswordChange = () => {
           </FormLabel>
           <InputGroup>
             <InputRightElement>
-              <Icon as={FaLock} color="gray.400" />
+              <Icon as={FaLock} color={primaryColorPurple} />
             </InputRightElement>
             <Input
               type={showOldPassword ? "text" : "password"}
@@ -45,6 +47,7 @@ const PasswordChange = () => {
             <InputRightElement width="4.5rem">
               <Button
                 h="1.75rem"
+                mr={2}
                 size="sm"
                 onClick={toggleShowOldPassword}
                 variant="ghost"
@@ -60,7 +63,7 @@ const PasswordChange = () => {
           </FormLabel>
           <InputGroup>
             <InputRightElement>
-              <Icon as={FaLock} color="gray.400" />
+              <Icon as={FaLock} color={primaryColorPurple} />
             </InputRightElement>
             <Input
               type={showNewPassword ? "text" : "password"}
@@ -68,6 +71,7 @@ const PasswordChange = () => {
             />
             <InputRightElement width="4.5rem">
               <Button
+                mr={2}
                 h="1.75rem"
                 size="sm"
                 onClick={toggleShowNewPassword}
@@ -80,12 +84,12 @@ const PasswordChange = () => {
         </FormControl>
 
         <Button
-          bg={"#29ABE3"}
+          bg={primaryColorPurple}
           textColor={"white"}
           w="100%"
           mt={4}
           _hover={{
-            backgroundColor: "#0070BC",
+            backgroundColor: primaryColorOrange,
             color: "white",
           }}
         >

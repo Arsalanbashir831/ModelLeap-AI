@@ -1,10 +1,10 @@
 import React, { useState } from "react";
-import { Box, SimpleGrid, Heading, Switch, Flex, Text } from "@chakra-ui/react";
+import { Box, SimpleGrid } from "@chakra-ui/react";
 import Header from "../../Components/Dashboard/Header";
 import BillingCard from "../../Components/Dashboard/BillingCard";
 
 const Plans = () => {
-  const [selectedPlan, setSelectedPlan] = useState("free"); 
+  const [selectedPlan, setSelectedPlan] = useState("free");
 
   const plans = [
     {
@@ -40,13 +40,16 @@ const Plans = () => {
   ];
 
   return (
-    <Box p={6}>
-        <Box mt={5}>
+    <Box p={{ base: 4, md: 6 }}>
+      <Box mt={5}>
+        <Header title="Plans" />
+      </Box>
 
-      <Header title={"Plans"} />
-        </Box>
-
-      <SimpleGrid mt={12} columns={{ base: 1, md: 3 }} spacing={6}>
+      <SimpleGrid
+        mt={12}
+        columns={{ base: 1, sm: 2, md: 3 }} 
+        spacing={{ base: 4, md: 6 }}
+      >
         {plans.map((plan) => (
           <BillingCard
             key={plan.id}

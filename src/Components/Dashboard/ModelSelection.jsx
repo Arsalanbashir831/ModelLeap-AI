@@ -13,13 +13,14 @@ import {
   VStack,
   HStack,
   Icon,
-  Heading,
+  Flex,
 } from "@chakra-ui/react";
 import { FcApproval } from "react-icons/fc";
+import { primaryColorOrange, primaryColorPurple } from "../../colorCodes";
 
 const ModelSelection = () => {
   const [model, setModel] = useState("GPT 4o mini");
-  const [outputLength, setOutputLength] = useState(774);
+  const [outputLength, setOutputLength] = useState(512);
   const [temperature, setTemperature] = useState(0.7);
   const [topP, setTopP] = useState(0.7);
   const [topK, setTopK] = useState(50);
@@ -28,25 +29,26 @@ const ModelSelection = () => {
     <Box
       p="6"
       borderRadius="lg"
-      bg="white"
+      bg="transparent"
       width="full"
       maxW="lg"
-      h="400px"
+      height="400px"
       margin="auto"
       overflowY="auto"
+      boxShadow="lg"
       css={{
-        '&::-webkit-scrollbar': {
-          width: '5px',
+        "&::-webkit-scrollbar": {
+          width: "3px",
         },
-        '&::-webkit-scrollbar-thumb': {
-          backgroundColor: '#29ABE3',
-          borderRadius: '8px',
+        "&::-webkit-scrollbar-thumb": {
+          backgroundColor: primaryColorOrange,
+          borderRadius: "10px",
         },
-        '&::-webkit-scrollbar-track': {
-          backgroundColor: '#f1f1f1',
+        "&::-webkit-scrollbar-track": {
+          backgroundColor: "#f1f1f1",
         },
-        '&::-webkit-scrollbar-thumb:hover': {
-          backgroundColor: '#005e9e', 
+        "&::-webkit-scrollbar-thumb:hover": {
+          backgroundColor: primaryColorOrange,
         },
       }}
     >
@@ -61,26 +63,46 @@ const ModelSelection = () => {
           borderColor="gray.300"
           placeholder="Start typing to search..."
           iconSize="16px"
-          _hover={{ borderColor: "blue.300" }}
-          _focus={{ borderColor: "blue.500" }}
+          _hover={{ borderColor: primaryColorOrange }}
+          _focus={{ borderColor: primaryColorOrange }}
           size="lg"
         >
           <optgroup label="OpenAI">
             <option value="GPT 4o mini">
-              GPT 4o mini
-              <Badge colorScheme="blue" ml="2" py="1">
-                PRO
-              </Badge>
+              <Flex gap={3}>
+                <Text>GPT 4o mini</Text>
+                <Badge
+                  ml="5px"
+                  bg="blue.300"
+                  color="white"
+                  borderRadius="md"
+                  px="1"
+                >
+                  PRO
+                </Badge>
+              </Flex>
             </option>
             <option value="GPT 4">
               GPT 4
-              <Badge colorScheme="blue" ml="2" py="1">
+              <Badge
+                ml="2"
+                bg="blue.300"
+                color="white"
+                borderRadius="md"
+                px="1"
+              >
                 PRO
               </Badge>
             </option>
             <option value="GPT 3.5">
               GPT 3.5
-              <Badge colorScheme="blue" ml="2" py="1">
+              <Badge
+                ml="2"
+                bg="blue.300"
+                color="white"
+                borderRadius="md"
+                px="1"
+              >
                 PRO
               </Badge>
             </option>
@@ -88,23 +110,35 @@ const ModelSelection = () => {
           <optgroup label="Anthropic">
             <option value="Claude 3 Haiku">
               Claude 3 Haiku
-              <Badge colorScheme="blue" ml="2px" py="1">
+              <Badge
+                ml="2"
+                bg="blue.300"
+                color="white"
+                borderRadius="md"
+                px="1"
+              >
                 PRO
               </Badge>
             </option>
             <option value="Claude 3.5 Sonnet">
               Claude 3.5 Sonnet
-              <Badge colorScheme="blue" ml="2" py="1">
+              <Badge
+                ml="2"
+                bg="blue.300"
+                color="white"
+                borderRadius="md"
+                px="1"
+              >
                 PRO
               </Badge>
             </option>
           </optgroup>
         </Select>
 
-        <VStack mt="4" spacing="2">
-        <FormLabel textAlign={"left"} fontWeight="bold" fontSize="lg">
-          Parameters
-        </FormLabel>
+        <VStack mt="4" spacing="4" align="stretch">
+          <FormLabel fontWeight="bold" fontSize="lg">
+            Parameters
+          </FormLabel>
           <Box w="full">
             <Text mb="2" fontWeight="semibold">
               Output length
@@ -116,8 +150,8 @@ const ModelSelection = () => {
               step={1}
               onChange={(val) => setOutputLength(val)}
             >
-              <SliderTrack bg="gray.200">
-                <SliderFilledTrack bg="#29ABE3" />
+              <SliderTrack bg="gray.200" borderRadius="full">
+                <SliderFilledTrack bg={primaryColorOrange} />
               </SliderTrack>
               <SliderThumb />
             </Slider>
@@ -137,8 +171,8 @@ const ModelSelection = () => {
               step={0.1}
               onChange={(val) => setTemperature(val)}
             >
-              <SliderTrack bg="gray.200">
-                <SliderFilledTrack bg="#29ABE3" />
+              <SliderTrack bg="gray.200" borderRadius="full">
+                <SliderFilledTrack bg={primaryColorOrange} />
               </SliderTrack>
               <SliderThumb />
             </Slider>
@@ -158,8 +192,8 @@ const ModelSelection = () => {
               step={0.1}
               onChange={(val) => setTopP(val)}
             >
-              <SliderTrack bg="gray.200">
-                <SliderFilledTrack bg="#29ABE3" />
+              <SliderTrack bg="gray.200" borderRadius="full">
+                <SliderFilledTrack bg={primaryColorOrange} />
               </SliderTrack>
               <SliderThumb />
             </Slider>
@@ -179,8 +213,8 @@ const ModelSelection = () => {
               step={1}
               onChange={(val) => setTopK(val)}
             >
-              <SliderTrack bg="gray.200">
-                <SliderFilledTrack bg="#29ABE3" />
+              <SliderTrack bg="gray.200" borderRadius="full">
+                <SliderFilledTrack bg={primaryColorOrange} />
               </SliderTrack>
               <SliderThumb />
             </Slider>

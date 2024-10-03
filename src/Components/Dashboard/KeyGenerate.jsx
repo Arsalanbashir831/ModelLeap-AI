@@ -15,6 +15,7 @@ import {
 import React, { useState } from "react";
 import { FaClipboard, FaRegDotCircle } from "react-icons/fa";
 import { FaPlus } from "react-icons/fa6";
+import { primaryColorOrange, primaryColorPurple } from "../../colorCodes";
 
 const generateApiKey = () => {
   const characters =
@@ -51,12 +52,12 @@ const KeyGenerate = () => {
             Your API Keys
           </Text>
           <Button
-            bg="#0070BC"
+            bg={primaryColorPurple}
             textColor={"white"}
             leftIcon={<FaPlus />}
             size="md"
             _hover={{
-              backgroundColor: "#29ABE3",
+              backgroundColor: primaryColorOrange,
               color: "white",
             }}
             onClick={handleCreateApiKey}
@@ -73,7 +74,7 @@ const KeyGenerate = () => {
               <Tr>
                 <Td>
                   <Flex alignItems="center">
-                    <FaRegDotCircle color="blue" />
+                    <FaRegDotCircle color={primaryColorPurple} />
                     <Text ml={2} fontSize="md">
                       Active
                     </Text>
@@ -89,9 +90,11 @@ const KeyGenerate = () => {
                     </Text>
                     <IconButton
                       aria-label="Copy API Key"
-                      icon={<FaClipboard />}
+                      bg={primaryColorPurple}
+                      icon={<FaClipboard color={"white"} />}
                       size="sm"
                       ml={2}
+                      _hover={{ bg: primaryColorOrange }}
                       onClick={onCopy}
                     />
                     {hasCopied && (
@@ -102,7 +105,7 @@ const KeyGenerate = () => {
                   </Flex>
                 </Td>
                 <Td textAlign="right">
-                  <Button size="sm" colorScheme="gray" variant="outline">
+                  <Button size="sm" bg={primaryColorPurple} color="white" _hover={{ bg: primaryColorOrange }} variant="outline">
                     Disable
                   </Button>
                 </Td>
@@ -113,7 +116,7 @@ const KeyGenerate = () => {
 
         <Divider my={4} />
 
-        <Link href="#" color="#29ABE3" fontSize="md" textDecoration="underline">
+        <Link href="#" color={primaryColorPurple} fontSize="md" textDecoration="underline">
           Activate Subscription
         </Link>
       </Box>
