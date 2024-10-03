@@ -172,17 +172,17 @@ const Navbar = () => {
         initial={false}
         animate={isOpen ? "open" : "closed"}
         variants={{
-          open: { opacity: 1, height: "auto" },
+          open: { opacity: 2, height: "auto" },
           closed: { opacity: 0, height: 0 },
         }}
-        transition={{ duration: 0.5, ease: "easeInOut" }}
+        transition={{ duration: 0.4, ease: "easeInOut" }}
         overflow="hidden"
       >
         <Box
           pb={4}
           display={{ md: "none" }}
           backdropFilter="blur(10px)"
-          shadow="md"
+          shadow="lg"
         >
           <Stack as="nav" spacing={4} align="center">
             <Menu>
