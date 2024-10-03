@@ -7,7 +7,7 @@ const NightModeToggleBtn = () => {
   const toggleNightMode = () => {
     setIsNightMode(!isNightMode);
     if (!isNightMode) {
-      document.body.classList.add("night-mode");
+      document.body.classList.add("body.night-mode");
     } else {
       document.body.classList.remove("night-mode");
     }
