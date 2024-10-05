@@ -2,12 +2,13 @@ import {
   Box,
   VStack,
   Button,
-  Icon,
+  IconButton,
   Image,
   Divider,
   Text,
 } from "@chakra-ui/react";
 import { Link, useLocation } from "react-router-dom";
+import { BsArrowBarLeft, BsArrowBarRight } from "react-icons/bs";
 import {
   FaKey,
   FaMoneyBill,
@@ -16,43 +17,51 @@ import {
   FaBook,
   FaSignOutAlt,
   FaRobot,
+  FaChevronLeft,
+  FaChevronRight,
 } from "react-icons/fa";
+import { primaryColorOrange, primaryColorPurple } from "../../colorCodes";
 
-
-const Sidebar = () => {
+const Sidebar = ({ isOpen, onToggle }) => {
   const location = useLocation();
 
   const isActive = (path) => location.pathname === path;
 
   return (
     <Box
-      w="250px"
-      bgGradient="linear-gradient(
-        300deg,
-        hsl(298deg 62% 85%) 0%,
-        hsl(298deg 62% 87%) 3%,
-        hsl(298deg 62% 90%) 9%,
-        hsl(299deg 62% 92%) 20%,
-        hsl(299deg 62% 95%) 41%,
-        hsl(299deg 62% 97%) 77%,
-        hsl(0deg 0% 100%) 100%
-      )"
+      w={isOpen ? "250px" : "80px"}
       p="4"
       boxShadow="md"
-      borderRadius="lg"
-      height="100vh"
+      height="100%"
       display="flex"
       flexDirection="column"
       justifyContent="space-between"
+      transition="width 0.3s ease"
+      position={"relative"}
     >
-      <Box display="flex" flexDirection="column">
-        <Image src="/model_leap.png" alt="Model Leap Logo" width={"80%"} />
-        <VStack mt={"4"} spacing="1" align="stretch">
+      <Box
+        display="flex"
+        flexDirection="column"
+        alignItems={isOpen ? "flex-start" : "center"}
+      >
+        {isOpen && (
+          <Image src="/model_leap.png" alt="Model Leap Logo" width={"80%"} />
+        )}
+        {!isOpen && (
+          <Image
+          mt={3}
+            src="/model_leap_favicon.png"
+            alt="Model Leap Logo"
+            width={"100%"}
+            mb={5}
+          />
+        )}
+        <VStack mt={"1"} spacing="1" align="stretch">
           <Button
             as={Link}
             to="/app"
             variant="ghost"
-            justifyContent="flex-start"
+            justifyContent={isOpen ? "flex-start" : "center"}
             leftIcon={<FaRobot />}
             fontWeight="normal"
             bg={
@@ -66,14 +75,14 @@ const Sidebar = () => {
               color: "white",
             }}
           >
-            AI Playground
+            {isOpen && "AI Playground"}
           </Button>
 
           <Button
             as={Link}
             to="/app/ailab"
             variant="ghost"
-            justifyContent="flex-start"
+            justifyContent={isOpen ? "flex-start" : "center"}
             leftIcon={<FaRobot />}
             fontWeight="normal"
             bg={
@@ -87,16 +96,15 @@ const Sidebar = () => {
               color: "white",
             }}
           >
-            AI Lab
+            {isOpen && "AI Lab"}
           </Button>
-
 
           <Button
             as={Link}
             variant="ghost"
             to="/app/keymanagement"
             color={isActive("/app/keymanagement") ? "white" : "black"}
-            justifyContent="flex-start"
+            justifyContent={isOpen ? "flex-start" : "center"}
             leftIcon={<FaKey />}
             fontWeight="normal"
             bg={
@@ -109,14 +117,14 @@ const Sidebar = () => {
               color: "white",
             }}
           >
-            Key Management
+            {isOpen && "Key Management"}
           </Button>
           <Button
             as={Link}
             variant="ghost"
             to="/app/billing"
             color={isActive("/app/billing") ? "white" : "black"}
-            justifyContent="flex-start"
+            justifyContent={isOpen ? "flex-start" : "center"}
             leftIcon={<FaMoneyBill />}
             fontWeight="normal"
             bg={
@@ -124,18 +132,22 @@ const Sidebar = () => {
                 ? "linear-gradient(90deg, hsl(297deg 63% 46%) 0%, hsl(309deg 64% 49%) 0%, hsl(318deg 72% 53%) -1%, hsl(326deg 80% 58%) -1%, hsl(333deg 88% 62%) -1%, hsl(340deg 94% 66%) 0%, hsl(347deg 99% 70%) 0%, hsl(354deg 100% 73%) 1%, hsl(2deg 100% 75%) 4%, hsl(8deg 100% 75%) 8%, hsl(14deg 100% 75%) 17%, hsl(19deg 100% 76%) 49%, hsl(23deg 98% 77%) 100%)"
                 : "transparent"
             }
-
             _hover={{
               bg: "linear-gradient(90deg, hsl(297deg 63% 46%) 0%, hsl(309deg 64% 49%) 0%, hsl(318deg 72% 53%) -1%, hsl(326deg 80% 58%) -1%, hsl(333deg 88% 62%) -1%, hsl(340deg 94% 66%) 0%, hsl(347deg 99% 70%) 0%, hsl(354deg 100% 73%) 1%, hsl(2deg 100% 75%) 4%, hsl(8deg 100% 75%) 8%, hsl(14deg 100% 75%) 17%, hsl(19deg 100% 76%) 49%, hsl(23deg 98% 77%) 100%)",
               color: "white",
             }}
           >
-            Billing
+            {isOpen && "Billing"}
           </Button>
 
           <Divider my="4" />
 
-          <Text fontSize="sm" color="gray.500" pl="4">
+          <Text
+            fontSize="sm"
+            color="gray.500"
+            pl={isOpen ? "4" : "0"}
+            textAlign={isOpen ? "left" : "center"}
+          >
             More
           </Text>
 
@@ -144,7 +156,7 @@ const Sidebar = () => {
             to="/app/settings"
             variant="ghost"
             color={isActive("/app/settings") ? "white" : "black"}
-            justifyContent="flex-start"
+            justifyContent={isOpen ? "flex-start" : "center"}
             leftIcon={<FaCog />}
             fontWeight="normal"
             bg={
@@ -157,14 +169,14 @@ const Sidebar = () => {
               color: "white",
             }}
           >
-            Settings
+            {isOpen && "Settings"}
           </Button>
           <Button
             as={Link}
             to="/app/helpcenter"
             variant="ghost"
             color={isActive("/app/helpcenter") ? "white" : "black"}
-            justifyContent="flex-start"
+            justifyContent={isOpen ? "flex-start" : "center"}
             leftIcon={<FaQuestionCircle />}
             fontWeight="normal"
             bg={
@@ -172,20 +184,19 @@ const Sidebar = () => {
                 ? "linear-gradient(90deg, hsl(297deg 63% 46%) 0%, hsl(309deg 64% 49%) 0%, hsl(318deg 72% 53%) -1%, hsl(326deg 80% 58%) -1%, hsl(333deg 88% 62%) -1%, hsl(340deg 94% 66%) 0%, hsl(347deg 99% 70%) 0%, hsl(354deg 100% 73%) 1%, hsl(2deg 100% 75%) 4%, hsl(8deg 100% 75%) 8%, hsl(14deg 100% 75%) 17%, hsl(19deg 100% 76%) 49%, hsl(23deg 98% 77%) 100%)"
                 : "transparent"
             }
-
             _hover={{
               bg: "linear-gradient(90deg, hsl(297deg 63% 46%) 0%, hsl(309deg 64% 49%) 0%, hsl(318deg 72% 53%) -1%, hsl(326deg 80% 58%) -1%, hsl(333deg 88% 62%) -1%, hsl(340deg 94% 66%) 0%, hsl(347deg 99% 70%) 0%, hsl(354deg 100% 73%) 1%, hsl(2deg 100% 75%) 4%, hsl(8deg 100% 75%) 8%, hsl(14deg 100% 75%) 17%, hsl(19deg 100% 76%) 49%, hsl(23deg 98% 77%) 100%)",
               color: "white",
             }}
           >
-            Help Center
+            {isOpen && "Help Center"}
           </Button>
           <Button
             as={Link}
             to="/app/documentation"
             variant="ghost"
             color={isActive("/app/documentation") ? "white" : "black"}
-            justifyContent="flex-start"
+            justifyContent={isOpen ? "flex-start" : "center"}
             leftIcon={<FaBook />}
             fontWeight="normal"
             bg={
@@ -198,7 +209,7 @@ const Sidebar = () => {
               color: "white",
             }}
           >
-            Documentation
+            {isOpen && "Documentation"}
           </Button>
           <Divider my="2" />
           <Button
@@ -206,7 +217,7 @@ const Sidebar = () => {
             to="/"
             variant="ghost"
             color={isActive("/") ? "white" : "black"}
-            justifyContent="flex-start"
+            justifyContent={isOpen ? "flex-start" : "center"}
             leftIcon={<FaSignOutAlt />}
             fontWeight="normal"
             bg={
@@ -219,11 +230,26 @@ const Sidebar = () => {
               color: "white",
             }}
           >
-            Logout
+            {isOpen && "Sign out"}
           </Button>
         </VStack>
       </Box>
-      <Box mt="auto"></Box>
+      <IconButton
+        icon={isOpen ? <FaChevronLeft /> : <FaChevronRight /> }
+        onClick={onToggle}
+        aria-label="Toggle Sidebar"
+        size="sm"
+        color={'white'}
+        variant="outline"
+        position="absolute"
+        right="-17px" 
+        top="8%"
+        _hover={{ bg: primaryColorOrange, color: 'white' }}
+        bg={primaryColorPurple}
+        borderRadius={"full"}
+        transform="translateY(-50%)"
+        boxShadow="lg"
+      />
     </Box>
   );
 };

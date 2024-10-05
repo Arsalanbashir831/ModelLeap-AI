@@ -37,7 +37,7 @@ const LandingPage = () => {
           direction="column"
           justifyContent="center"
           alignItems="center"
-          minHeight={["80vh", "100vh"]}
+          minHeight={["80%", "100%"]}
         >
           <Hero />
           <InfoSection />
