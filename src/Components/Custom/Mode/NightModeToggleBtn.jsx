@@ -1,21 +1,18 @@
 import React, { useState } from "react";
 import "./NightModeToggle.css"; 
+import { useTheme } from "../../../Themes/ThemeContext";
+
 
 const NightModeToggleBtn = () => {
   const [isNightMode, setIsNightMode] = useState(false);
 
-  const toggleNightMode = () => {
-    setIsNightMode(!isNightMode);
-    if (!isNightMode) {
-      document.body.classList.add("body.night-mode");
-    } else {
-      document.body.classList.remove("night-mode");
-    }
-  };
+  const { isDarkMode, toggleTheme } = useTheme();
+
+
 
   return (
     <label className="ui-switch">
-      <input type="checkbox" checked={isNightMode} onChange={toggleNightMode} />
+      <input type="checkbox" checked={isDarkMode} onChange={toggleTheme} />
       <div className="slider">
         <div className="circle"></div>
       </div>

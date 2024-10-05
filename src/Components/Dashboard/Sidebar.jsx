@@ -8,7 +8,6 @@ import {
   Text,
 } from "@chakra-ui/react";
 import { Link, useLocation } from "react-router-dom";
-import { BsArrowBarLeft, BsArrowBarRight } from "react-icons/bs";
 import {
   FaKey,
   FaMoneyBill,
@@ -21,9 +20,11 @@ import {
   FaChevronRight,
 } from "react-icons/fa";
 import { primaryColorOrange, primaryColorPurple } from "../../colorCodes";
+import { useTheme } from "../../Themes/ThemeContext"; // Import useTheme for theme context
 
 const Sidebar = ({ isOpen, onToggle }) => {
   const location = useLocation();
+  const { theme } = useTheme(); // Extract theme from the context
 
   const isActive = (path) => location.pathname === path;
 
@@ -49,48 +50,48 @@ const Sidebar = ({ isOpen, onToggle }) => {
         )}
         {!isOpen && (
           <Image
-          mt={3}
+            mt={3}
             src="/model_leap_favicon.png"
             alt="Model Leap Logo"
             width={"100%"}
             mb={5}
           />
         )}
+
         <VStack mt={"1"} spacing="1" align="stretch">
           <Button
             as={Link}
             to="/app"
             variant="ghost"
             justifyContent={isOpen ? "flex-start" : "center"}
-            leftIcon={<FaRobot />}
+            leftIcon={<FaRobot color={theme.iconColor} />}
             fontWeight="normal"
             bg={
               isActive("/app")
                 ? "linear-gradient(90deg, hsl(297deg 63% 46%) 0%, hsl(309deg 64% 49%) 0%, hsl(318deg 72% 53%) -1%, hsl(326deg 80% 58%) -1%, hsl(333deg 88% 62%) -1%, hsl(340deg 94% 66%) 0%, hsl(347deg 99% 70%) 0%, hsl(354deg 100% 73%) 1%, hsl(2deg 100% 75%) 4%, hsl(8deg 100% 75%) 8%, hsl(14deg 100% 75%) 17%, hsl(19deg 100% 76%) 49%, hsl(23deg 98% 77%) 100%)"
                 : "transparent"
             }
-            color={isActive("/app") ? "white" : "black"}
+            color={theme.textColor}
             _hover={{
               bg: "linear-gradient(90deg, hsl(297deg 63% 46%) 0%, hsl(309deg 64% 49%) 0%, hsl(318deg 72% 53%) -1%, hsl(326deg 80% 58%) -1%, hsl(333deg 88% 62%) -1%, hsl(340deg 94% 66%) 0%, hsl(347deg 99% 70%) 0%, hsl(354deg 100% 73%) 1%, hsl(2deg 100% 75%) 4%, hsl(8deg 100% 75%) 8%, hsl(14deg 100% 75%) 17%, hsl(19deg 100% 76%) 49%, hsl(23deg 98% 77%) 100%)",
               color: "white",
             }}
           >
-            {isOpen && "AI Playground"}
+            <Text color={theme.textColor}>{isOpen && "AI Playground"}</Text>
           </Button>
-
           <Button
             as={Link}
             to="/app/ailab"
             variant="ghost"
             justifyContent={isOpen ? "flex-start" : "center"}
-            leftIcon={<FaRobot />}
+            leftIcon={<FaRobot color={theme.iconColor} />}
             fontWeight="normal"
             bg={
               isActive("/app/ailab")
                 ? "linear-gradient(90deg, hsl(297deg 63% 46%) 0%, hsl(309deg 64% 49%) 0%, hsl(318deg 72% 53%) -1%, hsl(326deg 80% 58%) -1%, hsl(333deg 88% 62%) -1%, hsl(340deg 94% 66%) 0%, hsl(347deg 99% 70%) 0%, hsl(354deg 100% 73%) 1%, hsl(2deg 100% 75%) 4%, hsl(8deg 100% 75%) 8%, hsl(14deg 100% 75%) 17%, hsl(19deg 100% 76%) 49%, hsl(23deg 98% 77%) 100%)"
                 : "transparent"
             }
-            color={isActive("/app/ailab") ? "white" : "black"}
+            color={theme.textColor}
             _hover={{
               bg: "linear-gradient(90deg, hsl(297deg 63% 46%) 0%, hsl(309deg 64% 49%) 0%, hsl(318deg 72% 53%) -1%, hsl(326deg 80% 58%) -1%, hsl(333deg 88% 62%) -1%, hsl(340deg 94% 66%) 0%, hsl(347deg 99% 70%) 0%, hsl(354deg 100% 73%) 1%, hsl(2deg 100% 75%) 4%, hsl(8deg 100% 75%) 8%, hsl(14deg 100% 75%) 17%, hsl(19deg 100% 76%) 49%, hsl(23deg 98% 77%) 100%)",
               color: "white",
@@ -103,9 +104,9 @@ const Sidebar = ({ isOpen, onToggle }) => {
             as={Link}
             variant="ghost"
             to="/app/keymanagement"
-            color={isActive("/app/keymanagement") ? "white" : "black"}
+            color={theme.textColor}
             justifyContent={isOpen ? "flex-start" : "center"}
-            leftIcon={<FaKey />}
+            leftIcon={<FaKey color={theme.iconColor} />}
             fontWeight="normal"
             bg={
               isActive("/app/keymanagement")
@@ -119,13 +120,14 @@ const Sidebar = ({ isOpen, onToggle }) => {
           >
             {isOpen && "Key Management"}
           </Button>
+
           <Button
             as={Link}
             variant="ghost"
             to="/app/billing"
-            color={isActive("/app/billing") ? "white" : "black"}
+            color={theme.textColor}
             justifyContent={isOpen ? "flex-start" : "center"}
-            leftIcon={<FaMoneyBill />}
+            leftIcon={<FaMoneyBill color={theme.iconColor} />}
             fontWeight="normal"
             bg={
               isActive("/app/billing")
@@ -137,27 +139,28 @@ const Sidebar = ({ isOpen, onToggle }) => {
               color: "white",
             }}
           >
-            {isOpen && "Billing"}
+            {isOpen && "Billings"}
           </Button>
 
           <Divider my="4" />
-
-          <Text
-            fontSize="sm"
-            color="gray.500"
-            pl={isOpen ? "4" : "0"}
-            textAlign={isOpen ? "left" : "center"}
-          >
-            More
-          </Text>
+          {isOpen && (
+            <Text
+              fontSize="sm"
+              color={theme.textColor}
+              pl={isOpen ? "4" : "0"}
+              textAlign={isOpen ? "left" : "center"}
+            >
+              More
+            </Text>
+          )}
 
           <Button
             as={Link}
             to="/app/settings"
             variant="ghost"
-            color={isActive("/app/settings") ? "white" : "black"}
+            color={theme.textColor}
             justifyContent={isOpen ? "flex-start" : "center"}
-            leftIcon={<FaCog />}
+            leftIcon={<FaCog color={theme.iconColor} />}
             fontWeight="normal"
             bg={
               isActive("/app/settings")
@@ -171,13 +174,14 @@ const Sidebar = ({ isOpen, onToggle }) => {
           >
             {isOpen && "Settings"}
           </Button>
+
           <Button
             as={Link}
-            to="/app/helpcenter"
             variant="ghost"
-            color={isActive("/app/helpcenter") ? "white" : "black"}
+            to="/app/helpcenter"
+            color={theme.textColor}
             justifyContent={isOpen ? "flex-start" : "center"}
-            leftIcon={<FaQuestionCircle />}
+            leftIcon={<FaQuestionCircle color={theme.iconColor} />}
             fontWeight="normal"
             bg={
               isActive("/app/helpcenter")
@@ -189,15 +193,16 @@ const Sidebar = ({ isOpen, onToggle }) => {
               color: "white",
             }}
           >
-            {isOpen && "Help Center"}
+            {isOpen && "Help Centre"}
           </Button>
+
           <Button
             as={Link}
-            to="/app/documentation"
             variant="ghost"
-            color={isActive("/app/documentation") ? "white" : "black"}
+            to="/app/documentation"
+            color={theme.textColor}
             justifyContent={isOpen ? "flex-start" : "center"}
-            leftIcon={<FaBook />}
+            leftIcon={<FaBook color={theme.iconColor} />}
             fontWeight="normal"
             bg={
               isActive("/app/documentation")
@@ -211,14 +216,16 @@ const Sidebar = ({ isOpen, onToggle }) => {
           >
             {isOpen && "Documentation"}
           </Button>
+
           <Divider my="2" />
+
           <Button
             as={Link}
-            to="/"
             variant="ghost"
-            color={isActive("/") ? "white" : "black"}
+            to="/"
+            color={theme.textColor}
             justifyContent={isOpen ? "flex-start" : "center"}
-            leftIcon={<FaSignOutAlt />}
+            leftIcon={<FaSignOutAlt color={theme.iconColor} />}
             fontWeight="normal"
             bg={
               isActive("/")
@@ -230,23 +237,28 @@ const Sidebar = ({ isOpen, onToggle }) => {
               color: "white",
             }}
           >
-            {isOpen && "Sign out"}
+            {isOpen && "Sign Out"}
           </Button>
         </VStack>
       </Box>
+
       <IconButton
-        icon={isOpen ? <FaChevronLeft /> : <FaChevronRight /> }
+        icon={
+          isOpen ? (
+            <FaChevronLeft color={theme.sideBarIconColor} />
+          ) : (
+            <FaChevronRight color={theme.sideBarIconColor} />
+          )
+        }
         onClick={onToggle}
         aria-label="Toggle Sidebar"
         size="sm"
-        color={'white'}
-        variant="outline"
-        position="absolute"
-        right="-17px" 
-        top="8%"
-        _hover={{ bg: primaryColorOrange, color: 'white' }}
+        _hover={{ bg: primaryColorOrange, color: "white" }}
         bg={primaryColorPurple}
         borderRadius={"full"}
+        position="absolute"
+        right="-17px"
+        top="8%"
         transform="translateY(-50%)"
         boxShadow="lg"
       />

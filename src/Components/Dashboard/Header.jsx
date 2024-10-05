@@ -1,20 +1,26 @@
 import React from 'react';
 import { Box, Heading, Flex } from '@chakra-ui/react';
 import NightModeToggleBtn from '../Custom/Mode/NightModeToggleBtn';
-
-
+import { useTheme } from '../../Themes/ThemeContext';
 
 const Header = ({ title }) => {
+  const { theme } = useTheme();
+
   return (
     <Box
       as="header"
       w="100%"
       p="3"
-      bg="transparent"
+      bg={'transparent'}
       boxShadow="none"
     >
       <Flex alignItems="center" justifyContent="space-between">
-        <Heading size="xl" fontWeight="bold" fontFamily="'Lato', sans-serif">
+        <Heading
+          size="xl"
+          color={theme.textColor}
+          fontWeight="bold"
+          fontFamily="'Lato', sans-serif"
+        >
           {title}
         </Heading>
 
