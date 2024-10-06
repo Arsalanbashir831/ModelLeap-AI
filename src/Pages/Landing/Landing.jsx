@@ -14,7 +14,6 @@ const LandingPage = () => {
   return (
     <>
       <Navbar />
-
       <Box
         as="section"
         w={"full"}

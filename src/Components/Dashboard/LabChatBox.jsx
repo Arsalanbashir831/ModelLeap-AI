@@ -8,29 +8,31 @@ import {
   IconButton,
   VStack,
   HStack,
+  useBreakpointValue,
 } from "@chakra-ui/react";
-import { EditIcon, SettingsIcon } from "@chakra-ui/icons";
-import { BsDatabase } from "react-icons/bs";
 import { FiSend } from "react-icons/fi";
 import { AiOutlineCode } from "react-icons/ai";
-import { primaryColorOrange, primaryColorPurple } from "../../colorCodes";
+import { BsClock, BsClipboard, BsDatabase } from "react-icons/bs";
+import { EditIcon } from "@chakra-ui/icons";
+import { useTheme } from "../../Themes/ThemeContext";
 
 const LabChatBox = () => {
   const [messages, setMessages] = useState([]);
+  const {theme} = useTheme();
   const [inputValue, setInputValue] = useState("");
   const [context, setContext] = useState("Context");
 
+  const buttonSize = useBreakpointValue({ base: "md", md: "lg" });
+
   const handleSendMessage = () => {
     if (inputValue.trim()) {
-      setMessages([...messages, { from: "You", text: inputValue }]);
-      setContext("You");
+      setMessages([...messages, { from: "You", text: inputValue, time: "9" }]);
       setInputValue("");
       setTimeout(() => {
         setMessages((prevMessages) => [
           ...prevMessages,
-          { from: "AI", text: "This is the AI's response." },
+          { from: "AI", text: "Yes, I'm here. How can I assist you today?", time: "21" },
         ]);
-        setContext("Context");
       }, 1000);
     }
   };
@@ -38,40 +40,51 @@ const LabChatBox = () => {
   return (
     <Box
       w="100%"
-      maxW={"100%"}
+      maxW="1000px"
       mx="auto"
       p={4}
-      border="2px solid"
-      borderColor={primaryColorOrange}
-      borderRadius="md"
-      // backdropFilter={"saturate(180%) blur(20px)"}
-      bg={'gray.700'}
+      borderRadius="lg"
     >
       <VStack
         spacing={4}
         align="stretch"
         h="400px"
         overflowY="auto"
-        p={2}
-        bg="transparent"
+        p={4}
+        bg="rgba(255, 255, 255, 0.04)"
+        backdropFilter={"saturate(200%) blur(20px)"}
         borderRadius="md"
+        css={{
+          '&::-webkit-scrollbar': {
+            width: '4px',
+            backgroundColor: 'rgba(255, 255, 255, 0.1)',
+          },
+          '&::-webkit-scrollbar-thumb': {
+            backgroundColor: '#8e44ad',
+            borderRadius: '4px',
+          },
+          '&::-webkit-scrollbar-thumb:hover': {
+            backgroundColor: '#3498db',
+          },
+        }}
       >
         {messages.length === 0 ? (
           <Flex
-            bg="transparent"
-            border="2px solid"
-            borderColor={primaryColorOrange}
+            bg="linear-gradient(90deg, #3c4666, #34405b)"
             borderRadius="md"
             p={4}
             align="center"
             justify="space-between"
+            boxShadow="md"
           >
-            <Text fontSize="md" fontWeight="bold" color="white">
-              {context}:
-            </Text>
-            <Text fontSize="sm" color="white">
-              Tell the AI how to behave and provide it with knowledge to answer your prompt.
-            </Text>
+            <Box>
+              <Text fontSize="lg" fontWeight="bold" color="white">
+                {context}:
+              </Text>
+              <Text fontSize="sm" color="whiteAlpha.800">
+                Tell the AI how to behave and provide it with knowledge to answer your prompt.
+              </Text>
+            </Box>
             <HStack spacing={2}>
               <BsDatabase color="white" />
               <EditIcon color="white" />
@@ -82,54 +95,90 @@ const LabChatBox = () => {
             {messages.map((message, index) => (
               <Flex
                 key={index}
-                align="center"
+                direction={message.from === "You" ? "row-reverse" : "row"}
+                align="flex-start"
                 justify={message.from === "You" ? "flex-end" : "flex-start"}
-                bg={message.from === "You" ? primaryColorOrange : primaryColorPurple}
-                borderRadius="md"
-                p={4}
-                my={1}
-                w="100%"
-                maxW="600px"
+                my={2}
               >
-                <Text color="white" fontWeight="bold">
-                  {message.from === "You" ? "You" : "AI"}: {message.text}
-                </Text>
+                <Box
+                  bg={message.from === "You" ? "#2d3e50" : "#1c2833"}
+                  borderRadius="lg"
+                  p={3}
+                  boxShadow="lg"
+                  maxW="75%"
+                  position="relative"
+                >
+                  <Text color="white" fontWeight="bold">
+                    {message.from === "You" ? "You" : "AI"}: {message.text}
+                  </Text>
+                  <Flex mt={2} align="center" justify="flex-end" color="gray.400">
+                    <BsClock />
+                    <Text ml={1} fontSize="xs">
+                      {message.time}
+                    </Text>
+                    <IconButton
+                      ml={2}
+                      icon={<BsClipboard />}
+                      size="xs"
+                      bg="transparent"
+                      color="gray.400"
+                      _hover={{ color: "white", bg: "transparent" }}
+                      aria-label="Copy to clipboard"
+                    />
+                  </Flex>
+                  <Box
+                    position="absolute"
+                    bottom="-6px"
+                    right={message.from === "You" ? "-6px" : undefined}
+                    left={message.from !== "You" ? "-6px" : undefined}
+                    w="12px"
+                    h="12px"
+                    bg={message.from === "You" ? "#2d3e50" : "#1c2833"}
+                    borderRadius="50%"
+                    boxShadow="lg"
+                    transform={message.from === "You" ? "rotate(45deg)" : "rotate(-45deg)"}
+                  />
+                </Box>
               </Flex>
             ))}
           </>
         )}
       </VStack>
+
       <Flex mt={4} align="center">
         <Input
           placeholder="Enter to send, Shift+Enter for newline"
           value={inputValue}
           onChange={(e) => setInputValue(e.target.value)}
-          size="lg"
-          bg="transparent"
-          color="white"
-          border="1px solid"
-          borderColor={primaryColorPurple}
-          _placeholder={{ color: "#B0BEC5" }}
-          _focus={{ borderColor: primaryColorOrange }}
+          size={buttonSize}
+          bg="rgba(255, 255, 255, 0.1)"
+          color={theme.textColor}
+          border="none"
+          borderRadius="full"
+          _placeholder={{ color: "gray.500" }}
+          _focus={{ bg: "rgba(255, 255, 255, 0.15)" }}
         />
         <Button
           ml={4}
-          size="lg"
+          size={buttonSize}
           onClick={handleSendMessage}
-          bg={primaryColorPurple}
+          bg="linear-gradient(90deg, #8e44ad, #ff914d)"
           color="white"
-          _hover={{ bg: primaryColorOrange }}
-          _active={{ bg: primaryColorOrange }}
+          borderRadius="full"
+          _hover={{ bg: "#8e44ad" }}
+          _active={{ bg: "#8e44ad" }}
         >
           <FiSend />
         </Button>
         <IconButton
           ml={2}
-          size={"lg"}
+          size={buttonSize}
           icon={<AiOutlineCode />}
-          bg={primaryColorPurple}
+          bg="linear-gradient(90deg, #8e44ad, #ff914d)"
           color="white"
-          _hover={{ color: primaryColorOrange }}
+          borderRadius="full"
+          _hover={{ bg: "#8e44ad" }}
+          _active={{ bg: "#8e44ad" }}
           aria-label="Code Button"
         />
       </Flex>
