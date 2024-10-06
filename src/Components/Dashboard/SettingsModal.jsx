@@ -5,7 +5,7 @@ import {
   Button,
   RadioGroup,
   Radio,
-  Link,
+//   Link,
   Input,
   Modal,
   ModalOverlay,
@@ -16,6 +16,7 @@ import {
   ModalFooter,
   Text,
 } from "@chakra-ui/react";
+import { Link } from "react-router-dom";
 
 const SettingsModal = ({ isOpen, onClose }) => {
   return (
@@ -34,8 +35,6 @@ const SettingsModal = ({ isOpen, onClose }) => {
                 <Radio value="Meta">Meta</Radio>
               </HStack>
             </RadioGroup>
-
-            {/* API Key Input Field */}
             <Text fontSize="sm" color="gray.300">
               OpenAI API key
             </Text>
@@ -45,9 +44,7 @@ const SettingsModal = ({ isOpen, onClose }) => {
               _placeholder={{ color: "gray.500" }}
               focusBorderColor="pink.400"
             />
-
-            {/* Link to get API Key */}
-            <Link href="https://your-api-link.com" isExternal color="teal.400">
+            <Link to={"/app/keymanagement"} isExternal color="teal.400">
               Get yours
             </Link>
           </VStack>
