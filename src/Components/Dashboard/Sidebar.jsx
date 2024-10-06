@@ -21,6 +21,8 @@ import {
 } from "react-icons/fa";
 import { primaryColorOrange, primaryColorPurple } from "../../colorCodes";
 import { useTheme } from "../../Themes/ThemeContext"; 
+import {motion} from "framer-motion";
+const MotionBox = motion(Box);
 
 const Sidebar = ({ isOpen, onToggle }) => {
   const location = useLocation();
@@ -28,12 +30,40 @@ const Sidebar = ({ isOpen, onToggle }) => {
 
   const isActive = (path) => location.pathname === path;
 
+  const sidebarVariants = {
+    open: {
+      width: "250px",
+      transition: { type: "spring", stiffness: 100, damping: 20 },
+    },
+    closed: {
+      width: "80px",
+      transition: { type: "spring", stiffness: 100, damping: 20 },
+    },
+  };
+
+  // const sidebarVariants = {
+  //   open: {
+  //     width: "250px",
+  //     opacity: 1,
+  //     transition: { duration: 0.5, ease: "easeInOut" },
+  //   },
+  //   closed: {
+  //     width: "80px",
+  //     opacity: 0.8,
+  //     transition: { duration: 0.5, ease: "easeInOut" },
+  //   },
+  // };
+
   return (
-    <Box
+
+    <MotionBox
+    variants={sidebarVariants}
       w={isOpen ? "250px" : "80px"}
       p="4"
+      animate={isOpen ? "open" : "closed"}
+      initial={false}
       boxShadow="md"
-      height="120vh"
+      height="130vh"
       display="flex"
       flexDirection="column"
       justifyContent="space-between"
@@ -262,7 +292,7 @@ const Sidebar = ({ isOpen, onToggle }) => {
         transform="translateY(-50%)"
         boxShadow="lg"
       />
-    </Box>
+    </MotionBox>
   );
 };
 
