@@ -46,7 +46,7 @@ const Sidebar = ({ isOpen, onToggle }) => {
         alignItems={isOpen ? "flex-start" : "center"}
       >
         {isOpen && (
-          <Image src="/model_leap.png" alt="Model Leap Logo" width={"80%"} />
+          <Image src="/modelLeapsLogo.png" alt="Model Leap Logo" width={"80%"}  py={5} />
         )}
         {!isOpen && (
           <Image
@@ -58,7 +58,7 @@ const Sidebar = ({ isOpen, onToggle }) => {
           />
         )}
 
-        <VStack mt={"1"} spacing="1" align="stretch">
+        <VStack gap={0} mt={"1"} spacing="1" align="stretch">
           <Button
             as={Link}
             to="/app"
