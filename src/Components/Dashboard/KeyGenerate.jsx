@@ -16,6 +16,8 @@ import React, { useState } from "react";
 import { FaClipboard, FaRegDotCircle } from "react-icons/fa";
 import { FaPlus } from "react-icons/fa6";
 import { primaryColorOrange, primaryColorPurple } from "../../colorCodes";
+import { useTheme } from "../../Themes/ThemeContext";
+
 
 const generateApiKey = () => {
   const characters =
@@ -35,20 +37,24 @@ const KeyGenerate = () => {
     const newApiKey = generateApiKey();
     setApiKey(newApiKey);
   };
+
+
+  const { theme } = useTheme();
   return (
     <>
       <Box
         mt={6}
         p={6}
         boxShadow="lg"
+        border={theme.keyGenerateBorder}
         borderRadius="md"
-        bg="white"
+        backdropFilter={theme.keyGenerateBg}
         width="100%"
         maxW="800px"
         mx="auto"
       >
         <Flex justifyContent="space-between" alignItems="center" mb={4}>
-          <Text fontSize="xl" fontWeight="bold">
+          <Text fontSize="xl" fontWeight="bold" color={theme.textColor}>
             Your API Keys
           </Text>
           <Button
@@ -66,7 +72,7 @@ const KeyGenerate = () => {
           </Button>
         </Flex>
 
-        <Divider my={4} />
+        <Divider my={4} borderColor={theme.integrationBoxDivider} />
 
         <Box overflowX="auto">
           <Table variant="unstyled">
@@ -75,7 +81,7 @@ const KeyGenerate = () => {
                 <Td>
                   <Flex alignItems="center">
                     <FaRegDotCircle color={primaryColorPurple} />
-                    <Text ml={2} fontSize="md">
+                    <Text ml={2} fontSize="md" color={theme.textColor}>
                       Active
                     </Text>
                   </Flex>
@@ -105,7 +111,7 @@ const KeyGenerate = () => {
                   </Flex>
                 </Td>
                 <Td textAlign="right">
-                  <Button size="sm" bg={primaryColorPurple} color="white" _hover={{ bg: primaryColorOrange }} variant="outline">
+                  <Button size="sm" bg={primaryColorPurple} color="white" _hover={{ bg: primaryColorOrange }}>
                     Disable
                   </Button>
                 </Td>
@@ -114,7 +120,7 @@ const KeyGenerate = () => {
           </Table>
         </Box>
 
-        <Divider my={4} />
+        <Divider my={4} borderColor={theme.integrationBoxDivider} />
 
         <Link href="#" color={primaryColorPurple} fontSize="md" textDecoration="underline">
           Activate Subscription

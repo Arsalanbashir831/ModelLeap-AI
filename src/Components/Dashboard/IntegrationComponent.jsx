@@ -7,28 +7,35 @@ import {
   Icon,
   Code,
   VStack,
+  theme,
 } from '@chakra-ui/react';
+import { primaryColorOrange, primaryColorPurple } from '../../colorCodes';
 import { FaCog } from 'react-icons/fa';
+import { useTheme } from '../../Themes/ThemeContext';
+
 
 const IntegrationComponent = () => {
+
+  const {theme} = useTheme();
   return (
     <Box
-      bg="white"
+      bg={theme.integrationBoxBg}
       p={8}
       borderRadius="lg"
+      border={theme.integrationBoxBorder}
       boxShadow="lg"
       maxW="600px"
       mx="auto"
       mt={10}
     >
       <Flex alignItems="center" mb={4}>
-        <Icon as={FaCog} boxSize={6} color="blue.500" />
-        <Heading size="md" ml={3}>
+        <Icon as={FaCog} boxSize={6} color={primaryColorPurple} />
+        <Heading size="md" ml={3} color={theme.textColor}>
           Simple Integration
         </Heading>
       </Flex>
 
-      <Text color="gray.600" mb={6}>
+      <Text color={theme.textColor} mb={6}>
         Simply change the endpoints in your existing setup, and you're ready to go.
       </Text>
 

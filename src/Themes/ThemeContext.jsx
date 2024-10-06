@@ -1,4 +1,5 @@
 import { createContext, useContext, useState } from "react";
+import BillingCard from "../Components/Dashboard/BillingCard";
 
 
 const lightTheme = {
@@ -6,7 +7,9 @@ const lightTheme = {
   textColor: "#000",
   iconColor: "#000",
   sideBarIconColor : "#E2E8F0",
+  sideBarDividerColor : "#515152",
   AiChatbg : "white",
+  AiChatUserBorderColor :  "gray.200",
   AiChatBorder: "none",
   AiChatBoxHeading : "black",
   AiChatBoxInnerBoxbg: "gray.50",
@@ -14,6 +17,14 @@ const lightTheme = {
   modelSelectionBorder : "none",
   modelSelectionSelectBg : "white",
   modelSelectionSelectBorder : "gray.200",
+  keyGenerateBg : "white",
+  keyGenerateBorder : "none",
+  integrationBoxBg : "white", 
+  integrationBoxBorder : "none",
+  integrationBoxDivider : "gray.200",
+  billingCardBorder : "none",
+  billingCardText : "gray.700"
+
 };
 
 const darkTheme = {
@@ -23,13 +34,22 @@ const darkTheme = {
   sideBarIconColor : "#E2E8F0",
   AiChatbg :"transparent",
   AiChatBorder : "1px solid #ff914d",
+  sideBarDividerColor : "#ff914d",
   AiChatBoxHeading : "white",
+  AiChatUserBorderColor :  "#ff914d",
   AiChatBoxInnerBoxbg: "transparent",
   AiChatBoxInnerBoxBorderColor : "1px solid #ff914d",
   modelSelectionBorder: "1px solid #ff914d",
   modelSelectionSelectBg : "transparent",
   modelSelectionSelectBorder : "#ff914d",
-
+  keyGenerateBg : "blur(10px)",
+  keyGenerateBorder : "1px solid #ff914d",
+  keyGenerateTextColor : "#ff914d",
+  integrationBoxBg : "transparent",
+  integrationBoxBorder : "1px solid #ff914d",
+  integrationBoxDivider : "#ff914d",
+  billingCardBorder : "#ba2cc1",
+  billingCardText : "#9c9ca1",
 };
 
 

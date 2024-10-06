@@ -142,7 +142,7 @@ const Sidebar = ({ isOpen, onToggle }) => {
             {isOpen && "Billings"}
           </Button>
 
-          <Divider my="4" />
+          <Divider my="4" borderColor={theme.sideBarDividerColor}/>
           {isOpen && (
             <Text
               fontSize="sm"
@@ -217,7 +217,7 @@ const Sidebar = ({ isOpen, onToggle }) => {
             {isOpen && "Documentation"}
           </Button>
 
-          <Divider my="2" />
+          <Divider my="2" borderColor={theme.sideBarDividerColor}/>
 
           <Button
             as={Link}

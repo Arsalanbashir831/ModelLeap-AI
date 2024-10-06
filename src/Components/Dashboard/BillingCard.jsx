@@ -11,12 +11,15 @@ import {
 } from '@chakra-ui/react';
 import { FaCheckCircle } from 'react-icons/fa';
 import { primaryColorOrange, primaryColorPurple } from '../../colorCodes';
+import { useTheme } from '../../Themes/ThemeContext';
+
 
 const BillingCard = ({ title, price, features, selected, onClick }) => {
+  const { theme } = useTheme();
   return (
     <Box
       borderWidth={selected ? '3px' : '1px'}
-      borderColor={selected ? primaryColorOrange : 'gray.200'}
+      borderColor={selected ? primaryColorOrange : theme.billingCardBorder}
       borderRadius="lg"
       p={{ base: 4, md: 6 }}
       maxW={{ base: '100%', md: '300px' }} 
@@ -27,7 +30,8 @@ const BillingCard = ({ title, price, features, selected, onClick }) => {
       flexDirection="column"
       justifyContent="space-between"
       h="100%"
-      background="white"
+      backdropFilter={'saturate(180%) blur(20px)'}
+      // backdropBlur={'white'}
       mx={{ base: 'auto', md: 0 }}
     >
       {selected && (
@@ -54,7 +58,7 @@ const BillingCard = ({ title, price, features, selected, onClick }) => {
             as="h4"
             size="md"
             mb={2}
-            color="gray.700"
+            color={theme.billingCardText}
             fontSize={{ base: 'lg', md: 'md' }}
           >
             {title}
@@ -63,7 +67,7 @@ const BillingCard = ({ title, price, features, selected, onClick }) => {
             as="h1"
             size="2xl"
             mb={4}
-            color="black"
+            color={theme.textColor}
             fontSize={{ base: '2xl', md: '2xl' }} 
           >
             {price}
@@ -79,7 +83,7 @@ const BillingCard = ({ title, price, features, selected, onClick }) => {
           {features.map((feature, index) => (
             <Flex key={index} align="center">
               <Icon as={FaCheckCircle} color="green.400" mr={2} />
-              <Text color="gray.600">{feature}</Text>
+              <Text color={theme.billingCardText}>{feature}</Text>
             </Flex>
           ))}
         </VStack>

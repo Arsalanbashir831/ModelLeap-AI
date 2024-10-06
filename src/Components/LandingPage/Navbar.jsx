@@ -42,7 +42,7 @@ const Navbar = () => {
         alignItems="center"
         justifyContent="space-between"
         px={6}
-        maxW="1200px"
+        maxW="100%"
         mx="auto"
       >
         <HStack spacing={4} alignItems="center">

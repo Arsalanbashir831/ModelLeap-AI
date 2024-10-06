@@ -118,9 +118,9 @@ const AiChatBox = ({ aiLogo }) => {
               align="stretch"
               overflowY="auto"
               border="1px solid"
-              borderColor="gray.200"
+              borderColor={theme.AiChatUserBorderColor}
               p="4"
-              bg="gray.50"
+              bg={theme.AiChatbg}
               borderRadius="md"
               flex="1"
             >
@@ -158,6 +158,7 @@ const AiChatBox = ({ aiLogo }) => {
             value={input}
             onChange={(e) => setInput(e.target.value)}
             borderRadius="lg"
+            color={theme.textColor}
             bg="transparent"
             border="0.5px solid"
             borderColor={primaryColorOrange}
