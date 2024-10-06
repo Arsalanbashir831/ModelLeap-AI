@@ -5,9 +5,12 @@ import MenuTabs from "../../Components/Dashboard/MenuTabs";
 import AiChatBox from "../../Components/Dashboard/AiChatBox";
 import logo from "../../../public/model_leap_favicon.png";
 import ModelSelection from "../../Components/Dashboard/ModelSelection";
+import { useTheme } from "../../Themes/ThemeContext";
+
 
 const AI = () => {
   const [activeTab, setActiveTab] = useState("Chat");
+  const { theme } = useTheme();
 
   const handleTabChange = (tab) => {
     setActiveTab(tab);
@@ -36,9 +39,10 @@ const AI = () => {
           flex="2"
           maxW={["100%", "60%"]}
           boxShadow="lg"
+          border = {theme.AiChatBorder}
           p={5}
           borderRadius="lg"
-          bg="white"
+          bg={theme.AiChatbg}
         >
           {activeTab === "Chat" && <AiChatBox aiLogo={logo} />}
           {activeTab === "Code" && <AiChatBox aiLogo={logo} />}
@@ -52,9 +56,10 @@ const AI = () => {
           mt={["4", "0"]}  
           maxW={["100%", "35%"]}
           boxShadow="lg"
+          border = {theme.modelSelectionBorder}
           p={5}
           borderRadius="lg"
-          bg="white"
+          bg={theme.AiChatbg}
         >
           {activeTab === "Chat" && <ModelSelection />}
           {activeTab === "Code" && <ModelSelection />}

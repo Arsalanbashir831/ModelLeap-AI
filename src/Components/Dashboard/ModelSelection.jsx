@@ -17,9 +17,13 @@ import {
 } from "@chakra-ui/react";
 import { FcApproval } from "react-icons/fc";
 import { primaryColorOrange, primaryColorPurple } from "../../colorCodes";
+import { useTheme } from "../../Themes/ThemeContext";
+
+
 
 const ModelSelection = () => {
   const [model, setModel] = useState("GPT 4o mini");
+  const { theme } = useTheme();
   const [outputLength, setOutputLength] = useState(512);
   const [temperature, setTemperature] = useState(0.7);
   const [topP, setTopP] = useState(0.7);
@@ -53,28 +57,28 @@ const ModelSelection = () => {
       }}
     >
       <FormControl mb="4">
-        <FormLabel fontWeight="bold" fontSize="lg">
+        <FormLabel fontWeight="bold" fontSize="lg" color={theme.textColor}>
           Model
         </FormLabel>
         <Select
           value={model}
           onChange={(e) => setModel(e.target.value)}
-          bg="white"
-          borderColor="gray.300"
+          bg={theme.modelSelectionSelectBg}
+          borderColor={theme.modelSelectionSelectBorder}
           placeholder="Start typing to search..."
           iconSize="16px"
           _hover={{ borderColor: primaryColorOrange }}
           _focus={{ borderColor: primaryColorOrange }}
           size="lg"
         >
-          <optgroup label="OpenAI">
-            <option value="GPT 4o mini">
+          <optgroup label="OpenAI" bg={theme.modelSelectionSelectBg}>
+            <option value="GPT 4o mini" color={theme.textColor}>
               <Flex gap={3}>
-                <Text>GPT 4o mini</Text>
+                <Text color={theme.textColor}>GPT 4o mini</Text>
                 <Badge
                   ml="5px"
                   bg="blue.300"
-                  color="white"
+                  color={theme.textColor}
                   borderRadius="md"
                   px="1"
                 >
@@ -83,7 +87,10 @@ const ModelSelection = () => {
               </Flex>
             </option>
             <option value="GPT 4">
+              <Text color={theme.textColor}>
+
               GPT 4
+              </Text>
               <Badge
                 ml="2"
                 bg="blue.300"
@@ -95,7 +102,10 @@ const ModelSelection = () => {
               </Badge>
             </option>
             <option value="GPT 3.5">
+              <Text color={theme.textColor}>
+
               GPT 3.5
+              </Text>
               <Badge
                 ml="2"
                 bg="blue.300"
@@ -109,7 +119,10 @@ const ModelSelection = () => {
           </optgroup>
           <optgroup label="Anthropic">
             <option value="Claude 3 Haiku">
+              <Text color={theme.textColor}>
+
               Claude 3 Haiku
+              </Text>
               <Badge
                 ml="2"
                 bg="blue.300"
@@ -121,7 +134,7 @@ const ModelSelection = () => {
               </Badge>
             </option>
             <option value="Claude 3.5 Sonnet">
-              Claude 3.5 Sonnet
+              <Text color={theme.textColor}>Claude 3.5 Sonnet</Text>
               <Badge
                 ml="2"
                 bg="blue.300"
@@ -136,11 +149,11 @@ const ModelSelection = () => {
         </Select>
 
         <VStack mt="4" spacing="4" align="stretch">
-          <FormLabel fontWeight="bold" fontSize="lg">
+          <FormLabel fontWeight="bold" fontSize="lg" color={theme.textColor}>
             Parameters
           </FormLabel>
           <Box w="full">
-            <Text mb="2" fontWeight="semibold">
+            <Text mb="2" fontWeight="semibold" color={theme.textColor}>
               Output length
             </Text>
             <Slider
@@ -155,13 +168,13 @@ const ModelSelection = () => {
               </SliderTrack>
               <SliderThumb />
             </Slider>
-            <Text mt="2" fontSize="sm" textAlign="right">
+            <Text mt="2" fontSize="sm" textAlign="right" color={theme.textColor}>
               {outputLength}
             </Text>
           </Box>
 
           <Box w="full">
-            <Text mb="2" fontWeight="semibold">
+            <Text mb="2" fontWeight="semibold" color={theme.textColor}>
               Temperature
             </Text>
             <Slider
@@ -176,13 +189,13 @@ const ModelSelection = () => {
               </SliderTrack>
               <SliderThumb />
             </Slider>
-            <Text mt="2" fontSize="sm" textAlign="right">
+            <Text mt="2" fontSize="sm" textAlign="right" color={theme.textColor}>
               {temperature}
             </Text>
           </Box>
 
           <Box w="full">
-            <Text mb="2" fontWeight="semibold">
+            <Text mb="2" fontWeight="semibold" color={theme.textColor}>
               Top-P
             </Text>
             <Slider
@@ -197,13 +210,13 @@ const ModelSelection = () => {
               </SliderTrack>
               <SliderThumb />
             </Slider>
-            <Text mt="2" fontSize="sm" textAlign="right">
+            <Text mt="2" fontSize="sm" textAlign="right" color={theme.textColor}>
               {topP}
             </Text>
           </Box>
 
           <Box w="full">
-            <Text mb="2" fontWeight="semibold">
+            <Text mb="2" fontWeight="semibold" color={theme.textColor}>
               Top-K
             </Text>
             <Slider
@@ -218,7 +231,7 @@ const ModelSelection = () => {
               </SliderTrack>
               <SliderThumb />
             </Slider>
-            <Text mt="2" fontSize="sm" textAlign="right">
+            <Text mt="2" fontSize="sm" textAlign="right" color={theme.textColor}>
               {topK}
             </Text>
           </Box>

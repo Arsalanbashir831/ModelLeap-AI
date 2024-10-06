@@ -11,14 +11,17 @@ import {
   InputRightElement,
   Link,
   Flex,
+  theme,
 } from "@chakra-ui/react";
 import { FaPaperPlane } from "react-icons/fa";
 import { primaryColorOrange, primaryColorPurple } from "../../colorCodes";
-
+import {useTheme} from "../../Themes/ThemeContext.jsx";
 const AiChatBox = ({ aiLogo }) => {
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState("");
   const [initState, setInitState] = useState(true);
+
+  const { theme } = useTheme();
 
   const handleSend = () => {
     if (input.trim()) {
@@ -42,7 +45,7 @@ const AiChatBox = ({ aiLogo }) => {
   return (
     <Flex direction="column" h={["300px", "400px"]} w="100%">
       <VStack spacing="1" align="start" w="full" h="full">
-        <Text fontSize={["lg", "xl"]} fontWeight="bold">
+        <Text fontSize={["lg", "xl"]} fontWeight="bold" color={theme.AiChatBoxHeading}>
           Try It Out
         </Text>
         <Text fontSize={["sm", "md"]} color={primaryColorOrange}>
@@ -55,10 +58,9 @@ const AiChatBox = ({ aiLogo }) => {
               <VStack
                 align="start"
                 spacing="2"
-                border="1px solid"
-                borderColor="gray.200"
+                border={theme.AiChatBoxInnerBoxBorderColor}
                 p="4"
-                bg="gray.50"
+                bg={theme.AiChatBoxInnerBoxbg}
                 borderRadius="md"
                 w={["full", "48%"]}
               >
@@ -70,12 +72,12 @@ const AiChatBox = ({ aiLogo }) => {
                   Learn how to incorporate our AI models into your app
                 </Text>
                 <Link href="#" _hover={{ textDecoration: "none" }}>
-                  <Text fontSize="sm" _hover={{ color: primaryColorPurple }}>
+                  <Text fontSize="sm" color={theme.textColor} _hover={{ color: primaryColorPurple }}>
                   API Documentation
                   </Text>
                 </Link>
                 <Link href="#" _hover={{ textDecoration: "none" }}>
-                  <Text fontSize="sm" _hover={{ color: primaryColorPurple }}>
+                  <Text fontSize="sm" color={theme.textColor} _hover={{ color: primaryColorPurple }}>
                   Ask your question
                   </Text>
                 </Link>
@@ -83,10 +85,9 @@ const AiChatBox = ({ aiLogo }) => {
               <VStack
                 align="start"
                 spacing="2"
-                border="1px solid"
-                borderColor="gray.200"
+                border={theme.AiChatBoxInnerBoxBorderColor}
                 p="4"
-                bg="gray.50"
+                bg={theme.AiChatBoxInnerBoxbg}
                 borderRadius="md"
                 w={["full", "48%"]}
                 mt={["4", "0"]}
@@ -99,12 +100,12 @@ const AiChatBox = ({ aiLogo }) => {
                   Type a prompt or try out the examples
                 </Text>
                 <Link href="#" _hover={{ textDecoration: "none" }}>
-                  <Text fontSize="sm" _hover={{ color: primaryColorPurple }}>
+                  <Text fontSize="sm" color={theme.textColor} _hover={{ color: primaryColorPurple }}>
                     Draft an Email
                   </Text>
                 </Link>
                 <Link href="#" _hover={{ textDecoration: "none" }}>
-                  <Text fontSize="sm" _hover={{ color: primaryColorPurple }}>
+                  <Text fontSize="sm"color={theme.textColor} _hover={{ color: primaryColorPurple }}>
                   Plan a trip
                   </Text>
                 </Link>

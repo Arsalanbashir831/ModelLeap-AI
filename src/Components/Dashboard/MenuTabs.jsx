@@ -1,10 +1,12 @@
 import React, { useState } from 'react';
 import { Box, Button, HStack } from '@chakra-ui/react';
 import { primaryColorOrange, primaryColorPurple } from '../../colorCodes';
+import { useTheme } from '../../Themes/ThemeContext';
+
 
 const MenuTabs = ({ onTabChange }) => {
   const [activeTab, setActiveTab] = useState('Chat');
-
+  const { theme } = useTheme();
   const handleTabClick = (tab) => {
     setActiveTab(tab);
     if (onTabChange) {
