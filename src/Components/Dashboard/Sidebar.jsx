@@ -33,7 +33,7 @@ const Sidebar = ({ isOpen, onToggle }) => {
       w={isOpen ? "250px" : "80px"}
       p="4"
       boxShadow="md"
-      height="100%"
+      height="120vh"
       display="flex"
       flexDirection="column"
       justifyContent="space-between"
