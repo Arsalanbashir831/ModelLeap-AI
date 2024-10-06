@@ -23,7 +23,9 @@ const lightTheme = {
   integrationBoxBorder : "none",
   integrationBoxDivider : "gray.200",
   billingCardBorder : "none",
-  billingCardText : "gray.700"
+  billingCardText : "gray.700",
+  passwordChangeBoxBg : "white",
+  passwordChangeBoxBorder : "none",
 
 };
 
@@ -50,6 +52,8 @@ const darkTheme = {
   integrationBoxDivider : "#ff914d",
   billingCardBorder : "#ba2cc1",
   billingCardText : "#9c9ca1",
+  passwordChangeBoxBg : "transparent",
+  passwordChangeBoxBorder : "1px solid #ff914d",
 };
 
 

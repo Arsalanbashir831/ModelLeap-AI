@@ -46,9 +46,10 @@ const KeyGenerate = () => {
         mt={6}
         p={6}
         boxShadow="lg"
+        backdropFilter={"saturate(190%) blur(20px)"}
         border={theme.keyGenerateBorder}
         borderRadius="md"
-        backdropFilter={theme.keyGenerateBg}
+        // backdropFilter={theme.keyGenerateBg}
         width="100%"
         maxW="800px"
         mx="auto"

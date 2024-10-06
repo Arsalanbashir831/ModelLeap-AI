@@ -44,7 +44,8 @@ const LabChatBox = () => {
       border="2px solid"
       borderColor={primaryColorOrange}
       borderRadius="md"
-      bg="black"
+      // backdropFilter={"saturate(180%) blur(20px)"}
+      bg={'gray.700'}
     >
       <VStack
         spacing={4}
