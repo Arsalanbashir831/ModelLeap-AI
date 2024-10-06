@@ -9,6 +9,7 @@ import Plans from "./Pages/Billing/Plans";
 import NotFound from "./Pages/NotFound";
 import Landing from "./Pages/Landing/Landing";
 import AiLab from "./Pages/AiLab/AiLab";
+import AiLabChat from "./Pages/AiLab/AiLabChat";
 
 const router = createBrowserRouter([
   { path: "/", element: <Landing /> },
@@ -22,6 +23,7 @@ const router = createBrowserRouter([
       { path: "/app/settings", element: <Settings /> },
       { path: "/app/documentation", element: <Integration /> },
       { path: "/app/ailab", element: <AiLab /> },
+      {path: "/app/ailab/chat/:chatId", element: <AiLabChat />},
     ],
   },
   { path: "*", element: <NotFound /> },

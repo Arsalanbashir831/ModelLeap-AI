@@ -39,7 +39,7 @@ const ModelSelection = () => {
       height="400px"
       margin="auto"
       overflowY="auto"
-      boxShadow="lg"
+      // boxShadow="lg"
       css={{
         "&::-webkit-scrollbar": {
           width: "3px",

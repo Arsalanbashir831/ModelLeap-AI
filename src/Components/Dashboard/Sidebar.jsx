@@ -20,11 +20,11 @@ import {
   FaChevronRight,
 } from "react-icons/fa";
 import { primaryColorOrange, primaryColorPurple } from "../../colorCodes";
-import { useTheme } from "../../Themes/ThemeContext"; // Import useTheme for theme context
+import { useTheme } from "../../Themes/ThemeContext"; 
 
 const Sidebar = ({ isOpen, onToggle }) => {
   const location = useLocation();
-  const { theme } = useTheme(); // Extract theme from the context
+  const { theme } = useTheme(); 
 
   const isActive = (path) => location.pathname === path;
 
@@ -58,7 +58,7 @@ const Sidebar = ({ isOpen, onToggle }) => {
           />
         )}
 
-        <VStack gap={0} mt={"1"} spacing="1" align="stretch">
+        <VStack gap={1} mt={"2"} spacing="1" align="stretch">
           <Button
             as={Link}
             to="/app"
