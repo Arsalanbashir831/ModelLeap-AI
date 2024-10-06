@@ -39,8 +39,8 @@ const LabChatBox = () => {
 
   const handleKeyPress = (e) => {
     if (e.key === "Enter" && !e.shiftKey) {
-      e.preventDefault(); // Prevents the default behavior of a new line being added
-      handleSendMessage(); // Call the send message function when Enter is pressed
+      e.preventDefault(); 
+      handleSendMessage(); 
     }
   };
 
