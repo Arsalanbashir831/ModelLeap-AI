@@ -19,14 +19,14 @@ const AiLabChat = () => {
       </Box>
 
       <Box w="100%" maxW="100%" mx="auto">
-        <Flex align="center" justify="center" mb={0}>
+        <Flex align="center" justify="center" gap={3} mb={0}>
           <Link to="/app/ailab">
             <Button
               size="md"
               bg={primaryColorOrange}
               color="white"
               _hover={{ bg: "#e07c24" }}
-              ml={14}
+              ml={5}
             >
               <ArrowBackIcon mr={2} /> Back
             </Button>

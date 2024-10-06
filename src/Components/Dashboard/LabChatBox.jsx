@@ -18,7 +18,7 @@ import { useTheme } from "../../Themes/ThemeContext";
 
 const LabChatBox = () => {
   const [messages, setMessages] = useState([]);
-  const {theme} = useTheme();
+  const { theme } = useTheme();
   const [inputValue, setInputValue] = useState("");
   const [context, setContext] = useState("Context");
 
@@ -34,6 +34,13 @@ const LabChatBox = () => {
           { from: "AI", text: "Yes, I'm here. How can I assist you today?", time: "21" },
         ]);
       }, 1000);
+    }
+  };
+
+  const handleKeyPress = (e) => {
+    if (e.key === "Enter" && !e.shiftKey) {
+      e.preventDefault(); // Prevents the default behavior of a new line being added
+      handleSendMessage(); // Call the send message function when Enter is pressed
     }
   };
 
@@ -150,6 +157,7 @@ const LabChatBox = () => {
           placeholder="Enter to send, Shift+Enter for newline"
           value={inputValue}
           onChange={(e) => setInputValue(e.target.value)}
+          onKeyDown={handleKeyPress} 
           size={buttonSize}
           bg="rgba(255, 255, 255, 0.1)"
           color={theme.textColor}
