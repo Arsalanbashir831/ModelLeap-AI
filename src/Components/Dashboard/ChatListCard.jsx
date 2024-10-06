@@ -90,7 +90,6 @@ const ChatListCard = ({ chatName, onClick, onNameChange }) => {
         )}
       </Box>
 
-      {/* Action Icons */}
       <Flex gap={2}>
         <IconButton
           aria-label="Delete Chat"
