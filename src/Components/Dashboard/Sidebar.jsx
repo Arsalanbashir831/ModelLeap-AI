@@ -252,13 +252,13 @@ const Sidebar = ({ isOpen, onToggle }) => {
           <Button
             as={Link}
             variant="ghost"
-            to="/"
+            to="/auth"
             color={theme.textColor}
             justifyContent={isOpen ? "flex-start" : "center"}
             leftIcon={<FaSignOutAlt color={theme.iconColor} />}
             fontWeight="normal"
             bg={
-              isActive("/")
+              isActive("/auth")
                 ? "linear-gradient(90deg, hsl(297deg 63% 46%) 0%, hsl(309deg 64% 49%) 0%, hsl(318deg 72% 53%) -1%, hsl(326deg 80% 58%) -1%, hsl(333deg 88% 62%) -1%, hsl(340deg 94% 66%) 0%, hsl(347deg 99% 70%) 0%, hsl(354deg 100% 73%) 1%, hsl(2deg 100% 75%) 4%, hsl(8deg 100% 75%) 8%, hsl(14deg 100% 75%) 17%, hsl(19deg 100% 76%) 49%, hsl(23deg 98% 77%) 100%)"
                 : "transparent"
             }

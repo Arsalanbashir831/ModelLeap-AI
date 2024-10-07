@@ -10,9 +10,11 @@ import NotFound from "./Pages/NotFound";
 import Landing from "./Pages/Landing/Landing";
 import AiLab from "./Pages/AiLab/AiLab";
 import AiLabChat from "./Pages/AiLab/AiLabChat";
+import Auth from "./Pages/Auth/Auth";
 
 const router = createBrowserRouter([
   { path: "/", element: <Landing /> },
+  { path: "/auth", element: <Auth /> },
   {
     path: "/app",
     element: <DashboardLayout></DashboardLayout>,
