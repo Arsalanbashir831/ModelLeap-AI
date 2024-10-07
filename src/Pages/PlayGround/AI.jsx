@@ -42,8 +42,10 @@ const AI = () => {
           border = {theme.AiChatBorder}
           p={5}
           borderRadius="lg"
-          backdropFilter={'saturate(120%) blur(12px)'}
+          // backdropFilter={'saturate(120%) blur(12px)'}
           bg={theme.AiChatbg}
+          backdropFilter="saturate(100%) blur(10px)"
+  borderColor="rgba(255, 255, 255, 0.2)" // Light border for the frosted look
         >
           {activeTab === "Chat" && <AiChatBox aiLogo={logo} />}
           {activeTab === "Code" && <AiChatBox aiLogo={logo} />}
@@ -57,9 +59,10 @@ const AI = () => {
           mt={["4", "0"]}  
           maxW={["100%", "35%"]}
           boxShadow="lg"
-          border = {theme.modelSelectionBorder}
+        
           p={5}
-          backdropFilter={'saturate(120%) blur(12px)'}
+          backdropFilter="saturate(100%) blur(10px)"
+  borderColor="rgba(255, 255, 255, 0.2)" // Light border for the frosted look
           borderRadius="lg"
           bg={theme.AiChatbg}
         >

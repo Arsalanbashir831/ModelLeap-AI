@@ -22,7 +22,7 @@ const LabChatBox = () => {
   const [inputValue, setInputValue] = useState("");
   const [context, setContext] = useState("Context");
 
-  const buttonSize = useBreakpointValue({ base: "md", md: "lg" });
+  const buttonSize = useBreakpointValue({ base: "md", md: "md" });
 
   const handleSendMessage = () => {
     if (inputValue.trim()) {
@@ -167,7 +167,7 @@ const LabChatBox = () => {
           _focus={{ bg: "rgba(255, 255, 255, 0.15)" }}
         />
         <Button
-          ml={4}
+          ml={2}
           size={buttonSize}
           onClick={handleSendMessage}
           bg="linear-gradient(90deg, #8e44ad, #ff914d)"
@@ -178,7 +178,7 @@ const LabChatBox = () => {
         >
           <FiSend />
         </Button>
-        <IconButton
+        {/* <IconButton
           ml={2}
           size={buttonSize}
           icon={<AiOutlineCode />}
@@ -188,7 +188,7 @@ const LabChatBox = () => {
           _hover={{ bg: "#8e44ad" }}
           _active={{ bg: "#8e44ad" }}
           aria-label="Code Button"
-        />
+        /> */}
       </Flex>
     </Box>
   );

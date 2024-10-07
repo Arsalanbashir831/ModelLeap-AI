@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react"; 
 import {
   Box,
   Text,
@@ -9,38 +9,56 @@ import {
   IconButton,
   InputGroup,
   InputRightElement,
-  Link,
   Flex,
-  theme,
 } from "@chakra-ui/react";
 import { FaPaperPlane } from "react-icons/fa";
 import { primaryColorOrange, primaryColorPurple } from "../../colorCodes";
-import {useTheme} from "../../Themes/ThemeContext.jsx";
+import { useTheme } from "../../Themes/ThemeContext.jsx";
+
 const AiChatBox = ({ aiLogo }) => {
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState("");
-  const [initState, setInitState] = useState(true);
-
   const { theme } = useTheme();
+
+  const initialMessages = [
+    { type: "ai", text: "Welcome to the AI Chat! How can I help you today? Feel free to ask me anything!" },
+  ];
+
+  // Set initial message on component mount
+  useEffect(() => {
+    setMessages(initialMessages);
+  }, []);
 
   const handleSend = () => {
     if (input.trim()) {
-      setInitState(false);
       setMessages((prevMessages) => [
         ...prevMessages,
         { type: "user", text: input },
       ]);
 
+      setInput("");
+      // Simulate AI response
       setTimeout(() => {
         setMessages((prevMessages) => [
           ...prevMessages,
           { type: "ai", text: "Hello! How can I assist you today?" },
         ]);
       }, 1000);
-
-      setInput("");
     }
   };
+
+  const renderMessage = (message, index) => (
+    <HStack key={index} alignSelf={message.type === "user" ? "flex-end" : "flex-start"}>
+      <Avatar
+        name={message.type === "user" ? "You" : "AI"}
+        bg={message.type === "user" ? "yellow.400" : "black"}
+        size="sm"
+      />
+      <Box bg={theme.AiChatbg} color={theme.textColor} p="2" borderRadius="md">
+        <Text>{message.text}</Text>
+      </Box>
+    </HStack>
+  );
 
   return (
     <Flex direction="column" h={["300px", "400px"]} w="100%">
@@ -48,108 +66,23 @@ const AiChatBox = ({ aiLogo }) => {
         <Text fontSize={["lg", "xl"]} fontWeight="bold" color={theme.AiChatBoxHeading}>
           Try It Out
         </Text>
-        <Text fontSize={["sm", "md"]} color={primaryColorOrange}>
+        <Text fontSize={["sm", "md"]} color={theme.textColor}>
           Use the toolbar on the right to apply various settings and manage the results.
         </Text>
 
         <Box flex="1" w="full" overflowY="auto">
-          {initState ? (
-            <HStack justify="space-between" w="full" h="100%" flexDirection={["column", "row"]}>
-              <VStack
-                align="start"
-                spacing="2"
-                border={theme.AiChatBoxInnerBoxBorderColor}
-                p="4"
-                bg={theme.AiChatBoxInnerBoxbg}
-                borderRadius="md"
-                w={["full", "48%"]}
-              >
-                <Text
-                  fontSize={["sm", "md"]}
-                  fontWeight="bold"
-                  color={primaryColorOrange}
-                >
-                  Learn how to incorporate our AI models into your app
-                </Text>
-                <Link href="#" _hover={{ textDecoration: "none" }}>
-                  <Text fontSize="sm" color={theme.textColor} _hover={{ color: primaryColorPurple }}>
-                  API Documentation
-                  </Text>
-                </Link>
-                <Link href="#" _hover={{ textDecoration: "none" }}>
-                  <Text fontSize="sm" color={theme.textColor} _hover={{ color: primaryColorPurple }}>
-                  Ask your question
-                  </Text>
-                </Link>
-              </VStack>
-              <VStack
-                align="start"
-                spacing="2"
-                border={theme.AiChatBoxInnerBoxBorderColor}
-                p="4"
-                bg={theme.AiChatBoxInnerBoxbg}
-                borderRadius="md"
-                w={["full", "48%"]}
-                mt={["4", "0"]}
-              >
-                <Text
-                  fontSize={["sm", "md"]}
-                  fontWeight="bold"
-                  color={primaryColorOrange}
-                >
-                  Type a prompt or try out the examples
-                </Text>
-                <Link href="#" _hover={{ textDecoration: "none" }}>
-                  <Text fontSize="sm" color={theme.textColor} _hover={{ color: primaryColorPurple }}>
-                    Draft an Email
-                  </Text>
-                </Link>
-                <Link href="#" _hover={{ textDecoration: "none" }}>
-                  <Text fontSize="sm"color={theme.textColor} _hover={{ color: primaryColorPurple }}>
-                  Plan a trip
-                  </Text>
-                </Link>
-              </VStack>
-            </HStack>
-          ) : (
-            <VStack
-              spacing="4"
-              w="full"
-              align="stretch"
-              overflowY="auto"
-              border="1px solid"
-              borderColor={theme.AiChatUserBorderColor}
-              p="4"
-              bg={theme.AiChatbg}
-              borderRadius="md"
-              flex="1"
-            >
-              {messages.map((message, index) => (
-                <HStack
-                  key={index}
-                  alignSelf={
-                    message.type === "user" ? "flex-end" : "flex-start"
-                  }
-                >
-                  {message.type === "user" ? (
-                    <>
-                      <Avatar name="You" bg="yellow.400" size="sm" />
-                      <Box bg="gray.100" p="2" borderRadius="md">
-                        <Text>{message.text}</Text>
-                      </Box>
-                    </>
-                  ) : (
-                    <>
-                      <Avatar src={aiLogo} name="AI" bg="black" size="sm" />
-                      <Box bg="gray.100" p="2" borderRadius="md">
-                        <Text>{message.text}</Text>
-                      </Box>
-                    </>
-                  )}
-                </HStack>
-              ))}
-            </VStack>
-          )}
+          <VStack
+            spacing="4"
+            w="full"
+            align="stretch"
+            overflowY="auto"
+            p="4"
+            // bg={theme.AiChatbg}
+            borderRadius="md"
+            flex="1"
+          >
+            {messages.map(renderMessage)}
+          </VStack>
         </Box>
 
         <InputGroup size="lg">
