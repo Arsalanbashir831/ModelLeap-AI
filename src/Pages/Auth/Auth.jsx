@@ -7,8 +7,8 @@ const MotionText = motion(Text);
 
 const words = [ //words
   "Access", "Top", "AI", "Models", "via", "Single", "API", "Solution", 
-  "Chat,", "Text-to-Image,", "Text-to-Video,", "Music", "Generation,", 
-  "Voice,", "Embeddings,", "OCR", "and", "Vision", "models"
+  "Chat,", "Text-to-Image,",  "Generation,", 
+  "OCR", "and", "Vision", "models"
 ];
 
 const textContainerVariants = {
@@ -32,20 +32,18 @@ const wordVariants = {
 
 const gradientText = {
   backgroundImage: `linear-gradient(
-    45deg,
-    hsl(297deg 56% 44%) 0%,
-    hsl(310deg 52% 49%) 8%,
-    hsl(320deg 57% 55%) 17%,
-    hsl(329deg 64% 60%) 25%,
-    hsl(337deg 70% 66%) 33%,
-    hsl(344deg 75% 71%) 42%,
-    hsl(351deg 79% 75%) 50%,
-    hsl(358deg 82% 79%) 58%,
-    hsl(5deg 85% 82%) 67%,
-    hsl(10deg 87% 85%) 75%,
-    hsl(15deg 87% 88%) 83%,
-    hsl(19deg 85% 91%) 92%,
-    hsl(22deg 83% 95%) 100%
+    105deg,
+    hsl(0deg 65% 50%) 0%,
+    hsl(315deg 60% 55%) 10%,
+    hsl(330deg 70% 60%) 20%,
+    hsl(340deg 75% 65%) 30%,
+    hsl(350deg 80% 70%) 40%,
+    hsl(360deg 85% 75%) 50%,
+    hsl(10deg 90% 80%) 60%,
+    hsl(20deg 92% 85%) 70%,
+    hsl(30deg 94% 90%) 80%,
+    hsl(40deg 96% 93%) 90%,
+    hsl(50deg 98% 95%) 100%
   )`,
   backgroundClip: 'text',
   textFillColor: 'transparent',

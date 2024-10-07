@@ -144,7 +144,7 @@ const AuthForm = () => {
             </VStack>
           </TabPanel>
 
-          <TabPanel>
+          <TabPanel >
             <VStack spacing={5}>
               <FormControl id="email" isRequired>
                 <Input
