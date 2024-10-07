@@ -97,7 +97,7 @@ const AuthForm = () => {
                   focusBorderColor={primaryColorPurple}
                   placeholder="Email"
                   borderRadius="full"
-                  size="lg"
+                  size="md"
                 />
               </FormControl>
               <FormControl id="password" isRequired>
@@ -109,7 +109,7 @@ const AuthForm = () => {
                     focusBorderColor={primaryColorPurple}
                     placeholder="Password"
                     borderRadius="full"
-                    size="lg"
+                    size="md"
                   />
                   <InputRightElement>
                     <IconButton
@@ -150,11 +150,22 @@ const AuthForm = () => {
                 <Input
                   type="email"
                   bg={inputBg}
-                  borderColor="gray.300"
+                  borderColor="gray.100"
                   focusBorderColor={primaryColorPurple}
                   placeholder="Email"
                   borderRadius="full"
-                  size="lg"
+                  size="md"
+                />
+              </FormControl>
+              <FormControl id="username" isRequired>
+                <Input
+                  type="text"
+                  bg={inputBg}
+                  borderColor="gray.100"
+                  focusBorderColor={primaryColorPurple}
+                  placeholder="Username"
+                  borderRadius="full"
+                  size="md"
                 />
               </FormControl>
               <FormControl id="password" isRequired>
@@ -162,11 +173,32 @@ const AuthForm = () => {
                   <Input
                     type={showPassword ? "text" : "password"}
                     bg={inputBg}
-                    borderColor="gray.300"
+                    borderColor="gray.100"
                     focusBorderColor={primaryColorPurple}
                     placeholder="Password"
                     borderRadius="full"
-                    size="lg"
+                    size="md"
+                  />
+                  <InputRightElement>
+                    <IconButton
+                      icon={showPassword ? <ViewOffIcon /> : <ViewIcon />}
+                      onClick={toggleShowPassword}
+                      variant="ghost"
+                      aria-label="Toggle Password Visibility"
+                    />
+                  </InputRightElement>
+                </InputGroup>
+              </FormControl>
+              <FormControl id="confirm-password" isRequired>
+                <InputGroup>
+                  <Input
+                    type={showPassword ? "text" : "confirm-password"}
+                    bg={inputBg}
+                    borderColor="gray.100"
+                    focusBorderColor={primaryColorPurple}
+                    placeholder="Confirm Password"
+                    borderRadius="full"
+                    size="md"
                   />
                   <InputRightElement>
                     <IconButton
