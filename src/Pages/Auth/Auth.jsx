@@ -5,7 +5,7 @@ import { motion } from 'framer-motion';
 
 const MotionText = motion(Text);
 
-const words = [
+const words = [ //words
   "Access", "Top", "AI", "Models", "via", "Single", "API", "Solution", 
   "Chat,", "Text-to-Image,", "Text-to-Video,", "Music", "Generation,", 
   "Voice,", "Embeddings,", "OCR", "and", "Vision", "models"
@@ -16,7 +16,7 @@ const textContainerVariants = {
   visible: {
     opacity: 1,
     transition: {
-      staggerChildren: 0.2, 
+      staggerChildren: 0.2,
     }
   }
 };
@@ -56,11 +56,10 @@ const AuthPage = () => {
     <Flex
       direction={{ base: 'column', md: 'row' }}
       height="100vh"
-      width="100vw"  
+      width="100vw"
       bg="gray.100"
       position="relative"
     >
-    
       <Box
         flex="1"
         display={{ base: 'none', md: 'block' }}
@@ -68,10 +67,20 @@ const AuthPage = () => {
         bgPosition="center"
         bgSize="cover"
         bgRepeat="no-repeat"
-        height="100vh" 
+        height="100vh"
         position="relative"
       >
-    
+
+        <Box
+          position="absolute"
+          top="0"
+          left="0" //overlay
+          width="100%"
+          height="100%"
+          bg="rgba(0, 0, 0, 0.5)"
+          zIndex="1"
+        />
+
         <Box
           position="absolute"
           top="50%"
@@ -80,12 +89,13 @@ const AuthPage = () => {
           textAlign="left"
           color="white"
           px={4}
+          zIndex="2"
         >
           <MotionText
             fontSize={{ base: '2xl', md: '4xl', lg: '5xl' }}
             fontWeight="bold"
             as="h1"
-            sx={gradientText} 
+            sx={gradientText}
             initial="hidden"
             animate="visible"
             variants={textContainerVariants}
@@ -96,7 +106,7 @@ const AuthPage = () => {
                 variants={wordVariants}
                 display="inline-block"
                 mr={2}
-                sx={gradientText}  
+                sx={gradientText}
               >
                 {word}
               </MotionText>
@@ -107,13 +117,12 @@ const AuthPage = () => {
 
       <Flex
         flex="1"
-        // border={'1px solid red'}
         alignItems="center"
         justifyContent="center"
         bg="white"
         height="100%"
       >
-        <Box  width={{ base: '100%', md: '80%', lg: '70%' }} mx="auto">
+        <Box width={{ base: '100%', md: '80%', lg: '70%' }} mx="auto">
           <AuthForm />
         </Box>
       </Flex>
