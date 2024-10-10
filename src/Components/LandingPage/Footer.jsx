@@ -40,7 +40,7 @@ const footerLinks = {
   ],
   developer: [
     { label: 'Sign Up', href: '#' },
-    { label: 'AI Playground', href: '#' },
+    { label: 'Playground', href: '#' },
     { label: 'Billing', href: '#' },
     { label: 'Key Management', href: '#' },
     { label: 'API Reference', href: '#' },

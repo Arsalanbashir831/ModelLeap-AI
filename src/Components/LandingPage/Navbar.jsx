@@ -145,7 +145,7 @@ const Navbar = () => {
               borderRadius="md"
               px={5}
             >
-              AI Playground
+              Playground
             </Button>
           </Link>
           <IconButton
@@ -234,7 +234,7 @@ const Navbar = () => {
                 _hover={{ bg: primaryColorOrange }}
                 borderRadius="md"
               >
-                AI Playground
+                Playground
               </Button>
             </Link>
           </Stack>

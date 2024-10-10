@@ -6,9 +6,10 @@ import ChatListCard from "../../Components/Dashboard/ChatListCard";
 import { primaryColorOrange } from "../../colorCodes";
 import { ArrowBackIcon } from "@chakra-ui/icons";
 import { Link } from "react-router-dom";
+import Description from "../../Components/Dashboard/Description";
 
 const AiLab = () => {
-  const [chats, setChats] = useState([{ id: 1, name: "AI Lab" }]);
+  const [chats, setChats] = useState([{ id: 1, name: "Lab" }]);
   // const [activeChat, setActiveChat] = useState(null);
 
   const handleNewChat = () => {
@@ -24,10 +25,13 @@ const AiLab = () => {
 
   return (
     <Box p={4} w="100%" maxW="100%" mx="auto">
-      <Header title={"AI Lab"} />
+      <Header title={"Lab"} />
+      <Box mb={1}>
+        <Description description="Create, manage, and test your AI tools and chatbots with ease." />
+      </Box>
       <Flex mt={5} direction={{ base: "column", md: "row" }} gap={4}>
         <Box w={{ base: "100%", md: "30%" }}>
-          <Flex mb={4} justifyContent="flex-start">
+          <Flex ml={2} mb={2} justifyContent="flex-start">
             {/* {!activeChat ? ( */}
               <NewChatButton onClick={handleNewChat} />
             {/* // ) : ( */}

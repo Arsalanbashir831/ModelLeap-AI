@@ -18,6 +18,7 @@ import {
   FaRobot,
   FaChevronLeft,
   FaChevronRight,
+  FaFlask,
 } from "react-icons/fa";
 import { primaryColorOrange, primaryColorPurple } from "../../colorCodes";
 import { useTheme } from "../../Themes/ThemeContext"; 
@@ -107,14 +108,14 @@ const Sidebar = ({ isOpen, onToggle }) => {
               color: "white",
             }}
           >
-            <Text color={theme.textColor}>{isOpen && "AI Playground"}</Text>
+            <Text color={theme.textColor}>{isOpen && "Playground"}</Text>
           </Button>
           <Button
             as={Link}
             to="/app/ailab"
             variant="ghost"
             justifyContent={isOpen ? "flex-start" : "center"}
-            leftIcon={<FaRobot color={theme.iconColor} />}
+            leftIcon={<FaFlask color={theme.iconColor} />}
             fontWeight="normal"
             bg={
               isActive("/app/ailab")
@@ -127,7 +128,7 @@ const Sidebar = ({ isOpen, onToggle }) => {
               color: "white",
             }}
           >
-            {isOpen && "AI Lab"}
+            {isOpen && "Lab"}
           </Button>
 
           <Button
@@ -223,7 +224,7 @@ const Sidebar = ({ isOpen, onToggle }) => {
               color: "white",
             }}
           >
-            {isOpen && "Help Centre"}
+            {isOpen && "Support"}
           </Button>
 
           <Button

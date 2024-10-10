@@ -27,6 +27,8 @@ const lightTheme = {
   billingCardText : "gray.700",
   passwordChangeBoxBg : "white",
   passwordChangeBoxBorder : "none",
+  supportFormBg : "white",
+
 
 };
 
@@ -57,6 +59,7 @@ const darkTheme = {
   billingCardText : "#9c9ca1",
   passwordChangeBoxBg : "transparent",
   passwordChangeBoxBorder : "1px solid #ff914d",
+  supportFormBg : "transparent",
 };
 
 

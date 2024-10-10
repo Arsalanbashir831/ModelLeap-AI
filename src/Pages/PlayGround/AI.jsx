@@ -6,6 +6,7 @@ import AiChatBox from "../../Components/Dashboard/AiChatBox";
 import logo from "../../../public/model_leap_favicon.png";
 import ModelSelection from "../../Components/Dashboard/ModelSelection";
 import { useTheme } from "../../Themes/ThemeContext";
+import Description from "../../Components/Dashboard/Description";
 
 
 const AI = () => {
@@ -19,7 +20,8 @@ const AI = () => {
   return (
     <>
       <Box mt={[4, 8]} p={["2", "3"]}>
-        <Header title={"AI Playground"} />
+        <Header title={"Playground"} />
+        <Description description={"Use different AI models to chat or create content."} />
         <Box ml={3}>
           <MenuTabs onTabChange={handleTabChange} />
         </Box>

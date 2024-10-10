@@ -17,7 +17,7 @@ const NewChatButton = ({ onClick }) => {
       fontSize={{ base: "sm", md: "md" }}
       onClick={onClick}
     >
-      New Chat
+      Create
     </Button>
   );
 };

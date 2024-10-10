@@ -7,6 +7,8 @@ import { Button, Box, Flex } from "@chakra-ui/react";
 import { ArrowBackIcon } from "@chakra-ui/icons";
 import { primaryColorOrange } from "../../colorCodes";
 import { useTheme } from "../../Themes/ThemeContext";
+import Description from "../../Components/Dashboard/Description";
+import HistoryBox from "../../Components/Dashboard/HistoryBox";
 
 const AiLabChat = () => {
   const { chatId } = useParams();
@@ -15,7 +17,7 @@ const AiLabChat = () => {
   return (
     <Box bg={theme.backgroundAilab} minH="100vh" p={3}>
       <Box mb={1}>
-        <Header title="AI Lab" />
+        <Header title="Lab" />
       </Box>
 
       <Box w="100%" maxW="100%" mx="auto">
@@ -39,7 +41,7 @@ const AiLabChat = () => {
           </Flex>
         </Flex>
 
-        <Box
+        {/* <Box
           p={2}
           borderRadius="md"
           boxShadow="md"
@@ -48,7 +50,23 @@ const AiLabChat = () => {
           overflowY="auto"
         >
           <LabChatBox />
-        </Box>
+        </Box> */}
+        <Flex mt={5} gap={5}>
+         
+          <HistoryBox />
+
+          <Box
+            p={2}
+            borderRadius="md"
+            boxShadow="md"
+            bg={theme.cardBg}
+            maxH="800px"
+            overflowY="auto"
+            flex="1"
+          >
+            <LabChatBox />
+          </Box>
+        </Flex>
       </Box>
     </Box>
   );

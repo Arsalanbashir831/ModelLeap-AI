@@ -11,6 +11,8 @@ import Landing from "./Pages/Landing/Landing";
 import AiLab from "./Pages/AiLab/AiLab";
 import AiLabChat from "./Pages/AiLab/AiLabChat";
 import Auth from "./Pages/Auth/Auth";
+import SupportForm from "./Components/Dashboard/SupportForm";
+import Support from "./Pages/Support/Support";
 
 const router = createBrowserRouter([
   { path: "/", element: <Landing /> },
@@ -23,11 +25,12 @@ const router = createBrowserRouter([
       { path: "/app/keymanagement", element: <APIkey /> },
       { path: "/app/billing", element: <Plans /> },
       { path: "/app/settings", element: <Settings /> },
+      { path: "/app/helpcenter", element: <Support /> },
       { path: "/app/documentation", element: <Integration /> },
       { path: "/app/ailab", element: <AiLab /> },
     ],
   },
-  {path: "/app/ailab/chat/:chatId", element: <AiLabChat />},
+  { path: "/app/ailab/chat/:chatId", element: <AiLabChat /> },
   { path: "*", element: <NotFound /> },
 ]);
 
