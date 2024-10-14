@@ -137,7 +137,7 @@ const Navbar = () => {
         </HStack>
 
         <HStack spacing={6}>
-          <Link to="/auth">
+          <Link to="/app">
             <Button
               bg={primaryColorPurple}
               color="white"

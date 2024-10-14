@@ -71,9 +71,9 @@ const ChatListCard = ({ chatId, chatName }) => {
           duration: 2000,
           isClosable: true,
         });
-      } else {
-        throw new Error("Failed to update chat name.");
-      }
+      } else if(response.status===403 || response.status==='403') {
+        navigate('/auth')
+       }
     } catch (error) {
       toast({
         title: "Error",

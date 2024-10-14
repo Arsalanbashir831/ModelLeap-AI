@@ -8,6 +8,7 @@ import {
   IconButton,
   VStack,
   HStack,
+  Avatar,
   useBreakpointValue,
   useToast,
   Spinner,
@@ -15,22 +16,120 @@ import {
 } from "@chakra-ui/react";
 import { FiSend } from "react-icons/fi";
 import { BsClock, BsClipboard } from "react-icons/bs";
-import { EditIcon } from "@chakra-ui/icons";
 import { useTheme } from "../../Themes/ThemeContext";
 import { BASE_URL } from "../../Constants";
 import { useRecoilValue } from "recoil";
 import modelState from "../../atoms/modelState";
 import modelStateParameter from "../../atoms/modelParameterState";
+import { useNavigate } from "react-router-dom";
 
 const LabChatBox = ({ chatId }) => {
   const [messages, setMessages] = useState([]);
   const { theme } = useTheme();
   const [inputValue, setInputValue] = useState("");
   const toast = useToast();
-
+  const navigate = useNavigate();
   const buttonSize = useBreakpointValue({ base: "md", md: "md" });
   const selectedModel = useRecoilValue(modelState);
   const modelParams = useRecoilValue(modelStateParameter);
+
+  const checkIfImageContent = (content) => {
+    return Number.isInteger(content);
+  };
+
+  const fetchMessages = async () => {
+    const token = localStorage.getItem("authToken");
+    const apiKey = localStorage.getItem("apiKey");
+    try {
+      const response = await fetch(`${BASE_URL}/api/chat/${chatId}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "x-api-key": apiKey,
+        },
+      });
+      if (response.ok) {
+        const data = await response.json();
+        console.log(data);
+
+        const processedMessages = await Promise.all(
+          data.messages.map(async (message) => {
+            const from = message.role === "user" ? "You" : "AI";
+            const time = new Date(
+              message.timestamp._seconds * 1000
+            ).toLocaleTimeString();
+
+            if (checkIfImageContent(message.content)) {
+              const imageId = message.content;
+              const imageResponse = await fetch(
+                `${BASE_URL}/api/get_images`,
+                {
+                  method: "POST",
+                  headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${token}`,
+                    "x-api-key": apiKey,
+                  },
+                  body: JSON.stringify({
+                    request_id: imageId.toString(),
+                  }),
+                }
+              );
+
+              if (imageResponse.ok) {
+                const imageData = await imageResponse.json();
+                if (imageData.status === "success") {
+                  const imageUrl = imageData.output[0];
+
+                  return {
+                    id: message.id,
+                    from,
+                    content: imageUrl,
+                    time,
+                    type: "image",
+                    status: "complete",
+                  };
+                } else {
+                  return {
+                    id: message.id,
+                    from,
+                    content: "Image generation failed.",
+                    time,
+                    type: "text",
+                  };
+                }
+              } else {
+                return {
+                  id: message.id,
+                  from,
+                  content: "Failed to fetch image.",
+                  time,
+                  type: "text",
+                };
+              }
+            } else {
+              return {
+                id: message.id,
+                from,
+                content: message.content,
+                time,
+                type: "text",
+              };
+            }
+          })
+        );
+
+        setMessages(processedMessages);
+      } else if (response.status === 403 || response.status === "403") {
+        navigate("/auth");
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  useEffect(() => {
+    fetchMessages();
+  }, [chatId]);
 
   const handleSendMessage = async () => {
     const token = localStorage.getItem("authToken");
@@ -42,9 +141,9 @@ const LabChatBox = ({ chatId }) => {
       // Add the user's message to the chat
       const userMessage = {
         from: "You",
-        text: inputValue,
+        content: inputValue,
         time: new Date().toLocaleTimeString(),
-        type: "text", // Add a type to differentiate message types
+        type: "text",
       };
       updatedMessages = [...messages, userMessage];
 
@@ -54,139 +153,61 @@ const LabChatBox = ({ chatId }) => {
       setInputValue("");
 
       try {
-        // Determine if the selected model is for image generation
-        const isImageModel = selectedModel.value.startsWith('imagegen:');
-
-        if (isImageModel) {
-          // Image Generation Flow
-          const imageResponse = await fetch(`${BASE_URL}/api/chat/${chatId}`, {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${token}`,
-              "x-api-key": apiKey,
+        // Send the message to the streaming endpoint
+        const response = await fetch(`${BASE_URL}/api/stream/${chatId}`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+            "x-api-key": apiKey,
+          },
+          body: JSON.stringify({
+            modelName: selectedModel.value,
+            message: inputValue,
+            kwargs: {
+              topP: parseFloat(modelParams.topP),
+              topK: parseInt(modelParams.topK),
+              temperature: parseFloat(modelParams.temperature),
+              maxOutputTokens: parseInt(modelParams.outputLength),
             },
-            body: JSON.stringify({
-              modelName: selectedModel.value,
-              message: inputValue,
-            }),
-          });
+          }),
+        });
 
-          if (imageResponse.ok) {
-            const imageData = await imageResponse.json();
-            const requestId = imageData.response || imageData.id;
+        if (response.ok) {
+          const reader = response.body.getReader();
+          const decoder = new TextDecoder("utf-8");
 
-            // Show loading message
-            const loadingMessage = {
-              from: "AI",
-              text: "",
-              time: new Date().toLocaleTimeString(),
-              type: "image",
-              status: "loading",
-            };
-            updatedMessages = [...updatedMessages, loadingMessage];
-            setMessages(updatedMessages);
+          // Add an empty AI message to the messages array
+          let aiMessage = {
+            from: "AI",
+            content: "",
+            time: new Date().toLocaleTimeString(),
+            type: "text",
+          };
+          updatedMessages = [...updatedMessages, aiMessage];
+          setMessages(updatedMessages);
 
-            // Poll for the image generation result
-            let imageStatus = "pending";
-            let imageResult = null;
-
-            while (imageStatus === "pending" || imageStatus === "processing") {
-              await new Promise((resolve) => setTimeout(resolve, 3000)); // Wait 3 seconds before polling again
-
-              const statusResponse = await fetch(`${BASE_URL}/api/get_images`, {
-                method: "POST",
-                headers: {
-                  "Content-Type": "application/json",
-                  Authorization: `Bearer ${token}`,
-                  "x-api-key": apiKey,
-                },
-                body: JSON.stringify({
-                  request_id: requestId.toString(),
-                }),
-              });
-
-              if (statusResponse.ok) {
-                const statusData = await statusResponse.json();
-                imageStatus = statusData.status;
-
-                if (imageStatus === "success") {
-                  imageResult = statusData.output[0]; // Assuming output is an array of image URLs
-                  break;
-                } else if (imageStatus === "failed") {
-                  throw new Error("Image generation failed.");
-                }
-              } else {
-                throw new Error("Failed to get image status.");
-              }
+          let done = false;
+          while (!done) {
+            const { value, done: readerDone } = await reader.read();
+            done = readerDone;
+            if (value) {
+              const chunk = decoder.decode(value);
+              aiMessage.content += chunk;
+              // Update the last message in messages array
+              updatedMessages[updatedMessages.length - 1] = { ...aiMessage };
+              setMessages([...updatedMessages]);
             }
-
-            // Update the message with the image URL
-            const aiImageMessage = {
-              from: "AI",
-              imageUrl: imageResult,
-              time: new Date().toLocaleTimeString(),
-              type: "image",
-              status: "complete",
-            };
-            updatedMessages[updatedMessages.length - 1] = aiImageMessage;
-            setMessages([...updatedMessages]);
-          } else {
-            const data = await imageResponse.json();
-            throw new Error(data.error || "Failed to generate image.");
           }
+
+          // Optionally, after streaming completes, you can refresh messages from the backend
+          // await fetchMessages();
+
         } else {
-          // Text Generation Flow
-          const response = await fetch(`${BASE_URL}/api/stream/${chatId}`, {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${token}`,
-              "x-api-key": apiKey,
-            },
-            body: JSON.stringify({
-              modelName: selectedModel.value,
-              message: inputValue,
-              kwargs: {
-                topP: parseFloat(modelParams.topP),
-                topK: parseInt(modelParams.topK),
-                temperature: parseFloat(modelParams.temperature),
-                maxOutputTokens: parseInt(modelParams.outputLength),
-              },
-            }),
-          });
-
-          if (response.ok) {
-            const reader = response.body.getReader();
-            const decoder = new TextDecoder("utf-8");
-
-            let aiMessage = {
-              from: "AI",
-              text: "",
-              time: new Date().toLocaleTimeString(),
-              type: "text",
-            };
-            updatedMessages = [...updatedMessages, aiMessage];
-            setMessages(updatedMessages);
-
-            let done = false;
-            while (!done) {
-              const { value, done: readerDone } = await reader.read();
-              done = readerDone;
-              if (value) {
-                const chunk = decoder.decode(value);
-                aiMessage.text += chunk;
-                updatedMessages[updatedMessages.length - 1] = { ...aiMessage };
-                setMessages([...updatedMessages]);
-              }
-            }
-          } else {
-            const data = await response.json();
-            throw new Error(data.error || "Failed to get a response from AI");
-          }
+          const data = await response.json();
+          throw new Error(data.error || "Failed to send message.");
         }
       } catch (error) {
-        // Show an error message in the chat if the API call fails
         toast({
           title: "Error",
           description: error.message || "Something went wrong",
@@ -194,16 +215,6 @@ const LabChatBox = ({ chatId }) => {
           duration: 3000,
           isClosable: true,
         });
-        updatedMessages = [
-          ...updatedMessages,
-          {
-            from: "AI",
-            text: "Sorry, something went wrong. Please try again.",
-            time: new Date().toLocaleTimeString(),
-            type: "text",
-          },
-        ];
-        setMessages(updatedMessages);
       }
     }
   };
@@ -215,12 +226,62 @@ const LabChatBox = ({ chatId }) => {
     }
   };
 
+  const renderMessageContent = (content, from, theme) => {
+    // Replace **text** with bold
+    const formattedContent = content.replace(
+      /\*\*(.*?)\*\*/g,
+      (match, p1) => `<b>${p1}</b>`
+    );
+
+    // Split lines by new line and render accordingly
+    const lines = formattedContent.split("\n").map((line, index) => {
+      // Handle numbered bullet points
+      if (/^\d+\.\s/.test(line)) {
+        return (
+          <Text
+            key={index}
+            as="li"
+            ml={4}
+            color={from === "You" ? theme.textColor : "white"}
+          >
+            <span dangerouslySetInnerHTML={{ __html: line }} />
+          </Text>
+        );
+      }
+
+      // Handle bold text
+      if (/\<b\>(.*?)\<\/b\>/.test(line)) {
+        return (
+          <Text
+            key={index}
+            fontWeight="bold"
+            color={from === "You" ? theme.textColor : "white"}
+          >
+            <span dangerouslySetInnerHTML={{ __html: line }} />
+          </Text>
+        );
+      }
+
+      // Regular text
+      return (
+        <Text
+          key={index}
+          color={from === "You" ? theme.textColor : "white"}
+        >
+          <span dangerouslySetInnerHTML={{ __html: line }} />
+        </Text>
+      );
+    });
+
+    return lines;
+  };
+
   return (
     <Box w="100%" maxW="1000px" mx="auto" p={4} borderRadius="lg">
       <VStack
         spacing={4}
         align="stretch"
-        h="400px"
+        h="500px"
         overflowY="auto"
         p={4}
         bg="rgba(255, 255, 255, 0.04)"
@@ -240,50 +301,56 @@ const LabChatBox = ({ chatId }) => {
           },
         }}
       >
-        {messages.length === 0 ? (
-          <>
-            {/* You can add a welcome message or instructions here */}
-          </>
+        {messages?.length === 0 ? (
+          <>{/* You can add a welcome message or instructions here */}</>
         ) : (
           <>
-            {messages.map((message, index) => (
+            {messages?.map((message, index) => (
               <Flex
-                key={index}
-                direction={message.from === "You" ? "row-reverse" : "row"}
+                key={message.id || index}
+                direction={
+                  message.from === "You" ? "row-reverse" : "row"
+                }
                 align="flex-start"
-                justify={message.from === "You" ? "flex-end" : "flex-start"}
+                justify="flex-start"
                 my={2}
               >
+                <Avatar
+                  src={
+                    message.from === "You"
+                      ? "/user-avatar.png"
+                      : "/ai-avatar.png"
+                  } // Replace with actual avatar URLs
+                  size="md"
+                  name={message.from === "You" ? "User" : "AI Assistant"}
+                  mr={message.from === "You" ? 0 : 4}
+                  ml={message.from === "You" ? 4 : 0}
+                />
                 <Box
-                  bg={message.from === "You" ? "#2d3e50" : "#1c2833"}
+                  color="white"
                   borderRadius="lg"
-                  p={3}
+                  p={4}
                   boxShadow="lg"
                   maxW="75%"
                   position="relative"
+                  background={
+                    message.from === "You"
+                      ? theme.UserchatBubbleColor
+                      : theme.aiChatBubbleColor
+                  }
                 >
-                  {message.type === "text" && (
-                    <Text color="white" fontWeight="bold">
-                      {message.from}: {message.text}
-                    </Text>
-                  )}
+                  {message.type === "text" &&
+                    renderMessageContent(
+                      message.content,
+                      message.from,
+                      theme
+                    )}
                   {message.type === "image" && (
                     <>
-                      {message.status === "loading" && (
-                        <Flex align="center" justify="center" minH="100px">
-                          <Spinner size="xl" color="white" />
-                          <Text ml={3} color="white">
-                            Generating image...
-                          </Text>
-                        </Flex>
-                      )}
                       {message.status === "complete" && (
                         <>
-                          <Text color="white" fontWeight="bold" mb={2}>
-                            {message.from}:
-                          </Text>
                           <Image
-                            src={message.imageUrl}
+                            src={message.content}
                             alt="Generated Image"
                             borderRadius="md"
                             maxH="300px"
@@ -296,7 +363,9 @@ const LabChatBox = ({ chatId }) => {
                   <Flex
                     mt={2}
                     align="center"
-                    justify="flex-end"
+                    justify={
+                      message.from === "You" ? "flex-start" : "flex-end"
+                    }
                     color="gray.400"
                   >
                     <BsClock />
@@ -312,9 +381,7 @@ const LabChatBox = ({ chatId }) => {
                       _hover={{ color: "white", bg: "transparent" }}
                       aria-label="Copy to clipboard"
                       onClick={() => {
-                        navigator.clipboard.writeText(
-                          message.text || message.imageUrl
-                        );
+                        navigator.clipboard.writeText(message.content);
                         toast({
                           title: "Copied to clipboard!",
                           status: "success",
@@ -324,22 +391,6 @@ const LabChatBox = ({ chatId }) => {
                       }}
                     />
                   </Flex>
-                  <Box
-                    position="absolute"
-                    bottom="-6px"
-                    right={message.from === "You" ? "-6px" : undefined}
-                    left={message.from !== "You" ? "-6px" : undefined}
-                    w="12px"
-                    h="12px"
-                    bg={message.from === "You" ? "#2d3e50" : "#1c2833"}
-                    borderRadius="50%"
-                    boxShadow="lg"
-                    transform={
-                      message.from === "You"
-                        ? "rotate(45deg)"
-                        : "rotate(-45deg)"
-                    }
-                  />
                 </Box>
               </Flex>
             ))}

@@ -21,7 +21,7 @@ import Header from "../../Components/Dashboard/Header";
 import NewChatButton from "../../Components/Dashboard/NewChatButton";
 import ChatListCard from "../../Components/Dashboard/ChatListCard";
 import { primaryColorOrange } from "../../colorCodes";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import Description from "../../Components/Dashboard/Description";
 import { BASE_URL } from "../../Constants";
 
@@ -31,7 +31,7 @@ const AiLab = () => {
   const [isCreatingChat, setIsCreatingChat] = useState(false); // For managing chat creation state
   const [chatName, setChatName] = useState(""); // For storing chat name
   const { isOpen, onOpen, onClose } = useDisclosure(); // For controlling the modal
-
+const navigate= useNavigate()
   // Fetch chats from the API on component mount
   useEffect(() => {
     const fetchChats = async () => {
@@ -53,9 +53,9 @@ const AiLab = () => {
         const data = await response.json();
         if (response.ok) {
           setChats(data.chats); // Assuming the response contains an array of chats
-        } else {
-          console.error("Failed to fetch chats:", data);
-        }
+        } else if(response.status===403 || response.status==='403') {
+          navigate('/auth')
+         }
       } catch (error) {
         console.error("Error fetching chats:", error);
       } finally {
@@ -92,9 +92,9 @@ const AiLab = () => {
         // Update the chat list with the new chat
         setChats([...chats, { chatId: data.chatId, name: data.name }]);
         onClose(); // Close the modal after successful chat creation
-      } else {
-        console.error("Failed to create chat:", data);
-      }
+      }else if(response.status===403 || response.status==='403') {
+        navigate('/auth')
+       }
     } catch (error) {
       console.error("Error creating chat:", error);
     } finally {

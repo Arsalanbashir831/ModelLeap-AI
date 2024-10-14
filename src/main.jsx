@@ -11,6 +11,7 @@ createRoot(document.getElementById("root")).render(
     <ChakraProvider theme={theme}>
       <ThemeProvider>
       <RecoilRoot>
+    
       <App />
       </RecoilRoot>
       

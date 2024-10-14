@@ -11,15 +11,22 @@ import Landing from "./Pages/Landing/Landing";
 import AiLab from "./Pages/AiLab/AiLab";
 import AiLabChat from "./Pages/AiLab/AiLabChat";
 import Auth from "./Pages/Auth/Auth";
-import SupportForm from "./Components/Dashboard/SupportForm";
 import Support from "./Pages/Support/Support";
+import { useRecoilValue } from "recoil";
+import useAuthValidation from "./hooks/useAuthValidation";
+import authState from "./atoms/authState";
+import ProtectedRoute from "./Components/common/ProtectedRoute";
 
 const router = createBrowserRouter([
   { path: "/", element: <Landing /> },
-  { path: "/auth", element: <Auth /> },
+  { path: "/auth", element:  <Auth /> },
   {
     path: "/app",
-    element: <DashboardLayout></DashboardLayout>,
+    element: (
+      <ProtectedRoute>
+        <DashboardLayout />
+      </ProtectedRoute>
+    ),
     children: [
       { path: "/app", element: <AI /> },
       { path: "/app/keymanagement", element: <APIkey /> },
@@ -35,9 +42,12 @@ const router = createBrowserRouter([
 ]);
 
 const App = () => {
+ 
   return (
     <>
-      <RouterProvider router={router} />
+      <RouterProvider router={router}  />
+      {/* Only run validation when the Router is available */}
+      {/* {useAuthValidation()}  */}
     </>
   );
 };

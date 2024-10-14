@@ -12,13 +12,6 @@ const AI = () => {
   const [activeTab, setActiveTab] = useState("Chat");
   const { theme } = useTheme();
 
-  // State for the parameters in ModelSelection
-  const [model, setModel] = useState(null);
-  const [outputLength, setOutputLength] = useState(512);
-  const [temperature, setTemperature] = useState(0.7);
-  const [topP, setTopP] = useState(0.7);
-  const [topK, setTopK] = useState(50);
-
   const handleTabChange = (tab) => {
     setActiveTab(tab);
   };
@@ -76,31 +69,13 @@ const AI = () => {
           {activeTab === "Chat" && (
             <ModelSelection
               type={"chat"}
-              // model={model}
-              // setModel={setModel}
-              // outputLength={outputLength}
-              // setOutputLength={setOutputLength}
-              // temperature={temperature}
-              // setTemperature={setTemperature}
-              // topP={topP}
-              // setTopP={setTopP}
-              // topK={topK}
-              // setTopK={setTopK}
+            
             />
           )}
           {activeTab === "Image" && (
             <ModelSelection
               type={"image"}
-              // model={model}
-              // setModel={setModel}
-              // outputLength={outputLength}
-              // setOutputLength={setOutputLength}
-              // temperature={temperature}
-              // setTemperature={setTemperature}
-              // topP={topP}
-              // setTopP={setTopP}
-              // topK={topK}
-              // setTopK={setTopK}
+             
             />
           )}
         </Box>

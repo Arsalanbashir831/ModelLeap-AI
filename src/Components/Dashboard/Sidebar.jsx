@@ -251,7 +251,7 @@ const Sidebar = ({ isOpen, onToggle }) => {
 
           <Divider my="2" borderColor={theme.sideBarDividerColor}/>
 
-          <Button
+          <Button onClick={()=>{localStorage.removeItem('authToken')}}
             as={Link}
             variant="ghost"
             to="/auth"

@@ -16,6 +16,7 @@ import { primaryColorOrange, primaryColorPurple } from "../../colorCodes";
 import SettingsModal from "../Dashboard/SettingsModal";
 import { Link, useNavigate } from "react-router-dom";
 import { BASE_URL } from "../../Constants";
+import { useTheme } from "../../Themes/ThemeContext";
 
 const ChatListCard = ({ chatId, chatName }) => {
   const [isEditing, setIsEditing] = useState(false);
@@ -24,7 +25,7 @@ const ChatListCard = ({ chatId, chatName }) => {
   const { hasCopied, onCopy } = useClipboard(editedName);
   const toast = useToast();
   const navigate = useNavigate();
-
+const {theme} = useTheme()
   const token = localStorage.getItem('authToken');
   const apiKey = localStorage.getItem('apiKey');
 
@@ -71,8 +72,8 @@ const ChatListCard = ({ chatId, chatName }) => {
           duration: 2000,
           isClosable: true,
         });
-      } else {
-        throw new Error("Failed to update chat name.");
+      } else if(response.status===403 || response.status==='403') {
+       navigate('/auth')
       }
     } catch (error) {
       toast({
@@ -144,7 +145,7 @@ const ChatListCard = ({ chatId, chatName }) => {
     <Flex
       align="center"
       justify="space-between"
-      bg="linear-gradient(90deg, #1F2A37 0%, #2E3442 100%)"
+      bg={theme.background}
       borderRadius="md"
       px={6}
       py={4}
@@ -152,10 +153,7 @@ const ChatListCard = ({ chatId, chatName }) => {
       maxW="1000px"
       my={2}
       boxShadow="lg"
-      _hover={{
-        bg: "linear-gradient(90deg, #1B2733 0%, #2B3241 100%)",
-        cursor: "pointer",
-      }}
+    
     >
       <Box flex="1" mr={4}>
         {isEditing ? (
@@ -167,12 +165,12 @@ const ChatListCard = ({ chatId, chatName }) => {
             size="sm"
             variant="unstyled"
             _focus={{ outline: "none", borderColor: "transparent" }}
-            color="white"
+            color={theme.textColor}
             bg="transparent"
           />
         ) : (
           <Flex align="center">
-            <Text fontSize="md" color="white" fontWeight="bold">
+            <Text fontSize="md" color={theme.textColor} fontWeight="bold">
               {editedName}
             </Text>
             <Tooltip label="Edit Chat Name">
@@ -182,8 +180,8 @@ const ChatListCard = ({ chatId, chatName }) => {
                 size="xs"
                 ml={2}
                 bg="transparent"
-                color="whiteAlpha.800"
-                _hover={{ color: "white", bg: "transparent" }}
+                color={theme.textColor}
+                // _hover={{ color: "white", bg: "transparent" }}
                 onClick={(e) => {
                   e.stopPropagation();
                   handleEditClick();
