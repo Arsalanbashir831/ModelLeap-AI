@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import Header from "../../Components/Dashboard/Header";
-import { Container, Box, Flex } from "@chakra-ui/react";
+import { Box, Flex } from "@chakra-ui/react";
 import MenuTabs from "../../Components/Dashboard/MenuTabs";
 import AiChatBox from "../../Components/Dashboard/AiChatBox";
 import logo from "../../../public/model_leap_favicon.png";
@@ -8,10 +8,16 @@ import ModelSelection from "../../Components/Dashboard/ModelSelection";
 import { useTheme } from "../../Themes/ThemeContext";
 import Description from "../../Components/Dashboard/Description";
 
-
 const AI = () => {
   const [activeTab, setActiveTab] = useState("Chat");
   const { theme } = useTheme();
+
+  // State for the parameters in ModelSelection
+  const [model, setModel] = useState(null);
+  const [outputLength, setOutputLength] = useState(512);
+  const [temperature, setTemperature] = useState(0.7);
+  const [topP, setTopP] = useState(0.7);
+  const [topK, setTopK] = useState(50);
 
   const handleTabChange = (tab) => {
     setActiveTab(tab);
@@ -36,42 +42,67 @@ const AI = () => {
         align="start"
         flexDirection={["column", "row"]}
       >
-
+        {/* Chat Box Section */}
         <Box
           flex="2"
           maxW={["100%", "60%"]}
           boxShadow="lg"
-          border = {theme.AiChatBorder}
+          border={theme.AiChatBorder}
           p={5}
           borderRadius="lg"
-          // backdropFilter={'saturate(120%) blur(12px)'}
           bg={theme.AiChatbg}
           backdropFilter="saturate(100%) blur(10px)"
-  borderColor="rgba(255, 255, 255, 0.2)" // Light border for the frosted look
+          borderColor="rgba(255, 255, 255, 0.2)" // Light border for frosted effect
         >
-          {activeTab === "Chat" && <AiChatBox aiLogo={logo} />}
-          {activeTab === "Code" && <AiChatBox aiLogo={logo} />}
-          {activeTab === "Language" && <AiChatBox aiLogo={logo} />}
-          {activeTab === "Image" && <AiChatBox aiLogo={logo} />}
+          {/* Render AiChatBox based on active tab */}
+          {activeTab === "Chat" && <AiChatBox type={"Chat"} aiLogo={logo} />}
+          {activeTab === "Image" && <AiChatBox type={"Image"} aiLogo={logo} />}
         </Box>
 
+        {/* Model Selection & Parameter Tuning Section */}
         <Box
           flex="1"
           ml={["0", "2"]}
-          mt={["4", "0"]}  
+          mt={["4", "0"]}
           maxW={["100%", "35%"]}
           boxShadow="lg"
-        
           p={5}
           backdropFilter="saturate(100%) blur(10px)"
-  borderColor="rgba(255, 255, 255, 0.2)" // Light border for the frosted look
+          borderColor="rgba(255, 255, 255, 0.2)" // Light border for frosted effect
           borderRadius="lg"
           bg={theme.AiChatbg}
         >
-          {activeTab === "Chat" && <ModelSelection />}
-          {activeTab === "Code" && <ModelSelection />}
-          {activeTab === "Language" && <ModelSelection />}
-          {activeTab === "Image" && <ModelSelection />}
+          {/* Render ModelSelection based on active tab */}
+          {activeTab === "Chat" && (
+            <ModelSelection
+              type={"chat"}
+              // model={model}
+              // setModel={setModel}
+              // outputLength={outputLength}
+              // setOutputLength={setOutputLength}
+              // temperature={temperature}
+              // setTemperature={setTemperature}
+              // topP={topP}
+              // setTopP={setTopP}
+              // topK={topK}
+              // setTopK={setTopK}
+            />
+          )}
+          {activeTab === "Image" && (
+            <ModelSelection
+              type={"image"}
+              // model={model}
+              // setModel={setModel}
+              // outputLength={outputLength}
+              // setOutputLength={setOutputLength}
+              // temperature={temperature}
+              // setTemperature={setTemperature}
+              // topP={topP}
+              // setTopP={setTopP}
+              // topK={topK}
+              // setTopK={setTopK}
+            />
+          )}
         </Box>
       </Flex>
     </>

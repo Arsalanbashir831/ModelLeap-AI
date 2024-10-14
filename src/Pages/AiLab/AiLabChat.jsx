@@ -9,20 +9,22 @@ import { primaryColorOrange } from "../../colorCodes";
 import { useTheme } from "../../Themes/ThemeContext";
 import Description from "../../Components/Dashboard/Description";
 import HistoryBox from "../../Components/Dashboard/HistoryBox";
+import ChatHeader from "../../Components/common/ChatHeader";
+
 
 const AiLabChat = () => {
   const { chatId } = useParams();
   const { theme } = useTheme();
 
   return (
-    <Box bg={theme.backgroundAilab} minH="100vh" p={3}>
+    <Box bg={theme.background} minH="100vh" p={3}>
       <Box mb={1}>
-        <Header title="Lab" />
+        <Header isTitle={false}  />
       </Box>
 
       <Box w="100%" maxW="100%" mx="auto">
         <Flex align="center" justify="center" gap={3} mb={0}>
-          <Link to="/app/ailab">
+          {/* <Link to="/app/ailab">
             <Button
               size="md"
               bg={primaryColorOrange}
@@ -32,12 +34,14 @@ const AiLabChat = () => {
             >
               <ArrowBackIcon mr={2} /> Back
             </Button>
-          </Link>
+          </Link> */}
 
           <Flex flex="1" justify="center">
-            <Box maxW="800px" w="100%">
+            {/* <Box maxW="800px" w="100%">
               <ChatListCard chatName={`Chat #${chatId}`} />
-            </Box>
+            </Box> */}
+            {/* <ChatListCard chatName={`Chat #${chatId}`} /> */}
+          
           </Flex>
         </Flex>
 
@@ -51,20 +55,21 @@ const AiLabChat = () => {
         >
           <LabChatBox />
         </Box> */}
-        <Flex mt={5} gap={5}>
+        <Flex  gap={5}>
          
           <HistoryBox />
 
           <Box
             p={2}
             borderRadius="md"
-            boxShadow="md"
+            // boxShadow="md"
             bg={theme.cardBg}
             maxH="800px"
             overflowY="auto"
             flex="1"
           >
-            <LabChatBox />
+            <ChatHeader chatId={chatId} chatName={'testing'}/>
+            <LabChatBox chatId={chatId}/>
           </Box>
         </Flex>
       </Box>

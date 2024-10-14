@@ -1,27 +1,114 @@
-import React, { useState } from "react";
-import { Box, Flex, Button, Grid, Text } from "@chakra-ui/react";
+import React, { useState, useEffect } from "react";
+import {
+  Box,
+  Flex,
+  Button,
+  Grid,
+  Text,
+  Modal,
+  ModalOverlay,
+  ModalContent,
+  ModalHeader,
+  ModalFooter,
+  ModalBody,
+  ModalCloseButton,
+  FormControl,
+  FormLabel,
+  Input,
+  useDisclosure,
+} from "@chakra-ui/react";
 import Header from "../../Components/Dashboard/Header";
 import NewChatButton from "../../Components/Dashboard/NewChatButton";
 import ChatListCard from "../../Components/Dashboard/ChatListCard";
 import { primaryColorOrange } from "../../colorCodes";
-import { ArrowBackIcon } from "@chakra-ui/icons";
 import { Link } from "react-router-dom";
 import Description from "../../Components/Dashboard/Description";
+import { BASE_URL } from "../../Constants";
 
 const AiLab = () => {
-  const [chats, setChats] = useState([{ id: 1, name: "Lab" }]);
-  // const [activeChat, setActiveChat] = useState(null);
+  const [chats, setChats] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [isCreatingChat, setIsCreatingChat] = useState(false); // For managing chat creation state
+  const [chatName, setChatName] = useState(""); // For storing chat name
+  const { isOpen, onOpen, onClose } = useDisclosure(); // For controlling the modal
 
-  const handleNewChat = () => {
-    const newChatId = chats.length + 1;
-    const newChat = { id: newChatId, name: `Chat ${newChatId}` };
-    setChats([...chats, newChat]);
-    // setActiveChat(newChat);
+  // Fetch chats from the API on component mount
+  useEffect(() => {
+    const fetchChats = async () => {
+      try {
+        const token = localStorage.getItem("authToken");
+        if (!token) {
+          console.error("Authorization token is missing.");
+          return;
+        }
+
+        const response = await fetch(`${BASE_URL}/api/chats`, {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        const data = await response.json();
+        if (response.ok) {
+          setChats(data.chats); // Assuming the response contains an array of chats
+        } else {
+          console.error("Failed to fetch chats:", data);
+        }
+      } catch (error) {
+        console.error("Error fetching chats:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchChats();
+  }, []);
+
+  // Function to create a new chat
+  const handleNewChat = async () => {
+    setIsCreatingChat(true);
+    try {
+      const token = localStorage.getItem("authToken");
+      const apiKey = localStorage.getItem('apiKey');
+      if (!token) {
+        console.error("Authorization token is missing.");
+        return;
+      }
+
+      const response = await fetch(`${BASE_URL}/api/chat/start`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+          "x-api-key": apiKey,
+        },
+        body: JSON.stringify({ name: chatName }), // Pass the chat name from the input
+      });
+
+      const data = await response.json();
+      if (response.ok) {
+        // Update the chat list with the new chat
+        setChats([...chats, { chatId: data.chatId, name: data.name }]);
+        onClose(); // Close the modal after successful chat creation
+      } else {
+        console.error("Failed to create chat:", data);
+      }
+    } catch (error) {
+      console.error("Error creating chat:", error);
+    } finally {
+      setIsCreatingChat(false); // End the chat creation state
+    }
   };
 
-  // const handleBackToList = () => {
-  //   setActiveChat(null);
-  // };
+  if (loading) {
+    return (
+      <Box p={4} w="100%" maxW="100%" mx="auto">
+        <Text>Loading...</Text>
+      </Box>
+    );
+  }
 
   return (
     <Box p={4} w="100%" maxW="100%" mx="auto">
@@ -32,40 +119,57 @@ const AiLab = () => {
       <Flex mt={5} direction={{ base: "column", md: "row" }} gap={4}>
         <Box w={{ base: "100%", md: "30%" }}>
           <Flex ml={2} mb={2} justifyContent="flex-start">
-            {/* {!activeChat ? ( */}
-              <NewChatButton onClick={handleNewChat} />
-            {/* // ) : ( */}
-            {/* //   <Button onClick={handleBackToList} bg={primaryColorOrange} color="white">
-            //     <ArrowBackIcon mr={3} mt={1} /> Chat List
-            //   </Button> */}
-            {/* // ) */}
-            {/* } */}
+            <NewChatButton onClick={onOpen} isLoading={isCreatingChat} />
           </Flex>
 
-          {/* {!activeChat && ( */}
-            <Box w={"900px"} p={3} borderRadius="md">
-              <Grid
-                templateColumns={{ base: "repeat(1, 1fr)", md: "repeat(2, 1fr)" }}
-                gap={3}
-              >
-                {chats.map((chat) => (
-                  <Link to={`/app/ailab/chat/${chat.id}`} key={chat.id}>
-                    <ChatListCard chatName={chat.name} />
-                  </Link>
-                ))}
-              </Grid>
-            </Box>
-          {/* )} */}
+          <Box w={"900px"} p={3} borderRadius="md">
+            <Grid
+              templateColumns={{ base: "repeat(1, 1fr)", md: "repeat(2, 1fr)" }}
+              gap={3}
+            >
+              {chats?.map((chat) => (
+               
+                  <ChatListCard chatName={chat.name} chatId={chat.chatId} />
+               
+              ))}
+            </Grid>
+          </Box>
         </Box>
-
-        {/* <Box w={{ base: "100%", md: "70%", lg: "70%" }}>
-          {activeChat && (
-            <>
-              <ChatListCard chatName={activeChat.name} />
-            </>
-          )}
-        </Box> */}
       </Flex>
+ {/* <Link to={`/app/ailab/chat/${chat.chatId}`} key={chat.chatId}> */}
+      {/* Modal for entering chat name */}
+      <Modal isOpen={isOpen} onClose={onClose}>
+        <ModalOverlay />
+        <ModalContent>
+          <ModalHeader>Create New Chat</ModalHeader>
+          <ModalCloseButton />
+          <ModalBody>
+            <FormControl id="chat-name">
+              <FormLabel>Chat Name</FormLabel>
+              <Input
+                placeholder="Enter chat name"
+                value={chatName}
+                onChange={(e) => setChatName(e.target.value)}
+              />
+            </FormControl>
+          </ModalBody>
+
+          <ModalFooter>
+            <Button
+              colorScheme="blue"
+              mr={3}
+              onClick={handleNewChat}
+              isLoading={isCreatingChat}
+              disabled={!chatName} // Disable if chat name is empty
+            >
+              Create Chat
+            </Button>
+            <Button variant="ghost" onClick={onClose}>
+              Cancel
+            </Button>
+          </ModalFooter>
+        </ModalContent>
+      </Modal>
     </Box>
   );
 };

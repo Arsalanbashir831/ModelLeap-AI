@@ -64,7 +64,7 @@ const Sidebar = ({ isOpen, onToggle }) => {
       animate={isOpen ? "open" : "closed"}
       initial={false}
       boxShadow="md"
-      height="130vh"
+      height="100vh"
       display="flex"
       flexDirection="column"
       justifyContent="space-between"
@@ -72,6 +72,7 @@ const Sidebar = ({ isOpen, onToggle }) => {
       position={"relative"}
     >
       <Box
+      height={'100vh'}
         display="flex"
         flexDirection="column"
         alignItems={isOpen ? "flex-start" : "center"}

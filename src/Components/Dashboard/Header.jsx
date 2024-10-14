@@ -3,7 +3,7 @@ import { Box, Heading, Flex } from '@chakra-ui/react';
 import NightModeToggleBtn from '../Custom/Mode/NightModeToggleBtn';
 import { useTheme } from '../../Themes/ThemeContext';
 
-const Header = ({ title }) => {
+const Header = ({ title , isTitle }) => {
   const { theme } = useTheme();
 
   return (
@@ -14,7 +14,10 @@ const Header = ({ title }) => {
       bg={'transparent'}
       boxShadow="none"
     >
-      <Flex alignItems="center" justifyContent="space-between">
+      <Flex alignItems="center" justifyContent={isTitle ? "space-between":"flex-end"}>
+       {isTitle&&(<>
+
+
         <Heading
           size="xl"
           color={theme.textColor}
@@ -23,6 +26,8 @@ const Header = ({ title }) => {
         >
           {title}
         </Heading>
+       </>)}
+        
 
 
         <NightModeToggleBtn />

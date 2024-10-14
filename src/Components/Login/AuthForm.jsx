@@ -15,18 +15,91 @@ import {
   IconButton,
   Divider,
   Text,
+  Spinner,
 } from "@chakra-ui/react";
 import { ViewIcon, ViewOffIcon } from "@chakra-ui/icons";
 import { FcGoogle } from "react-icons/fc";
 import { primaryColorPurple, primaryColorOrange } from "../../colorCodes";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { BASE_URL } from "../../Constants";
 
 const AuthForm = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [tabIndex, setTabIndex] = useState(0);
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [username, setUsername] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
   const inputBg = "gray.100";
-
+  const navigate = useNavigate();
+  
   const toggleShowPassword = () => setShowPassword(!showPassword);
+
+  const handleSignup = async () => {
+    setIsLoading(true);
+    try {
+      if (password !== confirmPassword) {
+        console.log("Passwords do not match");
+        setIsLoading(false);
+        return;
+      }
+      
+      const response = await fetch(`${BASE_URL}/auth/register`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          email,
+          password,
+          username,
+        }),
+      });
+
+      const data = await response.json();
+      if (response.ok) {
+        console.log("Signup successful", data);
+        localStorage.setItem('authToken', data.idToken);
+        navigate("/app");
+      } else {
+        console.log("Signup failed", data);
+      }
+    } catch (e) {
+      console.log(e);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleLogin = async () => {
+    setIsLoading(true);
+    try {
+      const response = await fetch(`${BASE_URL}/auth/login`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          email,
+          password,
+        }),
+      });
+
+      const data = await response.json();
+      if (response.ok) {
+        console.log("Login successful", data);
+        localStorage.setItem('authToken', data.idToken);
+        navigate("/app");
+      } else {
+        console.log("Login failed", data);
+      }
+    } catch (e) {
+      console.log(e);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   return (
     <Box
@@ -87,6 +160,7 @@ const AuthForm = () => {
           </Tab>
         </TabList>
         <TabPanels>
+          {/* Login Tab */}
           <TabPanel>
             <VStack spacing={5}>
               <FormControl id="email" isRequired>
@@ -98,6 +172,8 @@ const AuthForm = () => {
                   placeholder="Email"
                   borderRadius="full"
                   size="md"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
                 />
               </FormControl>
               <FormControl id="password" isRequired>
@@ -110,6 +186,8 @@ const AuthForm = () => {
                     placeholder="Password"
                     borderRadius="full"
                     size="md"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
                   />
                   <InputRightElement>
                     <IconButton
@@ -130,21 +208,22 @@ const AuthForm = () => {
                 borderRadius="full"
                 size="lg"
                 _hover={{ bg: primaryColorOrange }}
+                onClick={handleLogin}
+                isDisabled={isLoading}
               >
-                <Link w="full" to={"/app"}>
-                  Sign In
-                </Link>
+                {isLoading ? <Spinner /> : "Sign In"}
               </Button>
 
               <Text color="gray.600" cursor="pointer" fontSize="sm">
                 <Link w="full" to={"/"}>
-                  explore us?
+                  Explore us?
                 </Link>
               </Text>
             </VStack>
           </TabPanel>
 
-          <TabPanel >
+          {/* Signup Tab */}
+          <TabPanel>
             <VStack spacing={5}>
               <FormControl id="email" isRequired>
                 <Input
@@ -155,6 +234,8 @@ const AuthForm = () => {
                   placeholder="Email"
                   borderRadius="full"
                   size="md"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
                 />
               </FormControl>
               <FormControl id="username" isRequired>
@@ -166,6 +247,8 @@ const AuthForm = () => {
                   placeholder="Username"
                   borderRadius="full"
                   size="md"
+                  value={username}
+                  onChange={(e) => setUsername(e.target.value)}
                 />
               </FormControl>
               <FormControl id="password" isRequired>
@@ -178,6 +261,8 @@ const AuthForm = () => {
                     placeholder="Password"
                     borderRadius="full"
                     size="md"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
                   />
                   <InputRightElement>
                     <IconButton
@@ -192,13 +277,15 @@ const AuthForm = () => {
               <FormControl id="confirm-password" isRequired>
                 <InputGroup>
                   <Input
-                    type={showPassword ? "text" : "confirm-password"}
+                    type={showPassword ? "text" : "password"}
                     bg={inputBg}
                     borderColor="gray.100"
                     focusBorderColor={primaryColorPurple}
                     placeholder="Confirm Password"
                     borderRadius="full"
                     size="md"
+                    value={confirmPassword}
+                    onChange={(e) => setConfirmPassword(e.target.value)}
                   />
                   <InputRightElement>
                     <IconButton
@@ -217,8 +304,10 @@ const AuthForm = () => {
                 borderRadius="full"
                 size="lg"
                 _hover={{ bg: primaryColorOrange }}
+                onClick={handleSignup}
+                isDisabled={isLoading}
               >
-                Sign Up
+                {isLoading ? <Spinner /> : "Sign Up"}
               </Button>
             </VStack>
           </TabPanel>

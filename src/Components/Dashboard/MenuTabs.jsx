@@ -21,7 +21,7 @@ const MenuTabs = ({ onTabChange }) => {
       flexWrap={["wrap", "nowrap"]}
       justify={["center", "start"]}
     >
-      {['Chat', 'Code', 'Language', 'Image'].map((tab) => (
+      {['Chat', 'Image'].map((tab) => (
         <Button
           key={tab}
           onClick={() => handleTabClick(tab)}

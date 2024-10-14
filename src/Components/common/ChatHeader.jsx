@@ -13,7 +13,7 @@ import {
 import { DeleteIcon, EditIcon } from "@chakra-ui/icons";
 import { FaCogs, FaShareAlt } from "react-icons/fa";
 import { primaryColorOrange, primaryColorPurple } from "../../colorCodes";
-import SettingsModal from "./SettingsModal";
+import SettingsModal from "../Dashboard/SettingsModal";
 import { Link, useNavigate } from "react-router-dom";
 import { BASE_URL } from "../../Constants";
 
@@ -105,14 +105,14 @@ const ChatListCard = ({ chatId, chatName }) => {
       });
 
       if (response.ok) {
-        window.location.reload()
+        navigate('/app/ailab')
         toast({
           title: "Chat deleted.",
           status: "success",
           duration: 2000,
           isClosable: true,
         });
-    
+      
        
       } else {
         throw new Error("Failed to delete chat.");
@@ -238,11 +238,11 @@ const ChatListCard = ({ chatId, chatName }) => {
         </Tooltip>
 
         {/* Start Chat Button */}
-        <Button bg={primaryColorPurple} color="white" _hover={{ bg: primaryColorOrange }}>
+        {/* <Button bg={primaryColorPurple} color="white" _hover={{ bg: primaryColorOrange }}>
           <Link to={`/app/ailab/chat/${chatId}`} key={chatId}>
             Start Chat
           </Link>
-        </Button>
+        </Button> */}
       </Flex>
 
       {/* Settings Modal */}

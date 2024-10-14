@@ -7,9 +7,9 @@ const DashboardLayout = () => {
   const {theme} = useTheme();
   const { isOpen, onToggle } = useDisclosure({ defaultIsOpen: true });
   return (
-    <Flex height="100%" direction={["column", "row"]} >
-      <Box
-      height={["100%", "100%"]}
+    <Flex height="100%"  direction={["column", "row"]} >
+      <Box 
+      height={["100vh", "100vh"]}
         w={["100%", "250px"]}
         flex={isOpen ? "0 0 250px" : "0 0 80px"}
         transition={"width 0.3s ease"}
@@ -27,8 +27,9 @@ const DashboardLayout = () => {
         bg={theme.background}
       >
         <Sidebar isOpen={isOpen} onToggle={onToggle} />
-      </Box>      <Box
-        flex="1"
+      </Box>    
+        <Box height={'100vh'} w={'100%'}
+        // flex="1"
         // bg="linear-gradient(
         //   300deg,
         //   hsl(298deg 62% 85%) 0%,

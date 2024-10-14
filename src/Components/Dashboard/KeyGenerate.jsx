@@ -17,29 +17,50 @@ import { FaClipboard, FaRegDotCircle } from "react-icons/fa";
 import { FaPlus } from "react-icons/fa6";
 import { primaryColorOrange, primaryColorPurple } from "../../colorCodes";
 import { useTheme } from "../../Themes/ThemeContext";
+import { BASE_URL } from "../../Constants";
 
-
-const generateApiKey = () => {
-  const characters =
-    "ABCDEFGHIJKLMPQRSVWXYZadefghijklmnoqrstuvwxyz0123456789";
-  let result = "";
-  const length = 32;
-  for (let i = 0; i < length; i++) {
-    result += characters.charAt(Math.floor(Math.random() * characters.length));
-  }
-  return result;
-};
 
 const KeyGenerate = () => {
   const [apiKey, setApiKey] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
   const { hasCopied, onCopy } = useClipboard(apiKey);
-  const handleCreateApiKey = () => {
-    const newApiKey = generateApiKey();
-    setApiKey(newApiKey);
+  const { theme } = useTheme();
+
+  // Function to fetch the API key from the backend
+  const handleCreateApiKey = async () => {
+    setIsLoading(true); // Start loading state
+    const token = localStorage.getItem("authToken");
+
+    if (!token) {
+      console.error("Authorization token is missing.");
+      setIsLoading(false);
+      return;
+    }
+
+    try {
+      const response = await fetch(`${BASE_URL}/auth/generate-api-key`, {
+        method: "POST", // Assuming it's a POST request
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      const data = await response.json();
+      if (response.ok) {
+        console.log("API Key generated successfully:", data);
+        localStorage.setItem('apiKey' , data.apiKey)
+        setApiKey(data.apiKey); // Assuming the API key is in data.apiKey
+      } else {
+        console.error("Failed to generate API key:", data);
+      }
+    } catch (error) {
+      console.error("Error generating API key:", error);
+    } finally {
+      setIsLoading(false); // End loading state
+    }
   };
 
-
-  const { theme } = useTheme();
   return (
     <>
       <Box
@@ -49,7 +70,6 @@ const KeyGenerate = () => {
         backdropFilter={"saturate(190%) blur(20px)"}
         border={theme.keyGenerateBorder}
         borderRadius="md"
-        // backdropFilter={theme.keyGenerateBg}
         width="100%"
         maxW="800px"
         mx="auto"
@@ -68,6 +88,7 @@ const KeyGenerate = () => {
               color: "white",
             }}
             onClick={handleCreateApiKey}
+            isLoading={isLoading} // Display a loading spinner when generating the API key
           >
             Create API Key
           </Button>
@@ -112,7 +133,12 @@ const KeyGenerate = () => {
                   </Flex>
                 </Td>
                 <Td textAlign="right">
-                  <Button size="sm" bg={primaryColorPurple} color="white" _hover={{ bg: primaryColorOrange }}>
+                  <Button
+                    size="sm"
+                    bg={primaryColorPurple}
+                    color="white"
+                    _hover={{ bg: primaryColorOrange }}
+                  >
                     Disable
                   </Button>
                 </Td>
@@ -123,7 +149,12 @@ const KeyGenerate = () => {
 
         <Divider my={4} borderColor={theme.integrationBoxDivider} />
 
-        <Link href="#" color={primaryColorPurple} fontSize="md" textDecoration="underline">
+        <Link
+          href="#"
+          color={primaryColorPurple}
+          fontSize="md"
+          textDecoration="underline"
+        >
           Activate Subscription
         </Link>
       </Box>

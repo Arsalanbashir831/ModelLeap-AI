@@ -15,7 +15,7 @@ import { FaPaperPlane } from "react-icons/fa";
 import { primaryColorOrange, primaryColorPurple } from "../../colorCodes";
 import { useTheme } from "../../Themes/ThemeContext.jsx";
 
-const AiChatBox = ({ aiLogo }) => {
+const AiChatBox = ({ aiLogo , type}) => {
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState("");
   const { theme } = useTheme();

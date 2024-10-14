@@ -1,12 +1,8 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   VStack,
   HStack,
   Button,
-  RadioGroup,
-  Radio,
-//   Link,
-  Input,
   Modal,
   ModalOverlay,
   ModalContent,
@@ -15,45 +11,83 @@ import {
   ModalBody,
   ModalFooter,
   Text,
+  Box,
+  Input,
+  RadioGroup,
+  Radio,
 } from "@chakra-ui/react";
 import { Link } from "react-router-dom";
+import ModelSelection from "./ModelSelection"; // Import ModelSelection Component
+import { useTheme } from "../../Themes/ThemeContext";
 
 const SettingsModal = ({ isOpen, onClose }) => {
+  const [model, setModel] = useState(null);
+  const [outputLength, setOutputLength] = useState(512);
+  const [temperature, setTemperature] = useState(0.7);
+  const [topP, setTopP] = useState(0.7);
+  const [topK, setTopK] = useState(50);
+  const [modelType, setModelType] = useState("chat"); // New state for model type
+  const { theme } = useTheme();
+
+  const handleSave = () => {
+    // Handle saving settings logic here
+    console.log({
+      model,
+      outputLength,
+      temperature,
+      topP,
+      topK,
+      modelType, // Model type will also be logged
+    });
+    onClose();
+  };
+
   return (
-    <Modal isOpen={isOpen} onClose={onClose}>
+    <Modal isOpen={isOpen} onClose={onClose} size="lg">
       <ModalOverlay />
-      <ModalContent bg="#24303f" color="white">
-        <ModalHeader>Settings</ModalHeader>
-        <ModalCloseButton />
+      <ModalContent bg={theme.background} color="white">
+        <ModalHeader textColor={theme.textColor}>Model & Settings</ModalHeader>
+        <ModalCloseButton color={"red"} />
         <ModalBody>
-          <VStack spacing={4} align="start">
-            {/* Radio Buttons for Model Selection */}
-            <RadioGroup defaultValue="OpenAI">
-              <HStack spacing={4}>
-                <Radio value="OpenAI">OpenAI</Radio>
-                <Radio value="Mistral">Mistral</Radio>
-                <Radio value="Meta">Meta</Radio>
-              </HStack>
-            </RadioGroup>
-            <Text fontSize="sm" color="gray.300">
-              OpenAI API key
-            </Text>
-            <Input
-              placeholder="Enter your API key"
-              bg="pink"
-              _placeholder={{ color: "gray.500" }}
-              focusBorderColor="pink.400"
+          <VStack spacing={4} align="start" w="full">
+            {/* Radio Buttons for Model Type Selection */}
+            <Box w="full">
+              <Text fontSize="lg" fontWeight="bold" color={theme.textColor} mb={2}>
+                Select Model Type
+              </Text>
+              <RadioGroup onChange={setModelType} color={theme.textColor} value={modelType}>
+                <HStack spacing={5}>
+                  <Radio value="chat"  colorScheme="orange">
+                Chat Models
+                  </Radio>
+                  <Radio value="image" colorScheme="orange">
+                    Image Models
+                  </Radio>
+                </HStack>
+              </RadioGroup>
+            </Box>
+
+            {/* Model Selection and Parameters */}
+            <ModelSelection
+              type={modelType} // Pass the selected model type (chat or image)
+              // model={model}
+              // setModel={setModel}
+              // outputLength={outputLength}
+              // setOutputLength={setOutputLength}
+              // temperature={temperature}
+              // setTemperature={setTemperature}
+              // topP={topP}
+              // setTopP={setTopP}
+              // topK={topK}
+              // setTopK={setTopK}
             />
-            <Link to={"/app/keymanagement"} isExternal color="teal.400">
-              Get yours
-            </Link>
           </VStack>
         </ModalBody>
         <ModalFooter>
-          <Button variant="ghost" mr={3} onClick={onClose}>
+          <Button variant="outline" colorScheme="red" mr={3} onClick={onClose}>
             Close
           </Button>
-          <Button colorScheme="green" onClick={onClose}>
+          <Button colorScheme="green" onClick={handleSave}>
             Save
           </Button>
         </ModalFooter>
