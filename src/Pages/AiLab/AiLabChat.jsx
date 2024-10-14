@@ -57,7 +57,7 @@ const AiLabChat = () => {
         </Box> */}
         <Flex  gap={5}>
          
-          <HistoryBox />
+          <HistoryBox chatId={chatId}/>
 
           <Box
             p={2}

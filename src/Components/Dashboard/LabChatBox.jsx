@@ -32,6 +32,7 @@ const LabChatBox = ({ chatId }) => {
   const buttonSize = useBreakpointValue({ base: "md", md: "md" });
   const selectedModel = useRecoilValue(modelState);
   const modelParams = useRecoilValue(modelStateParameter);
+  const [imageStatus , setImageStatus] = useState('processing')
 
   const checkIfImageContent = (content) => {
     return Number.isInteger(content);
@@ -134,9 +135,8 @@ const LabChatBox = ({ chatId }) => {
   const handleSendMessage = async () => {
     const token = localStorage.getItem("authToken");
     const apiKey = localStorage.getItem("apiKey");
-
+  
     if (inputValue.trim()) {
-      // Local variable to keep track of messages
       let updatedMessages = [];
       // Add the user's message to the chat
       const userMessage = {
@@ -146,38 +146,95 @@ const LabChatBox = ({ chatId }) => {
         type: "text",
       };
       updatedMessages = [...messages, userMessage];
-
       setMessages(updatedMessages);
-
+  
       // Clear the input field
       setInputValue("");
-
+  
       try {
-        // Send the message to the streaming endpoint
-        const response = await fetch(`${BASE_URL}/api/stream/${chatId}`, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-            "x-api-key": apiKey,
-          },
-          body: JSON.stringify({
-            modelName: selectedModel.value,
-            message: inputValue,
-            kwargs: {
-              topP: parseFloat(modelParams.topP),
-              topK: parseInt(modelParams.topK),
-              temperature: parseFloat(modelParams.temperature),
-              maxOutputTokens: parseInt(modelParams.outputLength),
+        const isImageModel = selectedModel.value.startsWith("imagegen:");
+  
+        // Send the message to either the image or text generation endpoint
+        const response = await fetch(
+          isImageModel ? `${BASE_URL}/api/image/${chatId}` : `${BASE_URL}/api/stream/${chatId}`,
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+              "x-api-key": apiKey,
             },
-          }),
-        });
-
-        if (response.ok) {
+            body: JSON.stringify({
+              modelName: selectedModel.value,
+              message: inputValue,
+              kwargs: {
+                topP: parseFloat(modelParams.topP),
+                topK: parseInt(modelParams.topK),
+                temperature: parseFloat(modelParams.temperature),
+                maxOutputTokens: parseInt(modelParams.outputLength),
+              },
+            }),
+          }
+        );
+  
+        // If it's an image generation request
+        if (isImageModel && response.ok) {
+          const data = await response.json();
+          const imageId = data.response; // Get imageId from response
+  
+          // Add a placeholder AI message for loading the image
+          let aiMessage = {
+            from: "AI",
+            content: "Generating image...",
+            time: new Date().toLocaleTimeString(),
+            type: "image",
+            status: "loading",
+          };
+          updatedMessages = [...updatedMessages, aiMessage];
+          setMessages(updatedMessages);
+  
+          let imageStatus = "processing";
+          while (imageStatus === "processing") {
+            await new Promise((resolve) => setTimeout(resolve, 3000)); // Poll every 3 seconds
+  
+            const imageResponse = await fetch(`${BASE_URL}/api/get_images`, {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${token}`,
+                "x-api-key": apiKey,
+              },
+              body: JSON.stringify({
+                request_id: imageId.toString(),
+              }),
+            });
+  
+            if (imageResponse.ok) {
+              const imageData = await imageResponse.json();
+              imageStatus = imageData.status; // Check status of image generation
+  
+              if (imageStatus === "success") {
+                const imageUrl = imageData.output[0]; // Get the image URL
+  
+                // Update the last message in the array with the image URL
+                updatedMessages[updatedMessages.length - 1] = {
+                  ...updatedMessages[updatedMessages.length - 1],
+                  content: imageUrl,
+                  status: "complete",
+                };
+                setMessages([...updatedMessages]);
+              }
+            } else {
+              throw new Error("Failed to fetch image status.");
+            }
+          }
+        }
+  
+        // If it's a text generation request, handle streaming
+        if (!isImageModel && response.ok) {
           const reader = response.body.getReader();
           const decoder = new TextDecoder("utf-8");
-
-          // Add an empty AI message to the messages array
+  
           let aiMessage = {
             from: "AI",
             content: "",
@@ -186,7 +243,7 @@ const LabChatBox = ({ chatId }) => {
           };
           updatedMessages = [...updatedMessages, aiMessage];
           setMessages(updatedMessages);
-
+  
           let done = false;
           while (!done) {
             const { value, done: readerDone } = await reader.read();
@@ -194,19 +251,12 @@ const LabChatBox = ({ chatId }) => {
             if (value) {
               const chunk = decoder.decode(value);
               aiMessage.content += chunk;
-              // Update the last message in messages array
               updatedMessages[updatedMessages.length - 1] = { ...aiMessage };
               setMessages([...updatedMessages]);
             }
           }
-
-          // Optionally, after streaming completes, you can refresh messages from the backend
-          // await fetchMessages();
-
-        } else {
-          const data = await response.json();
-          throw new Error(data.error || "Failed to send message.");
         }
+  
       } catch (error) {
         toast({
           title: "Error",
@@ -218,6 +268,7 @@ const LabChatBox = ({ chatId }) => {
       }
     }
   };
+  
 
   const handleKeyPress = (e) => {
     if (e.key === "Enter" && !e.shiftKey) {

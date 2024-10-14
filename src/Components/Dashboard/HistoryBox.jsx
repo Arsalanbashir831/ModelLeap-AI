@@ -4,45 +4,19 @@ import { useTheme } from "../../Themes/ThemeContext";
 import { useNavigate } from "react-router-dom";
 import { BASE_URL } from "../../Constants";
 
-const HistoryBox = () => {
+const HistoryBox = ({chatId}) => {
   const { theme } = useTheme();
-  const [historyData , setHistoryData]= useState([]) 
-  
-  const navigate = useNavigate()
-  // const historyData = [
-  //   {
-  //     title: "Today",
-  //     items: ["Styled Responsive Description"],
-  //   },
-  //   {
-  //     title: "Yesterday",
-  //     items: [
-  //       "Resume Analysis and Job Search",
-  //       "Azure Hands-On Practice Guide",
-  //       "MERN Stack AI Backend Structure",
-  //       "Presentation Image Creation Help",
-  //       "Active Button Gradient Styling",
-  //     ],
-  //   },
-  //   {
-  //     title: "Previous 7 Days",
-  //     items: [
-  //       "BNU Offer Letter Draft",
-  //       "MERN Stack AI Backend Structure",
-  //       "Presentation Image Creation Help",
-  //       "Active Button Gradient Styling",
-  //     ],
-  //   },
-  //   {
-  //     title: "Previous 30 Days",
-  //     items: ["Repository Branch Structure Guide"],
-  //   },
-  // ];
-
+  const [historyData, setHistoryData] = useState({
+    today: [],
+    yesterday: [],
+    past7Days: [],
+    past30Days: [],
+    older: [],
+  });
+  const navigate = useNavigate();
   const displayHistory = useBreakpointValue({ base: "none", md: "block" });
 
   const handleCreateNewChat = () => {
-    // Logic for creating a new chat goes here
     console.log("New Chat Created");
   };
 
@@ -54,7 +28,7 @@ const HistoryBox = () => {
         return;
       }
 
-      const response = await fetch(`${BASE_URL}/api/chats`, {
+      const response = await fetch(`${BASE_URL}/api/chats-grouped`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
@@ -64,16 +38,58 @@ const HistoryBox = () => {
 
       const data = await response.json();
       if (response.ok) {
-        setHistoryData(data.chats); // Assuming the response contains an array of chats
-      } else if(response.status===403 || response.status==='403') {
-        navigate('/auth')
-       }
+     
+        // Set the grouped chats data into state, ensuring all fields are available
+        setHistoryData({
+          today: data.chats.today || [],
+          yesterday: data.chats.yesterday || [],
+          past7Days: data.chats.past7Days || [],
+          past30Days: data.chats.past30Days || [],
+          older: data.chats.older || [],
+        });
+      } else if (response.status === 403 || response.status === "403") {
+        navigate("/auth");
+      }
     } catch (error) {
       console.error("Error fetching chats:", error);
     }
   };
 
-  useEffect(()=>{fetchChats()},[])
+  useEffect(() => {
+    fetchChats();
+  }, []);
+console.log(historyData);
+  const renderChatItems = (chats) => {
+    return chats.map((chat, idx) => (
+      <Text
+      onClick={()=>{navigate(`/app/ailab/chat/${chat.chatId}`)}}
+        key={idx}
+        fontSize="sm"
+        _hover={{
+          cursor: "pointer",
+          textDecoration: "none",
+          bg: theme.historySelectedButton,
+          color: theme.historySelectedTextColor,
+          paddingX: "4",
+          paddingY: "2",
+          borderRadius: "md",
+        }}
+        transition="all 0.2s"
+        isTruncated
+        noOfLines={1}
+        bg={'transparent'}
+        paddingX="3"
+        paddingY="2"
+        borderRadius="md"
+        w="full"
+        background= { chatId===chat.chatId? theme.historySelectedButton:'transparent'}
+        color={ chatId===chat.chatId? theme.historySelectedTextColor:theme.textColor}
+      
+      >
+        {chat.name}
+      </Text>
+    ));
+  };
 
   return (
     <Box
@@ -121,42 +137,66 @@ const HistoryBox = () => {
           },
         }}
       >
-        {/* {historyData?.map((section, index) => (
-          <VStack key={index} align="start" spacing={3} mb={5}>
+        {/* Render Chat Sections */}
+        {historyData.today && historyData.today.length > 0 && (
+          <VStack align="start" spacing={3} mb={5}>
             <Text fontSize="sm" fontWeight="bold" color={theme.textColor}>
-              {section.title}
+              Today
             </Text>
             <Divider borderColor="gray.600" />
             <VStack align="start" spacing={2}>
-              {section?.items.map((item, idx) => (
-                <Text
-                  key={idx}
-                  fontSize="sm"
-                  _hover={{
-                    cursor: "pointer",
-                    textDecoration: "none",
-                    bg: theme.historySelectedButton,
-                    color: theme.historySelectedTextColor,
-                    paddingX: "4",
-                    paddingY: "2",
-                    borderRadius: "md",
-                  }}
-                  transition="all 0.2s"
-                  isTruncated
-                  noOfLines={1}
-                  bg={'transparent'}
-                  paddingX="3"
-                  paddingY="2"
-                  borderRadius="md"
-                  w="full"
-                  color={theme.textColor}
-                >
-                  {item}
-                </Text>
-              ))}
+              {renderChatItems(historyData.today)}
             </VStack>
           </VStack>
-        ))} */}
+        )}
+
+        {historyData.yesterday && historyData.yesterday.length > 0 && (
+          <VStack align="start" spacing={3} mb={5}>
+            <Text fontSize="sm" fontWeight="bold" color={theme.textColor}>
+              Yesterday
+            </Text>
+            <Divider borderColor="gray.600" />
+            <VStack align="start" spacing={2}>
+              {renderChatItems(historyData.yesterday)}
+            </VStack>
+          </VStack>
+        )}
+
+        {historyData.past7Days && historyData.past7Days.length > 0 && (
+          <VStack align="start" spacing={3} mb={5}>
+            <Text fontSize="sm" fontWeight="bold" color={theme.textColor}>
+              Past 7 Days
+            </Text>
+            <Divider borderColor="gray.600" />
+            <VStack align="start" spacing={2}>
+              {renderChatItems(historyData.past7Days)}
+            </VStack>
+          </VStack>
+        )}
+
+        {historyData.past30Days && historyData.past30Days.length > 0 && (
+          <VStack align="start" spacing={3} mb={5}>
+            <Text fontSize="sm" fontWeight="bold" color={theme.textColor}>
+              Past 30 Days
+            </Text>
+            <Divider borderColor="gray.600" />
+            <VStack align="start" spacing={2}>
+              {renderChatItems(historyData.past30Days)}
+            </VStack>
+          </VStack>
+        )}
+
+        {historyData.older && historyData.older.length > 0 && (
+          <VStack align="start" spacing={3} mb={5}>
+            <Text fontSize="sm" fontWeight="bold" color={theme.textColor}>
+              Older
+            </Text>
+            <Divider borderColor="gray.600" />
+            <VStack align="start" spacing={2}>
+              {renderChatItems(historyData.older)}
+            </VStack>
+          </VStack>
+        )}
       </Box>
     </Box>
   );
