@@ -1,7 +1,7 @@
 import React from "react";
 import Header from "../../Components/Dashboard/Header";
 import LabChatBox from "../../Components/Dashboard/LabChatBox";
-import { useParams, Link } from "react-router-dom";
+import { useParams, Link, useLocation, useNavigate } from "react-router-dom";
 import ChatListCard from "../../Components/Dashboard/ChatListCard";
 import { Button, Box, Flex } from "@chakra-ui/react";
 import { ArrowBackIcon } from "@chakra-ui/icons";
@@ -12,13 +12,15 @@ import HistoryBox from "../../Components/Dashboard/HistoryBox";
 import ChatHeader from "../../Components/common/ChatHeader";
 
 
+
 const AiLabChat = () => {
   const { chatId } = useParams();
   const { theme } = useTheme();
-
+const navigate = useNavigate()
   return (
     <Box bg={theme.background} minH="100vh" p={3}>
       <Box mb={1}>
+      <Button bg={primaryColorOrange} color={'white'} onClick={()=>navigate('/app/ailab')}> Back</Button>
         <Header isTitle={false}  />
       </Box>
 
@@ -68,7 +70,7 @@ const AiLabChat = () => {
             overflowY="auto"
             flex="1"
           >
-            <ChatHeader chatId={chatId} chatName={'testing'}/>
+            <ChatHeader chatId={chatId} />
             <LabChatBox chatId={chatId}/>
           </Box>
         </Flex>

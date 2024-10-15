@@ -1,3 +1,4 @@
+import React from "react";
 import {
   Box,
   VStack,
@@ -8,6 +9,7 @@ import {
   Text,
 } from "@chakra-ui/react";
 import { Link, useLocation } from "react-router-dom";
+import { RiProgress1Fill } from "react-icons/ri";
 import {
   FaKey,
   FaMoneyBill,
@@ -21,15 +23,28 @@ import {
   FaFlask,
 } from "react-icons/fa";
 import { primaryColorOrange, primaryColorPurple } from "../../colorCodes";
-import { useTheme } from "../../Themes/ThemeContext"; 
-import {motion} from "framer-motion";
+import { useTheme } from "../../Themes/ThemeContext";
+import { motion } from "framer-motion";
+
 const MotionBox = motion(Box);
 
 const Sidebar = ({ isOpen, onToggle }) => {
   const location = useLocation();
-  const { theme } = useTheme(); 
+  const { theme } = useTheme();
 
   const isActive = (path) => location.pathname === path;
+
+  // Define menu items in a dynamic array
+  const menuItems = [
+    { label: "Playground", icon: FaRobot, path: "/app" },
+    { label: "Lab", icon: FaFlask, path: "/app/ailab" },
+    { label: "Key Management", icon: FaKey, path: "/app/keymanagement" },
+    { label: "Billings", icon: FaMoneyBill, path: "/app/billing" },
+    { label: "Usage", icon: RiProgress1Fill, path: "/app/usage" },
+    { label: "Settings", icon: FaCog, path: "/app/settings" },
+    { label: "Support", icon: FaQuestionCircle, path: "/app/helpcenter" },
+    { label: "Documentation", icon: FaBook, path: "/app/documentation" },
+  ];
 
   const sidebarVariants = {
     open: {
@@ -42,23 +57,34 @@ const Sidebar = ({ isOpen, onToggle }) => {
     },
   };
 
-  // const sidebarVariants = {
-  //   open: {
-  //     width: "250px",
-  //     opacity: 1,
-  //     transition: { duration: 0.5, ease: "easeInOut" },
-  //   },
-  //   closed: {
-  //     width: "80px",
-  //     opacity: 0.8,
-  //     transition: { duration: 0.5, ease: "easeInOut" },
-  //   },
-  // };
+  const renderMenuItems = () =>
+    menuItems.map((item) => (
+      <Button
+        as={Link}
+        to={item.path}
+        variant="ghost"
+        key={item.label}
+        justifyContent={isOpen ? "flex-start" : "center"}
+        leftIcon={<item.icon color={theme.iconColor} />}
+        fontWeight="normal"
+        bg={
+          isActive(item.path)
+            ? "linear-gradient(90deg, hsl(297deg 63% 46%) 0%, hsl(309deg 64% 49%) 0%, hsl(318deg 72% 53%) -1%, hsl(326deg 80% 58%) -1%, hsl(333deg 88% 62%) -1%, hsl(340deg 94% 66%) 0%, hsl(347deg 99% 70%) 0%, hsl(354deg 100% 73%) 1%, hsl(2deg 100% 75%) 4%, hsl(8deg 100% 75%) 8%, hsl(14deg 100% 75%) 17%, hsl(19deg 100% 76%) 49%, hsl(23deg 98% 77%) 100%)"
+            : "transparent"
+        }
+        color={theme.textColor}
+        _hover={{
+          bg: "linear-gradient(90deg, hsl(297deg 63% 46%) 0%, hsl(309deg 64% 49%) 0%, hsl(318deg 72% 53%) -1%, hsl(326deg 80% 58%) -1%, hsl(333deg 88% 62%) -1%, hsl(340deg 94% 66%) 0%, hsl(347deg 99% 70%) 0%, hsl(354deg 100% 73%) 1%, hsl(2deg 100% 75%) 4%, hsl(8deg 100% 75%) 8%, hsl(14deg 100% 75%) 17%, hsl(19deg 100% 76%) 49%, hsl(23deg 98% 77%) 100%)",
+          color: "white",
+        }}
+      >
+        {isOpen && item.label}
+      </Button>
+    ));
 
   return (
-
     <MotionBox
-    variants={sidebarVariants}
+      variants={sidebarVariants}
       w={isOpen ? "250px" : "80px"}
       p="4"
       animate={isOpen ? "open" : "closed"}
@@ -71,187 +97,23 @@ const Sidebar = ({ isOpen, onToggle }) => {
       transition="width 0.3s ease"
       position={"relative"}
     >
-      <Box
-      height={'100vh'}
-        display="flex"
-        flexDirection="column"
-        alignItems={isOpen ? "flex-start" : "center"}
-      >
-        {isOpen && (
-          <Image src="/modelLeapsLogo.png" alt="Model Leap Logo" width={"80%"}  py={5} />
-        )}
-        {!isOpen && (
-          <Image
-            mt={3}
-            src="/model_leap_favicon.png"
-            alt="Model Leap Logo"
-            width={"100%"}
-            mb={5}
-          />
+      <Box height={"100vh"} display="flex" flexDirection="column" alignItems={isOpen ? "flex-start" : "center"}>
+        {isOpen ? (
+          <Image src="/modelLeapsLogo.png" alt="Model Leap Logo" width={"80%"} py={5} />
+        ) : (
+          <Image mt={3} src="/model_leap_favicon.png" alt="Model Leap Logo" width={"100%"} mb={5} />
         )}
 
         <VStack gap={1} mt={"2"} spacing="1" align="stretch">
-          <Button
-            as={Link}
-            to="/app"
-            variant="ghost"
-            justifyContent={isOpen ? "flex-start" : "center"}
-            leftIcon={<FaRobot color={theme.iconColor} />}
-            fontWeight="normal"
-            bg={
-              isActive("/app")
-                ? "linear-gradient(90deg, hsl(297deg 63% 46%) 0%, hsl(309deg 64% 49%) 0%, hsl(318deg 72% 53%) -1%, hsl(326deg 80% 58%) -1%, hsl(333deg 88% 62%) -1%, hsl(340deg 94% 66%) 0%, hsl(347deg 99% 70%) 0%, hsl(354deg 100% 73%) 1%, hsl(2deg 100% 75%) 4%, hsl(8deg 100% 75%) 8%, hsl(14deg 100% 75%) 17%, hsl(19deg 100% 76%) 49%, hsl(23deg 98% 77%) 100%)"
-                : "transparent"
-            }
-            color={theme.textColor}
-            _hover={{
-              bg: "linear-gradient(90deg, hsl(297deg 63% 46%) 0%, hsl(309deg 64% 49%) 0%, hsl(318deg 72% 53%) -1%, hsl(326deg 80% 58%) -1%, hsl(333deg 88% 62%) -1%, hsl(340deg 94% 66%) 0%, hsl(347deg 99% 70%) 0%, hsl(354deg 100% 73%) 1%, hsl(2deg 100% 75%) 4%, hsl(8deg 100% 75%) 8%, hsl(14deg 100% 75%) 17%, hsl(19deg 100% 76%) 49%, hsl(23deg 98% 77%) 100%)",
-              color: "white",
-            }}
-          >
-            <Text color={theme.textColor}>{isOpen && "Playground"}</Text>
-          </Button>
-          <Button
-            as={Link}
-            to="/app/ailab"
-            variant="ghost"
-            justifyContent={isOpen ? "flex-start" : "center"}
-            leftIcon={<FaFlask color={theme.iconColor} />}
-            fontWeight="normal"
-            bg={
-              isActive("/app/ailab")
-                ? "linear-gradient(90deg, hsl(297deg 63% 46%) 0%, hsl(309deg 64% 49%) 0%, hsl(318deg 72% 53%) -1%, hsl(326deg 80% 58%) -1%, hsl(333deg 88% 62%) -1%, hsl(340deg 94% 66%) 0%, hsl(347deg 99% 70%) 0%, hsl(354deg 100% 73%) 1%, hsl(2deg 100% 75%) 4%, hsl(8deg 100% 75%) 8%, hsl(14deg 100% 75%) 17%, hsl(19deg 100% 76%) 49%, hsl(23deg 98% 77%) 100%)"
-                : "transparent"
-            }
-            color={theme.textColor}
-            _hover={{
-              bg: "linear-gradient(90deg, hsl(297deg 63% 46%) 0%, hsl(309deg 64% 49%) 0%, hsl(318deg 72% 53%) -1%, hsl(326deg 80% 58%) -1%, hsl(333deg 88% 62%) -1%, hsl(340deg 94% 66%) 0%, hsl(347deg 99% 70%) 0%, hsl(354deg 100% 73%) 1%, hsl(2deg 100% 75%) 4%, hsl(8deg 100% 75%) 8%, hsl(14deg 100% 75%) 17%, hsl(19deg 100% 76%) 49%, hsl(23deg 98% 77%) 100%)",
-              color: "white",
-            }}
-          >
-            {isOpen && "Lab"}
-          </Button>
-
-          <Button
-            as={Link}
-            variant="ghost"
-            to="/app/keymanagement"
-            color={theme.textColor}
-            justifyContent={isOpen ? "flex-start" : "center"}
-            leftIcon={<FaKey color={theme.iconColor} />}
-            fontWeight="normal"
-            bg={
-              isActive("/app/keymanagement")
-                ? "linear-gradient(90deg, hsl(297deg 63% 46%) 0%, hsl(309deg 64% 49%) 0%, hsl(318deg 72% 53%) -1%, hsl(326deg 80% 58%) -1%, hsl(333deg 88% 62%) -1%, hsl(340deg 94% 66%) 0%, hsl(347deg 99% 70%) 0%, hsl(354deg 100% 73%) 1%, hsl(2deg 100% 75%) 4%, hsl(8deg 100% 75%) 8%, hsl(14deg 100% 75%) 17%, hsl(19deg 100% 76%) 49%, hsl(23deg 98% 77%) 100%)"
-                : "transparent"
-            }
-            _hover={{
-              bg: "linear-gradient(90deg, hsl(297deg 63% 46%) 0%, hsl(309deg 64% 49%) 0%, hsl(318deg 72% 53%) -1%, hsl(326deg 80% 58%) -1%, hsl(333deg 88% 62%) -1%, hsl(340deg 94% 66%) 0%, hsl(347deg 99% 70%) 0%, hsl(354deg 100% 73%) 1%, hsl(2deg 100% 75%) 4%, hsl(8deg 100% 75%) 8%, hsl(14deg 100% 75%) 17%, hsl(19deg 100% 76%) 49%, hsl(23deg 98% 77%) 100%)",
-              color: "white",
-            }}
-          >
-            {isOpen && "Key Management"}
-          </Button>
-
-          <Button
-            as={Link}
-            variant="ghost"
-            to="/app/billing"
-            color={theme.textColor}
-            justifyContent={isOpen ? "flex-start" : "center"}
-            leftIcon={<FaMoneyBill color={theme.iconColor} />}
-            fontWeight="normal"
-            bg={
-              isActive("/app/billing")
-                ? "linear-gradient(90deg, hsl(297deg 63% 46%) 0%, hsl(309deg 64% 49%) 0%, hsl(318deg 72% 53%) -1%, hsl(326deg 80% 58%) -1%, hsl(333deg 88% 62%) -1%, hsl(340deg 94% 66%) 0%, hsl(347deg 99% 70%) 0%, hsl(354deg 100% 73%) 1%, hsl(2deg 100% 75%) 4%, hsl(8deg 100% 75%) 8%, hsl(14deg 100% 75%) 17%, hsl(19deg 100% 76%) 49%, hsl(23deg 98% 77%) 100%)"
-                : "transparent"
-            }
-            _hover={{
-              bg: "linear-gradient(90deg, hsl(297deg 63% 46%) 0%, hsl(309deg 64% 49%) 0%, hsl(318deg 72% 53%) -1%, hsl(326deg 80% 58%) -1%, hsl(333deg 88% 62%) -1%, hsl(340deg 94% 66%) 0%, hsl(347deg 99% 70%) 0%, hsl(354deg 100% 73%) 1%, hsl(2deg 100% 75%) 4%, hsl(8deg 100% 75%) 8%, hsl(14deg 100% 75%) 17%, hsl(19deg 100% 76%) 49%, hsl(23deg 98% 77%) 100%)",
-              color: "white",
-            }}
-          >
-            {isOpen && "Billings"}
-          </Button>
-
-          <Divider my="4" borderColor={theme.sideBarDividerColor}/>
-          {isOpen && (
-            <Text
-              fontSize="sm"
-              color={theme.textColor}
-              pl={isOpen ? "4" : "0"}
-              textAlign={isOpen ? "left" : "center"}
-            >
+          {renderMenuItems()}
+          <Divider my="4" borderColor={theme.sideBarDividerColor} />
+          {/* {isOpen && (
+            <Text fontSize="sm" color={theme.textColor} pl={isOpen ? "4" : "0"} textAlign={isOpen ? "left" : "center"}>
               More
             </Text>
-          )}
+          )} */}
 
           <Button
-            as={Link}
-            to="/app/settings"
-            variant="ghost"
-            color={theme.textColor}
-            justifyContent={isOpen ? "flex-start" : "center"}
-            leftIcon={<FaCog color={theme.iconColor} />}
-            fontWeight="normal"
-            bg={
-              isActive("/app/settings")
-                ? "linear-gradient(90deg, hsl(297deg 63% 46%) 0%, hsl(309deg 64% 49%) 0%, hsl(318deg 72% 53%) -1%, hsl(326deg 80% 58%) -1%, hsl(333deg 88% 62%) -1%, hsl(340deg 94% 66%) 0%, hsl(347deg 99% 70%) 0%, hsl(354deg 100% 73%) 1%, hsl(2deg 100% 75%) 4%, hsl(8deg 100% 75%) 8%, hsl(14deg 100% 75%) 17%, hsl(19deg 100% 76%) 49%, hsl(23deg 98% 77%) 100%)"
-                : "transparent"
-            }
-            _hover={{
-              bg: "linear-gradient(90deg, hsl(297deg 63% 46%) 0%, hsl(309deg 64% 49%) 0%, hsl(318deg 72% 53%) -1%, hsl(326deg 80% 58%) -1%, hsl(333deg 88% 62%) -1%, hsl(340deg 94% 66%) 0%, hsl(347deg 99% 70%) 0%, hsl(354deg 100% 73%) 1%, hsl(2deg 100% 75%) 4%, hsl(8deg 100% 75%) 8%, hsl(14deg 100% 75%) 17%, hsl(19deg 100% 76%) 49%, hsl(23deg 98% 77%) 100%)",
-              color: "white",
-            }}
-          >
-            {isOpen && "Settings"}
-          </Button>
-
-          <Button
-            as={Link}
-            variant="ghost"
-            to="/app/helpcenter"
-            color={theme.textColor}
-            justifyContent={isOpen ? "flex-start" : "center"}
-            leftIcon={<FaQuestionCircle color={theme.iconColor} />}
-            fontWeight="normal"
-            bg={
-              isActive("/app/helpcenter")
-                ? "linear-gradient(90deg, hsl(297deg 63% 46%) 0%, hsl(309deg 64% 49%) 0%, hsl(318deg 72% 53%) -1%, hsl(326deg 80% 58%) -1%, hsl(333deg 88% 62%) -1%, hsl(340deg 94% 66%) 0%, hsl(347deg 99% 70%) 0%, hsl(354deg 100% 73%) 1%, hsl(2deg 100% 75%) 4%, hsl(8deg 100% 75%) 8%, hsl(14deg 100% 75%) 17%, hsl(19deg 100% 76%) 49%, hsl(23deg 98% 77%) 100%)"
-                : "transparent"
-            }
-            _hover={{
-              bg: "linear-gradient(90deg, hsl(297deg 63% 46%) 0%, hsl(309deg 64% 49%) 0%, hsl(318deg 72% 53%) -1%, hsl(326deg 80% 58%) -1%, hsl(333deg 88% 62%) -1%, hsl(340deg 94% 66%) 0%, hsl(347deg 99% 70%) 0%, hsl(354deg 100% 73%) 1%, hsl(2deg 100% 75%) 4%, hsl(8deg 100% 75%) 8%, hsl(14deg 100% 75%) 17%, hsl(19deg 100% 76%) 49%, hsl(23deg 98% 77%) 100%)",
-              color: "white",
-            }}
-          >
-            {isOpen && "Support"}
-          </Button>
-
-          <Button
-            as={Link}
-            variant="ghost"
-            to="/app/documentation"
-            color={theme.textColor}
-            justifyContent={isOpen ? "flex-start" : "center"}
-            leftIcon={<FaBook color={theme.iconColor} />}
-            fontWeight="normal"
-            bg={
-              isActive("/app/documentation")
-                ? "linear-gradient(90deg, hsl(297deg 63% 46%) 0%, hsl(309deg 64% 49%) 0%, hsl(318deg 72% 53%) -1%, hsl(326deg 80% 58%) -1%, hsl(333deg 88% 62%) -1%, hsl(340deg 94% 66%) 0%, hsl(347deg 99% 70%) 0%, hsl(354deg 100% 73%) 1%, hsl(2deg 100% 75%) 4%, hsl(8deg 100% 75%) 8%, hsl(14deg 100% 75%) 17%, hsl(19deg 100% 76%) 49%, hsl(23deg 98% 77%) 100%)"
-                : "transparent"
-            }
-            _hover={{
-              bg: "linear-gradient(90deg, hsl(297deg 63% 46%) 0%, hsl(309deg 64% 49%) 0%, hsl(318deg 72% 53%) -1%, hsl(326deg 80% 58%) -1%, hsl(333deg 88% 62%) -1%, hsl(340deg 94% 66%) 0%, hsl(347deg 99% 70%) 0%, hsl(354deg 100% 73%) 1%, hsl(2deg 100% 75%) 4%, hsl(8deg 100% 75%) 8%, hsl(14deg 100% 75%) 17%, hsl(19deg 100% 76%) 49%, hsl(23deg 98% 77%) 100%)",
-              color: "white",
-            }}
-          >
-            {isOpen && "Documentation"}
-          </Button>
-
-          <Divider my="2" borderColor={theme.sideBarDividerColor}/>
-
-          <Button onClick={()=>{localStorage.removeItem('authToken')}}
             as={Link}
             variant="ghost"
             to="/auth"
@@ -259,11 +121,9 @@ const Sidebar = ({ isOpen, onToggle }) => {
             justifyContent={isOpen ? "flex-start" : "center"}
             leftIcon={<FaSignOutAlt color={theme.iconColor} />}
             fontWeight="normal"
-            bg={
-              isActive("/auth")
-                ? "linear-gradient(90deg, hsl(297deg 63% 46%) 0%, hsl(309deg 64% 49%) 0%, hsl(318deg 72% 53%) -1%, hsl(326deg 80% 58%) -1%, hsl(333deg 88% 62%) -1%, hsl(340deg 94% 66%) 0%, hsl(347deg 99% 70%) 0%, hsl(354deg 100% 73%) 1%, hsl(2deg 100% 75%) 4%, hsl(8deg 100% 75%) 8%, hsl(14deg 100% 75%) 17%, hsl(19deg 100% 76%) 49%, hsl(23deg 98% 77%) 100%)"
-                : "transparent"
-            }
+            onClick={() => {
+              localStorage.removeItem("authToken");
+            }}
             _hover={{
               bg: "linear-gradient(90deg, hsl(297deg 63% 46%) 0%, hsl(309deg 64% 49%) 0%, hsl(318deg 72% 53%) -1%, hsl(326deg 80% 58%) -1%, hsl(333deg 88% 62%) -1%, hsl(340deg 94% 66%) 0%, hsl(347deg 99% 70%) 0%, hsl(354deg 100% 73%) 1%, hsl(2deg 100% 75%) 4%, hsl(8deg 100% 75%) 8%, hsl(14deg 100% 75%) 17%, hsl(19deg 100% 76%) 49%, hsl(23deg 98% 77%) 100%)",
               color: "white",
@@ -275,13 +135,7 @@ const Sidebar = ({ isOpen, onToggle }) => {
       </Box>
 
       <IconButton
-        icon={
-          isOpen ? (
-            <FaChevronLeft color={theme.sideBarIconColor} />
-          ) : (
-            <FaChevronRight color={theme.sideBarIconColor} />
-          )
-        }
+        icon={isOpen ? <FaChevronLeft color={theme.sideBarIconColor} /> : <FaChevronRight color={theme.sideBarIconColor} />}
         onClick={onToggle}
         aria-label="Toggle Sidebar"
         size="sm"

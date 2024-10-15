@@ -100,7 +100,8 @@ const BillingCard = ({ title, price, features, selected, onClick }) => {
           width="100%" 
           rightIcon={<Icon as={FaCheckCircle} />}
         >
-          View Usage →
+        {/* {selected ? :'Cance'} */}
+         Subscription
         </Button>
       </Flex>
     </Box>

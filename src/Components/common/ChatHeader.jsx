@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Box,
   IconButton,
@@ -17,10 +17,13 @@ import SettingsModal from "../Dashboard/SettingsModal";
 import { Link, useNavigate } from "react-router-dom";
 import { BASE_URL } from "../../Constants";
 import { useTheme } from "../../Themes/ThemeContext";
+import { useRecoilValue } from "recoil";
+import chatNameState from "../../atoms/ChatNameState";
 
-const ChatListCard = ({ chatId, chatName }) => {
+const ChatHeader = ({ chatId }) => {
   const [isEditing, setIsEditing] = useState(false);
-  const [editedName, setEditedName] = useState(chatName);
+
+  const [editedName, setEditedName] = useState('');
   const [isSettingsOpen, setIsSettingsOpen] = useState(false); // State for settings modal
   const { hasCopied, onCopy } = useClipboard(editedName);
   const toast = useToast();
@@ -28,7 +31,11 @@ const ChatListCard = ({ chatId, chatName }) => {
 const {theme} = useTheme()
   const token = localStorage.getItem('authToken');
   const apiKey = localStorage.getItem('apiKey');
+   const chatName = useRecoilValue(chatNameState)
 
+  useEffect(()=>{
+    setEditedName(chatName)
+  },[chatName])
 
   // Handle edit click
   const handleEditClick = () => {
@@ -171,7 +178,7 @@ const {theme} = useTheme()
         ) : (
           <Flex align="center">
             <Text fontSize="md" color={theme.textColor} fontWeight="bold">
-              {editedName}
+              {editedName} 
             </Text>
             <Tooltip label="Edit Chat Name">
               <IconButton
@@ -249,4 +256,4 @@ const {theme} = useTheme()
   );
 };
 
-export default ChatListCard;
+export default ChatHeader;

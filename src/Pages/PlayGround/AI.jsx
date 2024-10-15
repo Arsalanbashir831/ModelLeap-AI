@@ -8,9 +8,11 @@ import ModelSelection from "../../Components/Dashboard/ModelSelection";
 import { useTheme } from "../../Themes/ThemeContext";
 import Description from "../../Components/Dashboard/Description";
 
+
 const AI = () => {
   const [activeTab, setActiveTab] = useState("Chat");
   const { theme } = useTheme();
+  
 
   const handleTabChange = (tab) => {
     setActiveTab(tab);
@@ -48,8 +50,8 @@ const AI = () => {
           borderColor="rgba(255, 255, 255, 0.2)" // Light border for frosted effect
         >
           {/* Render AiChatBox based on active tab */}
-          {activeTab === "Chat" && <AiChatBox type={"Chat"} aiLogo={logo} />}
-          {activeTab === "Image" && <AiChatBox type={"Image"} aiLogo={logo} />}
+          {activeTab === "Chat" && <AiChatBox  />}
+          {activeTab === "Image" && <AiChatBox />}
         </Box>
 
         {/* Model Selection & Parameter Tuning Section */}

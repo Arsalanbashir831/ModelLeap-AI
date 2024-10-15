@@ -238,10 +238,14 @@ const ChatListCard = ({ chatId, chatName }) => {
         </Tooltip>
 
         {/* Start Chat Button */}
-        <Button bg={primaryColorPurple} color="white" _hover={{ bg: primaryColorOrange }}>
-          <Link to={`/app/ailab/chat/${chatId}`} key={chatId}>
+        <Button onClick={()=>{navigate(`/app/ailab/chat/${chatId}` ,{state:{
+          chatName:chatName
+        }})}} bg={primaryColorPurple} color="white" _hover={{ bg: primaryColorOrange }}>
+
+Start Chat
+          {/* <Link to={`/app/ailab/chat/${chatId}`} state={ chatName }  key={chatId}>
             Start Chat
-          </Link>
+          </Link> */}
         </Button>
       </Flex>
 

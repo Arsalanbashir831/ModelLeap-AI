@@ -1,43 +1,60 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Box, SimpleGrid } from "@chakra-ui/react";
 import Header from "../../Components/Dashboard/Header";
 import BillingCard from "../../Components/Dashboard/BillingCard";
+import { BASE_URL } from "../../Constants";
+import useUserData from "../../hooks/useUserData";
+import userState from "../../atoms/userState";
+import { useRecoilValue } from "recoil";
 
 const Plans = () => {
-  const [selectedPlan, setSelectedPlan] = useState("free");
+  const [selectedPlan, setSelectedPlan] = useState("");
+  const [plans, setPlans] = useState([]);
+  const userContext = useRecoilValue(userState);
 
-  const plans = [
-    {
-      id: "free",
-      title: "Free-Tier",
-      price: "Free",
-      features: [
-        "Limited access to over 100 AI Models over API",
-        "Limited token usage",
-        "Limited AI Playground model selection",
-      ],
-    },
-    {
-      id: "startup",
-      title: "Start-Up",
-      price: "$4.99 / week",
-      features: [
-        "10 Million AI/ML Tokens or 1K images",
-        "Pro models available in the AI playground",
-        "Serverless access to over 100 AI Models",
-      ],
-    },
-    {
-      id: "custom",
-      title: "Custom",
-      price: "$14.70 / week",
-      features: [
-        "Serverless access to over 100 AI Models",
-        "Pro models available in the AI playground",
-        "30 million tokens or 3K images",
-      ],
-    },
-  ];
+  useEffect(() => {
+    setSelectedPlan(userContext?.subscriptionTier);
+  }, [userContext]);
+
+  const fetchPlans = async () => {
+    try {
+      const response = await fetch(`${BASE_URL}/payments/get_plans`);
+      if (response.ok) {
+        const data = await response.json();
+        setPlans(data.plans);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  useEffect(() => {
+    fetchPlans();
+  }, []);
+
+  const selectPlanHandling = async (plan) => {
+    try {
+      const localId = localStorage.getItem("localId");
+      const response = await fetch(`${BASE_URL}/payments/create-checkout-session`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          plan: plan,
+          userId: localId,
+        }),
+      });
+      if (response.ok) {
+        const data = await response.json();
+        window.open(data.id, '_blank');
+        // window.location.href=data.id
+        console.log(data); // Handle the response or redirect to the checkout URL if needed
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   return (
     <Box p={{ base: 4, md: 6 }}>
@@ -47,19 +64,18 @@ const Plans = () => {
 
       <SimpleGrid
         mt={12}
-        columns={{ base: 1, sm: 2, md: 3 }} 
+        columns={{ base: 1, sm: 2, md: 3 }}
         spacing={{ base: 4, md: 6 }}
-        // bg={"white"}
         p={4}
       >
-        {plans.map((plan) => (
+        {plans?.map((plan) => (
           <BillingCard
             key={plan.id}
-            title={plan.title}
+            title={plan.name}
             price={plan.price}
             features={plan.features}
-            selected={selectedPlan === plan.id}
-            onClick={() => setSelectedPlan(plan.id)}
+            selected={selectedPlan === plan.value}
+            onClick={() => selectPlanHandling(plan.value)} // Pass the plan value to handle subscription
           />
         ))}
       </SimpleGrid>

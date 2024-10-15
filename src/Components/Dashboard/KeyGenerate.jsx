@@ -12,21 +12,28 @@ import {
   Link,
   Divider,
 } from "@chakra-ui/react";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { FaClipboard, FaRegDotCircle } from "react-icons/fa";
 import { FaPlus } from "react-icons/fa6";
 import { primaryColorOrange, primaryColorPurple } from "../../colorCodes";
 import { useTheme } from "../../Themes/ThemeContext";
 import { BASE_URL } from "../../Constants";
 
+import { useRecoilValue } from "recoil";
+import userState from "../../atoms/userState";
 
 const KeyGenerate = () => {
   const [apiKey, setApiKey] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const { hasCopied, onCopy } = useClipboard(apiKey);
   const { theme } = useTheme();
+  const userContext= useRecoilValue(userState)
 
+// const {userData}=useUserData()
+// console.log(userData?.apiKey);
   // Function to fetch the API key from the backend
+
+  
   const handleCreateApiKey = async () => {
     setIsLoading(true); // Start loading state
     const token = localStorage.getItem("authToken");
@@ -60,6 +67,10 @@ const KeyGenerate = () => {
       setIsLoading(false); // End loading state
     }
   };
+
+  useEffect(()=>{
+      setApiKey(userContext?.apiKey)
+  },[userContext])
 
   return (
     <>
@@ -109,7 +120,7 @@ const KeyGenerate = () => {
                   </Flex>
                 </Td>
                 <Td fontSize="md" color="gray.500">
-                  Today at 3:50 PM
+                  MODEL LEAP SECRET KEY 
                 </Td>
                 <Td>
                   <Flex alignItems="center">
@@ -132,7 +143,7 @@ const KeyGenerate = () => {
                     )}
                   </Flex>
                 </Td>
-                <Td textAlign="right">
+                {/* <Td textAlign="right">
                   <Button
                     size="sm"
                     bg={primaryColorPurple}
@@ -141,7 +152,7 @@ const KeyGenerate = () => {
                   >
                     Disable
                   </Button>
-                </Td>
+                </Td> */}
               </Tr>
             </Tbody>
           </Table>
@@ -149,14 +160,14 @@ const KeyGenerate = () => {
 
         <Divider my={4} borderColor={theme.integrationBoxDivider} />
 
-        <Link
+        {/* <Link
           href="#"
           color={primaryColorPurple}
           fontSize="md"
           textDecoration="underline"
         >
           Activate Subscription
-        </Link>
+        </Link> */}
       </Box>
     </>
   );

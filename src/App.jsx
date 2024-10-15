@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import DashboardLayout from "./DashboardLayout";
 import AI from "./Pages/PlayGround/AI";
@@ -16,6 +16,8 @@ import { useRecoilValue } from "recoil";
 import useAuthValidation from "./hooks/useAuthValidation";
 import authState from "./atoms/authState";
 import ProtectedRoute from "./Components/common/ProtectedRoute";
+import useUserData from "./hooks/useUserData";
+import Usage from "./Pages/Usage/Usage";
 
 const router = createBrowserRouter([
   { path: "/", element: <Landing /> },
@@ -31,6 +33,7 @@ const router = createBrowserRouter([
       { path: "/app", element: <AI /> },
       { path: "/app/keymanagement", element: <APIkey /> },
       { path: "/app/billing", element: <Plans /> },
+      { path: "/app/usage", element: <Usage /> },
       { path: "/app/settings", element: <Settings /> },
       { path: "/app/helpcenter", element: <Support /> },
       { path: "/app/documentation", element: <Integration /> },
@@ -42,7 +45,8 @@ const router = createBrowserRouter([
 ]);
 
 const App = () => {
- 
+ const {userData}=useUserData()
+ useEffect(()=>{},[userData])
   return (
     <>
       <RouterProvider router={router}  />

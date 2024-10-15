@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Box,
   Button,
@@ -23,6 +23,8 @@ import { primaryColorPurple, primaryColorOrange } from "../../colorCodes";
 import { Link, useNavigate } from "react-router-dom";
 import { BASE_URL } from "../../Constants";
 
+
+
 const AuthForm = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [tabIndex, setTabIndex] = useState(0);
@@ -33,7 +35,8 @@ const AuthForm = () => {
   const [isLoading, setIsLoading] = useState(false);
   const inputBg = "gray.100";
   const navigate = useNavigate();
-  
+
+
   const toggleShowPassword = () => setShowPassword(!showPassword);
 
   const handleSignup = async () => {
@@ -44,7 +47,7 @@ const AuthForm = () => {
         setIsLoading(false);
         return;
       }
-      
+
       const response = await fetch(`${BASE_URL}/auth/register`, {
         method: "POST",
         headers: {
@@ -60,7 +63,8 @@ const AuthForm = () => {
       const data = await response.json();
       if (response.ok) {
         console.log("Signup successful", data);
-        localStorage.setItem('authToken', data.idToken);
+        localStorage.setItem("authToken", data.idToken);
+        
         navigate("/app");
       } else {
         console.log("Signup failed", data);
@@ -89,8 +93,13 @@ const AuthForm = () => {
       const data = await response.json();
       if (response.ok) {
         console.log("Login successful", data);
-        localStorage.setItem('authToken', data.idToken);
-        navigate("/app");
+        localStorage.setItem("authToken", data.idToken);
+        localStorage.setItem("localId", data.localId);
+       
+          // console.log('auth',userData);
+          // setUserContext(userData);
+          navigate("/app");
+     
       } else {
         console.log("Login failed", data);
       }

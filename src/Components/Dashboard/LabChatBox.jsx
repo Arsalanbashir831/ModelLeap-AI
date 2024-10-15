@@ -7,15 +7,15 @@ import {
   Text,
   IconButton,
   VStack,
-  HStack,
   Avatar,
   useBreakpointValue,
   useToast,
   Spinner,
   Image,
+  SkeletonText,
 } from "@chakra-ui/react";
 import { FiSend } from "react-icons/fi";
-import { BsClock, BsClipboard } from "react-icons/bs";
+import { BsClock, BsClipboard, BsArrowDown } from "react-icons/bs";
 import { useTheme } from "../../Themes/ThemeContext";
 import { BASE_URL } from "../../Constants";
 import { useRecoilValue } from "recoil";
@@ -32,7 +32,11 @@ const LabChatBox = ({ chatId }) => {
   const buttonSize = useBreakpointValue({ base: "md", md: "md" });
   const selectedModel = useRecoilValue(modelState);
   const modelParams = useRecoilValue(modelStateParameter);
-  const [imageStatus , setImageStatus] = useState('processing')
+  const [isLoading, setIsLoading] = useState(false); // For loading animation
+  const [showScrollButton, setShowScrollButton] = useState(false); // For scroll-to-bottom button
+
+  const messagesEndRef = useRef(null);
+  const messagesContainerRef = useRef(null);
 
   const checkIfImageContent = (content) => {
     return Number.isInteger(content);
@@ -50,7 +54,6 @@ const LabChatBox = ({ chatId }) => {
       });
       if (response.ok) {
         const data = await response.json();
-        console.log(data);
 
         const processedMessages = await Promise.all(
           data.messages.map(async (message) => {
@@ -132,10 +135,31 @@ const LabChatBox = ({ chatId }) => {
     fetchMessages();
   }, [chatId]);
 
+  useEffect(() => {
+    scrollToBottom();
+  }, [messages]);
+
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  };
+
+  const handleScroll = () => {
+    const container = messagesContainerRef.current;
+    if (container) {
+      const { scrollTop, scrollHeight, clientHeight } = container;
+      // Show scroll button if not at the bottom
+      if (scrollHeight - scrollTop > clientHeight + 100) {
+        setShowScrollButton(true);
+      } else {
+        setShowScrollButton(false);
+      }
+    }
+  };
+
   const handleSendMessage = async () => {
     const token = localStorage.getItem("authToken");
     const apiKey = localStorage.getItem("apiKey");
-  
+
     if (inputValue.trim()) {
       let updatedMessages = [];
       // Add the user's message to the chat
@@ -147,16 +171,20 @@ const LabChatBox = ({ chatId }) => {
       };
       updatedMessages = [...messages, userMessage];
       setMessages(updatedMessages);
-  
+
       // Clear the input field
       setInputValue("");
-  
+
       try {
         const isImageModel = selectedModel.value.startsWith("imagegen:");
-  
+
+        setIsLoading(true); // Start loading
+
         // Send the message to either the image or text generation endpoint
         const response = await fetch(
-          isImageModel ? `${BASE_URL}/api/image/${chatId}` : `${BASE_URL}/api/stream/${chatId}`,
+          isImageModel
+            ? `${BASE_URL}/api/image/${chatId}`
+            : `${BASE_URL}/api/stream/${chatId}`,
           {
             method: "POST",
             headers: {
@@ -176,12 +204,12 @@ const LabChatBox = ({ chatId }) => {
             }),
           }
         );
-  
+
         // If it's an image generation request
         if (isImageModel && response.ok) {
           const data = await response.json();
           const imageId = data.response; // Get imageId from response
-  
+
           // Add a placeholder AI message for loading the image
           let aiMessage = {
             from: "AI",
@@ -192,30 +220,33 @@ const LabChatBox = ({ chatId }) => {
           };
           updatedMessages = [...updatedMessages, aiMessage];
           setMessages(updatedMessages);
-  
+
           let imageStatus = "processing";
           while (imageStatus === "processing") {
             await new Promise((resolve) => setTimeout(resolve, 3000)); // Poll every 3 seconds
-  
-            const imageResponse = await fetch(`${BASE_URL}/api/get_images`, {
-              method: "POST",
-              headers: {
-                "Content-Type": "application/json",
-                Authorization: `Bearer ${token}`,
-                "x-api-key": apiKey,
-              },
-              body: JSON.stringify({
-                request_id: imageId.toString(),
-              }),
-            });
-  
+
+            const imageResponse = await fetch(
+              `${BASE_URL}/api/get_images`,
+              {
+                method: "POST",
+                headers: {
+                  "Content-Type": "application/json",
+                  Authorization: `Bearer ${token}`,
+                  "x-api-key": apiKey,
+                },
+                body: JSON.stringify({
+                  request_id: imageId.toString(),
+                }),
+              }
+            );
+
             if (imageResponse.ok) {
               const imageData = await imageResponse.json();
               imageStatus = imageData.status; // Check status of image generation
-  
+
               if (imageStatus === "success") {
                 const imageUrl = imageData.output[0]; // Get the image URL
-  
+
                 // Update the last message in the array with the image URL
                 updatedMessages[updatedMessages.length - 1] = {
                   ...updatedMessages[updatedMessages.length - 1],
@@ -223,18 +254,21 @@ const LabChatBox = ({ chatId }) => {
                   status: "complete",
                 };
                 setMessages([...updatedMessages]);
+                setIsLoading(false); // Stop loading
+                scrollToBottom();
               }
             } else {
               throw new Error("Failed to fetch image status.");
             }
           }
         }
-  
+
         // If it's a text generation request, handle streaming
         if (!isImageModel && response.ok) {
+          setIsLoading(false)
           const reader = response.body.getReader();
           const decoder = new TextDecoder("utf-8");
-  
+
           let aiMessage = {
             from: "AI",
             content: "",
@@ -243,7 +277,7 @@ const LabChatBox = ({ chatId }) => {
           };
           updatedMessages = [...updatedMessages, aiMessage];
           setMessages(updatedMessages);
-  
+
           let done = false;
           while (!done) {
             const { value, done: readerDone } = await reader.read();
@@ -253,11 +287,13 @@ const LabChatBox = ({ chatId }) => {
               aiMessage.content += chunk;
               updatedMessages[updatedMessages.length - 1] = { ...aiMessage };
               setMessages([...updatedMessages]);
+              scrollToBottom();
             }
           }
+         
         }
-  
       } catch (error) {
+      
         toast({
           title: "Error",
           description: error.message || "Something went wrong",
@@ -265,10 +301,11 @@ const LabChatBox = ({ chatId }) => {
           duration: 3000,
           isClosable: true,
         });
+      }finally{
+        setIsLoading(false)
       }
     }
   };
-  
 
   const handleKeyPress = (e) => {
     if (e.key === "Enter" && !e.shiftKey) {
@@ -328,8 +365,10 @@ const LabChatBox = ({ chatId }) => {
   };
 
   return (
-    <Box w="100%" maxW="1000px" mx="auto" p={4} borderRadius="lg">
+    <Box w="100%" maxW="1000px" mx="auto" p={4} borderRadius="lg" position="relative">
       <VStack
+        ref={messagesContainerRef}
+        onScroll={handleScroll}
         spacing={4}
         align="stretch"
         h="500px"
@@ -353,15 +392,13 @@ const LabChatBox = ({ chatId }) => {
         }}
       >
         {messages?.length === 0 ? (
-          <>{/* You can add a welcome message or instructions here */}</>
+          <Text color="gray.300">No messages yet. Start the conversation!</Text>
         ) : (
           <>
             {messages?.map((message, index) => (
               <Flex
                 key={message.id || index}
-                direction={
-                  message.from === "You" ? "row-reverse" : "row"
-                }
+                direction={message.from === "You" ? "row-reverse" : "row"}
                 align="flex-start"
                 justify="flex-start"
                 my={2}
@@ -391,23 +428,33 @@ const LabChatBox = ({ chatId }) => {
                   }
                 >
                   {message.type === "text" &&
-                    renderMessageContent(
-                      message.content,
-                      message.from,
-                      theme
-                    )}
+                    (message.from === "AI" && isLoading && index === messages.length - 1 ? (
+                      <SkeletonText noOfLines={4} spacing="4" />
+                    ) : (
+                      renderMessageContent(
+                        message.content,
+                        message.from,
+                        theme
+                      )
+                    ))}
                   {message.type === "image" && (
                     <>
+                      {message.status === "loading" && (
+                        <Flex align="center" justify="center" minH="100px">
+                          <Spinner size="xl" color="white" />
+                          <Text ml={3} color="white">
+                            Generating image...
+                          </Text>
+                        </Flex>
+                      )}
                       {message.status === "complete" && (
-                        <>
-                          <Image
-                            src={message.content}
-                            alt="Generated Image"
-                            borderRadius="md"
-                            maxH="300px"
-                            objectFit="contain"
-                          />
-                        </>
+                        <Image
+                          src={message.content}
+                          alt="Generated Image"
+                          borderRadius="md"
+                          maxH="300px"
+                          objectFit="contain"
+                        />
                       )}
                     </>
                   )}
@@ -445,9 +492,25 @@ const LabChatBox = ({ chatId }) => {
                 </Box>
               </Flex>
             ))}
+            <div ref={messagesEndRef} />
           </>
         )}
       </VStack>
+
+      {/* Scroll to Bottom Button */}
+      {showScrollButton && (
+        <IconButton
+          icon={<BsArrowDown />}
+          position="absolute"
+          bottom="80px"
+          right="20px"
+          onClick={scrollToBottom}
+          colorScheme="teal"
+          borderRadius="full"
+          zIndex={1}
+          aria-label="Scroll to bottom"
+        />
+      )}
 
       <Flex mt={4} align="center">
         <Input
@@ -472,6 +535,7 @@ const LabChatBox = ({ chatId }) => {
           borderRadius="full"
           _hover={{ bg: "#8e44ad" }}
           _active={{ bg: "#8e44ad" }}
+          isLoading={isLoading && inputValue.trim() !== ""} // Disable button while loading
         >
           <FiSend />
         </Button>
