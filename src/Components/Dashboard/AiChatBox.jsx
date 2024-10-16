@@ -92,7 +92,9 @@ const AiChatBox = () => {
         });
 
         if (!response.ok) throw new Error("Failed to process message.");
-
+        if (response.status === "403" || response.status === 403) {
+          navigate("/auth");
+        }
         if (isImageModel) {
           // Handle image generation
           const data = await response.json();
@@ -111,6 +113,9 @@ const AiChatBox = () => {
                 request_id: imageId.toString(),
               }),
             });
+            if (imageResponse.status==='403'|| imageResponse.status===403) {
+              navigate('/auth')
+            }
 
             const imageData = await imageResponse.json();
             imageStatus = imageData.status;
@@ -127,7 +132,7 @@ const AiChatBox = () => {
             }
           }
         } else {
-          const data = await response.json()
+          const data = await response.json();
           let aiMessage = {
             type: "ai",
             text: data.response,
@@ -159,95 +164,100 @@ const AiChatBox = () => {
     }
   };
 
- const renderMessage = (message, index) => (
-  <Flex
-    key={index}
-    direction={message.type === "user" ? "row-reverse" : "row"}
-    align="flex-start"
-    justify="flex-start"
-    my={2}
-  >
-    <Avatar
-      name={message.type === "user" ? "You" : "AI"}
-      bg={message.type === "user" ? "yellow.400" : "black"}
-      size="sm"
-      mr={message.type === "user" ? 0 : 4}
-      ml={message.type === "user" ? 4 : 0}
-    />
-    <Box
-      color="white"
-      borderRadius="lg"
-      p={4}
-      boxShadow="lg"
-      maxW="75%"
-      position="relative"
-      background={
-        message.type === "user"
-          ? theme.UserchatBubbleColor
-          : theme.aiChatBubbleColor
-      }
+  const renderMessage = (message, index) => (
+    <Flex
+      key={index}
+      direction={message.type === "user" ? "row-reverse" : "row"}
+      align="flex-start"
+      justify="flex-start"
+      my={2}
     >
-      {message.contentType === "image" ? (
-        <Image
-          src={message.text}
-          alt="Generated Image"
-          borderRadius="md"
-          maxH="300px"
-          objectFit="contain"
-        />
-      ) : (
-        <>
-          {message.status === "loading" ? (
-            <Flex align="center" justify="center" minH="100px">
-              <Spinner size="md" color="white" />
-              <Text ml={3} color="white">
-                AI is thinking...
-              </Text>
-            </Flex>
-          ) : (
-            <Text color={message.type === "user" ? theme.textColor : "white"}>
-              {message.text}
-            </Text>
-          )}
-        </>
-      )}
-      <Flex
-        mt={2}
-        align="center"
-        justify={message.type === "user" ? "flex-start" : "flex-end"}
-        color="gray.400"
+      <Avatar
+        name={message.type === "user" ? "You" : "AI"}
+        bg={message.type === "user" ? "yellow.400" : "black"}
+        size="sm"
+        mr={message.type === "user" ? 0 : 4}
+        ml={message.type === "user" ? 4 : 0}
+      />
+      <Box
+        color="white"
+        borderRadius="lg"
+        p={4}
+        boxShadow="lg"
+        maxW="75%"
+        position="relative"
+        background={
+          message.type === "user"
+            ? theme.UserchatBubbleColor
+            : theme.aiChatBubbleColor
+        }
       >
-        <BsClock />
-        <Text ml={1} fontSize="xs">
-          {message.time}
-        </Text>
-        <IconButton
-          ml={2}
-          icon={<BsClipboard />}
-          size="xs"
-          bg="transparent"
+        {message.contentType === "image" ? (
+          <Image
+            src={message.text}
+            alt="Generated Image"
+            borderRadius="md"
+            maxH="300px"
+            objectFit="contain"
+          />
+        ) : (
+          <>
+            {message.status === "loading" ? (
+              <Flex align="center" justify="center" minH="100px">
+                <Spinner size="md" color="white" />
+                <Text ml={3} color="white">
+                  AI is thinking...
+                </Text>
+              </Flex>
+            ) : (
+              <Text color={message.type === "user" ? theme.textColor : "white"}>
+                {message.text}
+              </Text>
+            )}
+          </>
+        )}
+        <Flex
+          mt={2}
+          align="center"
+          justify={message.type === "user" ? "flex-start" : "flex-end"}
           color="gray.400"
-          _hover={{ color: "white", bg: "transparent" }}
-          aria-label="Copy to clipboard"
-          onClick={() => {
-            navigator.clipboard.writeText(message.text);
-            toast({
-              title: "Copied to clipboard!",
-              status: "success",
-              duration: 2000,
-              isClosable: true,
-            });
-          }}
-        />
-      </Flex>
-    </Box>
-  </Flex>
-);
-
-  
+        >
+          <BsClock />
+          <Text ml={1} fontSize="xs">
+            {message.time}
+          </Text>
+          <IconButton
+            ml={2}
+            icon={<BsClipboard />}
+            size="xs"
+            bg="transparent"
+            color="gray.400"
+            _hover={{ color: "white", bg: "transparent" }}
+            aria-label="Copy to clipboard"
+            onClick={() => {
+              navigator.clipboard.writeText(message.text);
+              toast({
+                title: "Copied to clipboard!",
+                status: "success",
+                duration: 2000,
+                isClosable: true,
+              });
+            }}
+          />
+        </Flex>
+      </Box>
+    </Flex>
+  );
 
   return (
-    <Box w="100%" maxW="1000px" mx="auto" p={4} borderRadius="lg" position="relative">
+    <Box
+      w="100%"
+      maxW="1000px"
+      mx="auto"
+      p={4}
+      borderRadius="lg"
+      position="relative"
+    >
       <VStack
         ref={messagesContainerRef}
         onScroll={handleScroll}
@@ -302,7 +312,8 @@ const AiChatBox = () => {
               lineHeight="tall"
               maxW="600px"
             >
-              Ask questions, generate images, or run AI-driven queries using our models.
+              Ask questions, generate images, or run AI-driven queries using our
+              models.
             </Text>
             <Button
               onClick={() => navigate("/app/keymanagement")}

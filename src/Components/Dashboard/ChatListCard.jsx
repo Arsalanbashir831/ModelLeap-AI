@@ -103,7 +103,9 @@ const ChatListCard = ({ chatId, chatName }) => {
           "x-api-key": apiKey,
         },
       });
-
+      if (response.status==='403'|| response.status===403) {
+        navigate('/auth')
+      }
       if (response.ok) {
         window.location.reload()
         toast({

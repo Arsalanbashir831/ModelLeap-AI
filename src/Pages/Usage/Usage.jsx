@@ -14,7 +14,7 @@ const Usage = () => {
   useEffect(() => {}, [userContext]);
 
   const {
-    generatedImages,
+    imageGenerationCount,
     tokensCount,
     subscriptionTier,
     subscriptionStatus,
@@ -79,7 +79,7 @@ const Usage = () => {
           <HStack justifyContent="space-between" spacing={8}>
             <VStack>
               <Text fontSize="2xl" color={primaryColorPurple}>
-                {generatedImages || 0}
+                {imageGenerationCount || 0}
               </Text>
               <Text fontSize="lg" color={theme.textColor}>
                 Images Generated
@@ -88,7 +88,7 @@ const Usage = () => {
             <Divider orientation="vertical" h={12} />
             <VStack>
               <Text fontSize="2xl" color={primaryColorPurple}>
-                {tokensCount || 0}
+                {tokenCount || 0}
               </Text>
               <Text fontSize="lg" color={theme.textColor}>
                 Tokens Used

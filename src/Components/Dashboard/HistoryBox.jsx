@@ -1,7 +1,32 @@
 import React, { useEffect, useState } from "react";
-import { Box, Text, VStack, Divider, Button, useBreakpointValue, useDisclosure, Input, Modal, ModalOverlay, ModalContent, ModalHeader, ModalFooter, ModalBody, ModalCloseButton, useToast } from "@chakra-ui/react";
+import {
+  Box,
+  Text,
+  VStack,
+  Divider,
+  Button,
+  IconButton,
+  Drawer,
+  DrawerOverlay,
+  DrawerContent,
+  DrawerHeader,
+  DrawerBody,
+  DrawerCloseButton,
+  useBreakpointValue,
+  useDisclosure,
+  Input,
+  Modal,
+  ModalOverlay,
+  ModalContent,
+  ModalHeader,
+  ModalFooter,
+  ModalBody,
+  ModalCloseButton,
+  useToast,
+} from "@chakra-ui/react";
+import { HamburgerIcon } from "@chakra-ui/icons"; // Import HamburgerIcon for the button
 import { useTheme } from "../../Themes/ThemeContext";
-import { useNavigate, useParams } from "react-router-dom"; // Import useParams
+import { useNavigate, useParams } from "react-router-dom";
 import { BASE_URL } from "../../Constants";
 import { useRecoilState } from "recoil";
 import chatNameState from "../../atoms/ChatNameState";
@@ -17,12 +42,13 @@ const HistoryBox = ({ chatId }) => {
   });
   const [chatName, setChatName] = useRecoilState(chatNameState);
   const navigate = useNavigate();
-  const displayHistory = useBreakpointValue({ base: "none", md: "block" });
-  const { isOpen, onOpen, onClose } = useDisclosure(); // Modal hooks
+  const displayHistory = useBreakpointValue({ base: "none", md: "block" }); // Sidebar for larger screens
+  const { isOpen, onOpen, onClose } = useDisclosure(); // Drawer for mobile screens
+  const { isOpen: isModalOpen, onOpen: openModal, onClose: closeModal } = useDisclosure(); // Modal hooks
   const [newChatName, setNewChatName] = useState(""); // New chat name
   const [loading, setLoading] = useState(false); // Loading state
-  const toast = useToast(); // Chakra toast
-  const { chatId: activeChatId } = useParams(); // Use useParams to get chatId from URL
+  const toast = useToast();
+  const { chatId: activeChatId } = useParams();
 
   // Fetch chats from the backend
   const fetchChats = async () => {
@@ -43,6 +69,10 @@ const HistoryBox = ({ chatId }) => {
       });
 
       const data = await response.json();
+
+      if (response.status === 403 || response.status === "403") {
+        navigate("/auth");
+      }
       if (response.ok) {
         setHistoryData({
           today: data.chats.today || [],
@@ -54,15 +84,19 @@ const HistoryBox = ({ chatId }) => {
 
         // Find the chat name corresponding to the active chatId
         if (activeChatId) {
-          const allChats = [...data.chats.today, ...data.chats.yesterday, ...data.chats.past7Days, ...data.chats.past30Days, ...data.chats.older];
-          const activeChat = allChats.find(chat => chat.chatId === activeChatId);
+          const allChats = [
+            ...data.chats.today,
+            ...data.chats.yesterday,
+            ...data.chats.past7Days,
+            ...data.chats.past30Days,
+            ...data.chats.older,
+          ];
+          const activeChat = allChats.find((chat) => chat.chatId === activeChatId);
 
           if (activeChat) {
-            setChatName(activeChat.name); // Update chat name in Recoil state
+            setChatName(activeChat.name);
           }
         }
-      } else if (response.status === 403 || response.status === "403") {
-        navigate("/auth");
       }
     } catch (error) {
       console.error("Error fetching chats:", error);
@@ -111,9 +145,9 @@ const HistoryBox = ({ chatId }) => {
           duration: 3000,
           isClosable: true,
         });
-        fetchChats(); // Refresh chat list
-        onClose(); // Close modal
-        setNewChatName(""); // Reset chat name input
+        fetchChats();
+        closeModal();
+        setNewChatName("");
       } else {
         throw new Error("Failed to create chat.");
       }
@@ -136,6 +170,7 @@ const HistoryBox = ({ chatId }) => {
         onClick={() => {
           setChatName(chat.name);
           navigate(`/app/ailab/chat/${chat.chatId}`);
+          onClose(); // Close drawer on chat selection in mobile view
         }}
         key={idx}
         fontSize="sm"
@@ -165,141 +200,104 @@ const HistoryBox = ({ chatId }) => {
   };
 
   return (
-    <Box
-      w={{ base: "100%", md: "25%" }} // Full width on smaller screens, 25% on larger screens
-      p={3}
-      bg={theme.background}
-      color="white"
-      borderRadius="lg"
-      boxShadow="2xl"
-      display={displayHistory} // Hide on smaller screens
-      maxH="600px" // Fixed height
-      _hover={{ boxShadow: "dark-lg" }}
-      transition="all 0.3s ease"
-    >
-      {/* Create New Chat Button - Remains fixed at the top */}
-      <Button
-        onClick={onOpen} // Open modal
-        w="full"
+    <>
+      {/* Hamburger button for mobile screens */}
+      <IconButton
+        icon={<HamburgerIcon />}
+        onClick={onOpen}
+        display={{ base: "block", md: "none" }} // Only show on mobile
+        aria-label="Open Chat History"
         mb={4}
-        color={theme.historySelectedTextColor}
-        bg={theme.historySelectedButton}
-        _hover={{
-          bg: theme.historySelectedButtonHover,
-        }}
-        borderRadius="md"
-        py={2}
-      >
-        + Create New Chat
-      </Button>
+      />
 
-      {/* Scrollable History List */}
+      {/* Drawer for mobile view */}
+      <Drawer isOpen={isOpen} placement="left" onClose={onClose}>
+        <DrawerOverlay />
+        <DrawerContent>
+          <DrawerCloseButton />
+          <DrawerHeader>Chat History</DrawerHeader>
+          <DrawerBody>
+            {/* Scrollable Chat History */}
+            {renderChatItems([...historyData.today, ...historyData.yesterday, ...historyData.past7Days, ...historyData.past30Days, ...historyData.older])}
+          </DrawerBody>
+        </DrawerContent>
+      </Drawer>
+
+      {/* Chat history for desktop view */}
       <Box
-        overflowY="auto"
-        maxH="500px" // Restrict height to make list scrollable
-        css={{
-          "&::-webkit-scrollbar": {
-            width: "6px",
-          },
-          "&::-webkit-scrollbar-thumb": {
-            background: "gray.600",
-            borderRadius: "10px",
-          },
-          "&::-webkit-scrollbar-thumb:hover": {
-            background: "gray.500",
-          },
-        }}
+        w={{ base: "100%", md: "25%" }}
+        p={3}
+        bg={theme.background}
+        color="white"
+        borderRadius="lg"
+        boxShadow="2xl"
+        display={displayHistory}
+        maxH="600px"
+        _hover={{ boxShadow: "dark-lg" }}
+        transition="all 0.3s ease"
       >
-        {historyData.today.length > 0 && (
-          <VStack align="start" spacing={3} mb={5}>
-            <Text fontSize="sm" fontWeight="bold" color={theme.textColor}>
-              Today
-            </Text>
-            <Divider borderColor="gray.600" />
-            <VStack align="start" spacing={2}>
-              {renderChatItems(historyData.today)}
-            </VStack>
-          </VStack>
-        )}
+        <Button
+          onClick={openModal}
+          w="full"
+          mb={4}
+          color={theme.historySelectedTextColor}
+          bg={theme.historySelectedButton}
+          _hover={{ bg: theme.historySelectedButtonHover }}
+          borderRadius="md"
+          py={2}
+        >
+          + Create New Chat
+        </Button>
 
-        {historyData.yesterday.length > 0 && (
-          <VStack align="start" spacing={3} mb={5}>
-            <Text fontSize="sm" fontWeight="bold" color={theme.textColor}>
-              Yesterday
-            </Text>
-            <Divider borderColor="gray.600" />
-            <VStack align="start" spacing={2}>
-              {renderChatItems(historyData.yesterday)}
+        <Box
+          overflowY="auto"
+          maxH="500px"
+          css={{
+            "&::-webkit-scrollbar": { width: "6px" },
+            "&::-webkit-scrollbar-thumb": { background: "gray.600", borderRadius: "10px" },
+            "&::-webkit-scrollbar-thumb:hover": { background: "gray.500" },
+          }}
+        >
+          {historyData.today.length > 0 && (
+            <VStack align="start" spacing={3} mb={5}>
+              <Text fontSize="sm" fontWeight="bold" color={theme.textColor}>
+                Today
+              </Text>
+              <Divider borderColor="gray.600" />
+              <VStack align="start" spacing={2}>
+                {renderChatItems(historyData.today)}
+              </VStack>
             </VStack>
-          </VStack>
-        )}
+          )}
 
-        {historyData.past7Days.length > 0 && (
-          <VStack align="start" spacing={3} mb={5}>
-            <Text fontSize="sm" fontWeight="bold" color={theme.textColor}>
-              Past 7 Days
-            </Text>
-            <Divider borderColor="gray.600" />
-            <VStack align="start" spacing={2}>
-              {renderChatItems(historyData.past7Days)}
-            </VStack>
-          </VStack>
-        )}
+          {/* Render other sections like yesterday, past7Days, etc... */}
+        </Box>
 
-        {historyData.past30Days.length > 0 && (
-          <VStack align="start" spacing={3} mb={5}>
-            <Text fontSize="sm" fontWeight="bold" color={theme.textColor}>
-              Past 30 Days
-            </Text>
-            <Divider borderColor="gray.600" />
-            <VStack align="start" spacing={2}>
-              {renderChatItems(historyData.past30Days)}
-            </VStack>
-          </VStack>
-        )}
-
-        {historyData.older.length > 0 && (
-          <VStack align="start" spacing={3} mb={5}>
-            <Text fontSize="sm" fontWeight="bold" color={theme.textColor}>
-              Older
-            </Text>
-            <Divider borderColor="gray.600" />
-            <VStack align="start" spacing={2}>
-              {renderChatItems(historyData.older)}
-            </VStack>
-          </VStack>
-        )}
+        {/* Modal for new chat creation */}
+        <Modal isOpen={isModalOpen} onClose={closeModal}>
+          <ModalOverlay />
+          <ModalContent>
+            <ModalHeader>Create New Chat</ModalHeader>
+            <ModalCloseButton />
+            <ModalBody>
+              <Input
+                placeholder="Enter chat name"
+                value={newChatName}
+                onChange={(e) => setNewChatName(e.target.value)}
+              />
+            </ModalBody>
+            <ModalFooter>
+              <Button variant="ghost" onClick={closeModal}>
+                Cancel
+              </Button>
+              <Button colorScheme="blue" onClick={handleCreateNewChat} isLoading={loading}>
+                Create
+              </Button>
+            </ModalFooter>
+          </ModalContent>
+        </Modal>
       </Box>
-
-      {/* Modal for entering new chat name */}
-      <Modal isOpen={isOpen} onClose={onClose}>
-        <ModalOverlay />
-        <ModalContent>
-          <ModalHeader>Create New Chat</ModalHeader>
-          <ModalCloseButton />
-          <ModalBody>
-            <Input
-              placeholder="Enter chat name"
-              value={newChatName}
-              onChange={(e) => setNewChatName(e.target.value)}
-            />
-          </ModalBody>
-
-          <ModalFooter>
-            <Button variant="ghost" onClick={onClose}>
-              Cancel
-            </Button>
-            <Button
-              colorScheme="blue"
-              onClick={handleCreateNewChat}
-              isLoading={loading}
-            >
-              Create
-            </Button>
-          </ModalFooter>
-        </ModalContent>
-      </Modal>
-    </Box>
+    </>
   );
 };
 

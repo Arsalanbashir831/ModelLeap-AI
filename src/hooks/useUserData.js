@@ -8,6 +8,7 @@ const useUserData = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 const [userContext , setUserContext] = useRecoilState(userState)
+
   useEffect(() => {
     const fetchUserData = async () => {
       const token = localStorage.getItem("authToken");
@@ -26,7 +27,7 @@ const [userContext , setUserContext] = useRecoilState(userState)
             "Content-Type": "application/json",
           },
         });
-
+        
         if (!response.ok) {
           throw new Error("Failed to fetch user data.");
         }

@@ -7,7 +7,7 @@ const DashboardLayout = () => {
   const {theme} = useTheme();
   const { isOpen, onToggle } = useDisclosure({ defaultIsOpen: true });
   return (
-    <Flex height="100%"  direction={["column", "row"]} >
+    <Flex height="100%"  direction={["row", "row"]} >
       <Box 
       height={["100vh", "100vh"]}
         w={["100%", "250px"]}

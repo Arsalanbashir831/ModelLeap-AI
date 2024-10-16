@@ -21,6 +21,7 @@ import { BASE_URL } from "../../Constants";
 
 import { useRecoilValue } from "recoil";
 import userState from "../../atoms/userState";
+import { useNavigate } from "react-router-dom";
 
 const KeyGenerate = () => {
   const [apiKey, setApiKey] = useState("");
@@ -28,7 +29,7 @@ const KeyGenerate = () => {
   const { hasCopied, onCopy } = useClipboard(apiKey);
   const { theme } = useTheme();
   const userContext= useRecoilValue(userState)
-
+const navigate = useNavigate()
 // const {userData}=useUserData()
 // console.log(userData?.apiKey);
   // Function to fetch the API key from the backend
@@ -54,6 +55,9 @@ const KeyGenerate = () => {
       });
 
       const data = await response.json();
+      if (response.status===403|| response.status==='403') {
+        navigate('/auth')
+      }
       if (response.ok) {
         console.log("API Key generated successfully:", data);
         localStorage.setItem('apiKey' , data.apiKey)

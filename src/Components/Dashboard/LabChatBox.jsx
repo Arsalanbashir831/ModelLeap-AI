@@ -52,6 +52,9 @@ const LabChatBox = ({ chatId }) => {
           "x-api-key": apiKey,
         },
       });
+      if (response.status===403|| response.status==='403') {
+        navigate('/auth')
+      }
       if (response.ok) {
         const data = await response.json();
 
