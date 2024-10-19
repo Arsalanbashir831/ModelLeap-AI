@@ -18,11 +18,14 @@ import {
 import { FaCogs } from "react-icons/fa";
 import { useTheme } from "../../Themes/ThemeContext";
 
+
 const ContextModal = ({ isOpen, onClose, onSave }) => {
   const { theme } = useTheme();
   const [context, setContext] = useState("You are a helpful assistant.");
   const [showExamples, setShowExamples] = useState(false);
+  
 //   const [stopSequence, setStopSequence] = useState(false);
+
 
   const handleSave = () => {
     onSave(context);

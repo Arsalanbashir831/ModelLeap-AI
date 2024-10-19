@@ -23,6 +23,8 @@ import ChatListCard from "../../Components/Dashboard/ChatListCard";
 import Description from "../../Components/Dashboard/Description";
 import { BASE_URL } from "../../Constants";
 import { useNavigate } from "react-router-dom";
+import ContextModal from "../../Components/Dashboard/ContextModal";
+import CreateBotModel from "../../Components/Dashboard/CreateBotModel";
 
 const AiLab = () => {
   const [chats, setChats] = useState([]);
@@ -134,9 +136,9 @@ const AiLab = () => {
           </Box>
         </Box>
       </Flex>
-
+<CreateBotModel isOpen={isOpen} onClose={onClose}/>
       {/* Modal for entering chat name */}
-      <Modal isOpen={isOpen} onClose={onClose}>
+      {/* <Modal isOpen={isOpen} onClose={onClose}>
         <ModalOverlay />
         <ModalContent>
           <ModalHeader>Create New Chat</ModalHeader>
@@ -167,7 +169,7 @@ const AiLab = () => {
             </Button>
           </ModalFooter>
         </ModalContent>
-      </Modal>
+      </Modal> */}
     </Box>
   );
 };

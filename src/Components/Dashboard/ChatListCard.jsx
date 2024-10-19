@@ -197,7 +197,7 @@ const ChatListCard = ({ chatId, chatName }) => {
       </Box>
 
       <Flex gap={2}>
-        {/* Delete Chat */}
+
         <Tooltip label="Delete Chat">
           <IconButton
             aria-label="Delete Chat"
@@ -210,7 +210,6 @@ const ChatListCard = ({ chatId, chatName }) => {
           />
         </Tooltip>
 
-        {/* Share Chat */}
         <Tooltip label={hasCopied ? "Copied!" : "Share Chat"}>
           <IconButton
             aria-label="Share Chat"
@@ -223,7 +222,6 @@ const ChatListCard = ({ chatId, chatName }) => {
           />
         </Tooltip>
 
-        {/* Settings Button */}
         <Tooltip label="Settings">
           <IconButton
             aria-label="Settings"
@@ -240,15 +238,13 @@ const ChatListCard = ({ chatId, chatName }) => {
         </Tooltip>
 
         {/* Start Chat Button */}
-        <Button onClick={()=>{navigate(`/app/ailab/chat/${chatId}` ,{state:{
+        {/* <Button onClick={()=>{navigate(`/app/ailab/chat/${chatId}` ,{state:{
           chatName:chatName
         }})}} bg={primaryColorPurple} color="white" _hover={{ bg: primaryColorOrange }}>
 
 Start Chat
-          {/* <Link to={`/app/ailab/chat/${chatId}`} state={ chatName }  key={chatId}>
-            Start Chat
-          </Link> */}
-        </Button>
+         
+        </Button> */}
       </Flex>
 
       {/* Settings Modal */}

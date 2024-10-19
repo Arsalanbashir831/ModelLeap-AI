@@ -16,17 +16,20 @@ import { GoDependabot } from "react-icons/go";
 import SettingsModal from "../Dashboard/SettingsModal";
 import { useNavigate } from "react-router-dom";
 import { useTheme } from "../../Themes/ThemeContext";
-import { useRecoilValue } from "recoil";
+import { useRecoilState, useRecoilValue } from "recoil";
 import chatNameState from "../../atoms/ChatNameState";
 import { BASE_URL } from "../../Constants";
 import ContextModal from "../Dashboard/ContextModal";
+import modelState from "../../atoms/modelState";
+import BotState from "../../atoms/BotState";
+import ShareModal from "../Dashboard/ShareModal";
 
 const ChatHeader = ({ chatId }) => {
   const [isEditing, setIsEditing] = useState(false);
   const [editedName, setEditedName] = useState("");
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const [isContextModalOpen, setIsContextModalOpen] = useState(false); // Context Modal State
-
+  const [isShareModalOpen, setIsShareModalOpen] = useState(false); 
   const { hasCopied, onCopy } = useClipboard(editedName);
   const toast = useToast();
   const navigate = useNavigate();
@@ -34,7 +37,8 @@ const ChatHeader = ({ chatId }) => {
   const chatName = useRecoilValue(chatNameState);
   const token = localStorage.getItem("authToken");
   const apiKey = localStorage.getItem("apiKey");
-
+const selectedModal = useRecoilValue(modelState)
+const [botData , setBotData] = useRecoilState(BotState)
   useEffect(() => {
     setEditedName(chatName);
   }, [chatName]);
@@ -116,9 +120,41 @@ const ChatHeader = ({ chatId }) => {
   };
 
   // Function to save context
-  const handleSaveContext = (context) => {
+  const handleSaveContext = async (context) => {
+    try {
+      const token = localStorage.getItem('authToken');
+      const response = await fetch(`${BASE_URL}/api/bot`, {
+        method: 'POST',
+        headers: {
+          "Authorization": `Bearer ${token}`,
+          "Content-Type": "application/json", 
+        },
+        body: JSON.stringify({
+          "systemContext": context,
+          "modelName": selectedModal.value,
+        }),
+      });
+  
+      if (response.ok) {
+        const data = await response.json();
+        console.log(data);
+        setBotData(data);
+        toast({
+          title: "Context Saved",
+          status: "success",
+          duration: 2000,
+          isClosable: true,
+        });
+      } else {
+        console.error("Failed to save context:", response.status, response.statusText);
+      }
+    } catch (error) {
+      console.error("Error saving context:", error);
+    }
+    
     console.log("Context saved:", context);
   };
+  
 
   return (
     <Flex align="center" justify="space-between" bg={theme.background} borderRadius="md" px={6} py={4} w="100%" maxW="1000px" my={2} boxShadow="lg">
@@ -150,7 +186,7 @@ const ChatHeader = ({ chatId }) => {
         </Tooltip>
 
         <Tooltip label={hasCopied ? "Copied!" : "Share Chat"}>
-          <IconButton aria-label="Share Chat" icon={<FaShareAlt />} size="sm" bg="transparent" color="blue.400" onClick={onCopy} />
+          <IconButton aria-label="Share Chat" icon={<FaShareAlt />} size="sm" bg="transparent" color="blue.400" onClick={() => setIsShareModalOpen(true)} />
         </Tooltip>
 
         <Tooltip label="Settings">
@@ -167,6 +203,7 @@ const ChatHeader = ({ chatId }) => {
 
       {/* Context Modal */}
       <ContextModal isOpen={isContextModalOpen} onClose={() => setIsContextModalOpen(false)} onSave={handleSaveContext} />
+      <ShareModal botData={botData} isOpen={isShareModalOpen} onClose={() => setIsShareModalOpen(false)}  />
     </Flex>
   );
 };
