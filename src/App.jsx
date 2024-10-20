@@ -18,6 +18,7 @@ import authState from "./atoms/authState";
 import ProtectedRoute from "./Components/common/ProtectedRoute";
 import useUserData from "./hooks/useUserData";
 import Usage from "./Pages/Usage/Usage";
+import ChatbotHistory from "./Pages/AiLab/ChatbotHistory";
 
 const router = createBrowserRouter([
   { path: "/", element: <Landing /> },
@@ -41,6 +42,7 @@ const router = createBrowserRouter([
     ],
   },
   { path: "/app/ailab/chat/:chatId", element: <AiLabChat /> },
+  { path: "/app/ailab/history/:botId", element: <ChatbotHistory /> },
   { path: "*", element: <NotFound /> },
 ]);
 

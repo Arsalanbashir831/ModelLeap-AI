@@ -4,251 +4,233 @@ import {
   IconButton,
   Text,
   Flex,
-  Input,
   Tooltip,
   useClipboard,
   useToast,
-  Button,
+  Badge,
+  useDisclosure,
 } from "@chakra-ui/react";
-import { DeleteIcon, EditIcon } from "@chakra-ui/icons";
-import { FaCogs, FaShareAlt } from "react-icons/fa";
-import { primaryColorOrange, primaryColorPurple } from "../../colorCodes";
-import SettingsModal from "./SettingsModal";
-import { Link, useNavigate } from "react-router-dom";
+import { FaEdit, FaShareAlt, FaTable, FaTrash } from "react-icons/fa";
+import EditBotModal from "./EditBotModalBox";
+import ShareModal from "./ShareModal";
+import DeleteConfirmationModal from "./DeleteModal"; // Import delete modal
 import { BASE_URL } from "../../Constants";
+import { useNavigate } from "react-router-dom";
 
-const ChatListCard = ({ chatId, chatName }) => {
-  const [isEditing, setIsEditing] = useState(false);
-  const [editedName, setEditedName] = useState(chatName);
-  const [isSettingsOpen, setIsSettingsOpen] = useState(false); // State for settings modal
-  const { hasCopied, onCopy } = useClipboard(editedName);
+const ChatListCard = ({ id, botName, systemContext, createdAt, modelName, kwargs, apiKey ,refresh ,setRefresh }) => {
+  const { hasCopied, onCopy } = useClipboard(botName);
   const toast = useToast();
-  const navigate = useNavigate();
+const navigate = useNavigate()
+  // Modal controls
+  const { isOpen: isEditOpen, onOpen: onEditOpen, onClose: onEditClose } = useDisclosure();
+  const { isOpen: isShareOpen, onOpen: onShareOpen, onClose: onShareClose } = useDisclosure();
+  const { isOpen: isDeleteOpen, onOpen: onDeleteOpen, onClose: onDeleteClose } = useDisclosure();
 
-  const token = localStorage.getItem('authToken');
-  const apiKey = localStorage.getItem('apiKey');
+  const [botDetails, setBotDetails] = useState({
+    botName,
+    systemContext,
+    modelName,
+    kwargs,
+  });
 
-
-  // Handle edit click
-  const handleEditClick = () => {
-    setIsEditing(true);
-  };
-
-  // Handle name change in the input
-  const handleNameChange = (e) => {
-    setEditedName(e.target.value);
-  };
-
-  // Save the edited name (PUT request)
-  const handleSaveName = async () => {
-    setIsEditing(false);
-    if (!editedName || editedName.trim() === "") {
-      toast({
-        title: "Invalid Chat Name",
-        description: "Chat name cannot be empty.",
-        status: "error",
-        duration: 2000,
-        isClosable: true,
-      });
-      return;
-    }
-
+  // Function to delete the bot
+  const handleDeleteBot = async () => {
     try {
-      const response = await fetch(`${BASE_URL}/api/chat/${chatId}`, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-          "x-api-key": apiKey,
-        },
-        body: JSON.stringify({ name: editedName }),
-      });
-
-      if (response.ok) {
-        toast({
-          title: "Chat name updated.",
-          status: "success",
-          duration: 2000,
-          isClosable: true,
-        });
-      } else if(response.status===403 || response.status==='403') {
-        navigate('/auth')
-       }
-    } catch (error) {
-      toast({
-        title: "Error",
-        description: error.message || "Something went wrong while updating the chat name.",
-        status: "error",
-        duration: 3000,
-        isClosable: true,
-      });
-    }
-  };
-
-  // Save name when 'Enter' is pressed
-  const handleKeyPress = (e) => {
-    if (e.key === "Enter") {
-      handleSaveName();
-    }
-  };
-
-  // Handle delete chat (DELETE request)
-  const handleDelete = async () => {
-   
-    try {
-      const response = await fetch(`${BASE_URL}/api/chat/${chatId}`, {
+      const token = localStorage.getItem('authToken');
+      const response = await fetch(`${BASE_URL}/api/bot/${id}`, {
         method: "DELETE",
         headers: {
           "Authorization": `Bearer ${token}`,
-          "x-api-key": apiKey,
         },
       });
-      if (response.status==='403'|| response.status===403) {
-        navigate('/auth')
-      }
+
       if (response.ok) {
-        window.location.reload()
         toast({
-          title: "Chat deleted.",
+          title: "Bot deleted successfully.",
           status: "success",
-          duration: 2000,
+          duration: 3000,
           isClosable: true,
         });
-    
-       
+        
+        onDeleteClose(); // Close the delete modal after success
+        // Optionally, remove the card from UI or refresh the list
+        setRefresh(!refresh)
       } else {
-        throw new Error("Failed to delete chat.");
+        throw new Error("Failed to delete bot.");
       }
     } catch (error) {
       toast({
         title: "Error",
-        description: error.message || "Something went wrong while deleting the chat.",
+        description: error.message || "Something went wrong while deleting the bot.",
         status: "error",
         duration: 3000,
         isClosable: true,
       });
     }
   };
+  const handleSave = async (updatedDetails) => {
+    try {
+      const token = localStorage.getItem('authToken');
+      const response = await fetch(`${BASE_URL}/api/bot/${id}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`, // Properly use string interpolation for the token
+        },
+        body: JSON.stringify(updatedDetails), // Convert updated details to JSON
+      });
+  
+      if (response.ok) {
+        const data = await response.json();
+        setBotDetails(updatedDetails); // Update the bot details after a successful save
+        toast({
+          title: "Bot updated successfully.",
+          status: "success",
+          duration: 3000,
+          isClosable: true,
+        });
+        setRefresh(!refresh)
+      } else {
+        throw new Error("Failed to update bot.");
+      }
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: error.message || "Something went wrong while updating the bot.",
+        status: "error",
+        duration: 3000,
+        isClosable: true,
+      });
+    }
+  };
+  
 
-  // Handle share chat (copy name to clipboard)
-  const handleShare = (e) => {
-    e.stopPropagation();
-    onCopy();
-    toast({
-      title: "Chat name copied!",
-      status: "info",
-      duration: 2000,
-      isClosable: true,
-    });
+
+  // Format creation date
+  const formatDate = (timestamp) => {
+    const date = new Date(timestamp._seconds * 1000);
+    return date.toLocaleDateString();
+  };
+
+  // Bot data for sharing
+  const botData = {
+    botId: id,
+    apiKey: apiKey, // Assuming you're using the token as an API key
   };
 
   return (
     <Flex
-      align="center"
+      direction="column"
       justify="space-between"
-      bg="linear-gradient(90deg, #1F2A37 0%, #2E3442 100%)"
-      borderRadius="md"
+      bg="white"
+      borderRadius="lg"
       px={6}
-      py={4}
+      py={5}
       w="100%"
-      maxW="1000px"
-      my={2}
+      maxW="800px"
+      my={4}
       boxShadow="lg"
+      transition="background-color 0.3s ease"
       _hover={{
-        bg: "linear-gradient(90deg, #1B2733 0%, #2B3241 100%)",
-        cursor: "pointer",
+        bg: "gray.50",
       }}
+      border="1px solid"
+      borderColor="gray.200"
     >
-      <Box flex="1" mr={4}>
-        {isEditing ? (
-          <Input
-            value={editedName}
-            onChange={handleNameChange}
-            onBlur={handleSaveName}
-            onKeyPress={handleKeyPress}
-            size="sm"
-            variant="unstyled"
-            _focus={{ outline: "none", borderColor: "transparent" }}
-            color="white"
-            bg="transparent"
-          />
-        ) : (
-          <Flex align="center">
-            <Text fontSize="md" color="white" fontWeight="bold">
-              {editedName}
-            </Text>
-            <Tooltip label="Edit Chat Name">
-              <IconButton
-                aria-label="Edit Chat Name"
-                icon={<EditIcon />}
-                size="xs"
-                ml={2}
-                bg="transparent"
-                color="whiteAlpha.800"
-                _hover={{ color: "white", bg: "transparent" }}
-                onClick={(e) => {
-                  e.stopPropagation();
-                  handleEditClick();
-                }}
-              />
-            </Tooltip>
-          </Flex>
-        )}
-      </Box>
+      {/* Top section: Bot details */}
+      <Flex justify="space-between" alignItems="center">
+        <Box>
+          <Text fontSize="xl" fontWeight="bold" color="gray.700" mb={2}>
+            {botName}
+          </Text>
+          <Badge colorScheme="purple" mb={2}>
+            {systemContext}
+          </Badge>
+        </Box>
 
-      <Flex gap={2}>
-
-        <Tooltip label="Delete Chat">
-          <IconButton
-            aria-label="Delete Chat"
-            icon={<DeleteIcon />}
-            size="sm"
-            bg="transparent"
-            color="pink.400"
-            _hover={{ color: "white", bg: "transparent" }}
-            onClick={handleDelete}
-          />
-        </Tooltip>
-
-        <Tooltip label={hasCopied ? "Copied!" : "Share Chat"}>
-          <IconButton
-            aria-label="Share Chat"
-            icon={<FaShareAlt />}
-            size="sm"
-            bg="transparent"
-            color="blue.400"
-            _hover={{ color: "white", bg: "transparent" }}
-            onClick={handleShare}
-          />
-        </Tooltip>
-
-        <Tooltip label="Settings">
-          <IconButton
-            aria-label="Settings"
-            icon={<FaCogs />}
-            size="sm"
-            bg="transparent"
-            color="orange.400"
-            _hover={{ color: "white", bg: "transparent" }}
-            onClick={(e) => {
-              e.stopPropagation();
-              setIsSettingsOpen(true); // Open the settings modal
-            }}
-          />
-        </Tooltip>
-
-        {/* Start Chat Button */}
-        {/* <Button onClick={()=>{navigate(`/app/ailab/chat/${chatId}` ,{state:{
-          chatName:chatName
-        }})}} bg={primaryColorPurple} color="white" _hover={{ bg: primaryColorOrange }}>
-
-Start Chat
-         
-        </Button> */}
+        {/* Created date */}
+        <Box textAlign="right">
+          <Text fontSize="sm" color="gray.500">
+            Created: {formatDate(createdAt)}
+          </Text>
+        </Box>
       </Flex>
 
-      {/* Settings Modal */}
-      <SettingsModal isOpen={isSettingsOpen} onClose={() => setIsSettingsOpen(false)} />
+      {/* Bottom section: Actions */}
+      <Flex mt={4} justify="flex-end" alignItems="center" gap={3}>
+        <Tooltip label={ "Bot Chat History"}>
+          <IconButton
+            icon={<FaTable />}
+            size="md"
+            bg="pink.100"
+            color="pink.500"
+            _hover={{ bg: "pink.100", color: "pink.600" }}
+            onClick={()=>navigate(`/app/ailab/history/${id}`)} // Add functionality for chat history
+          />
+        </Tooltip>
+
+        <Tooltip label={"Share Bot"} aria-label="Share Bot">
+          <IconButton
+            aria-label="Share Bot"
+            icon={<FaShareAlt />}
+            size="md"
+            bg="green.100"
+            color="green.500"
+            _hover={{ bg: "green.100", color: "green.600" }}
+            onClick={onShareOpen} // Trigger Share Modal
+          />
+        </Tooltip>
+
+        <Tooltip label="Edit Bot" aria-label="Edit Bot">
+          <IconButton
+            aria-label="Edit Bot"
+            icon={<FaEdit />}
+            size="md"
+            bg="gray.100"
+            color="blue.500"
+            _hover={{ bg: "blue.100", color: "blue.600" }}
+            onClick={onEditOpen} // Trigger Edit Modal
+          />
+        </Tooltip>
+
+        <Tooltip label="Delete Bot" aria-label="Delete Bot">
+          <IconButton
+            aria-label="Delete Bot"
+            icon={<FaTrash />}
+            size="md"
+            bg="red.100"
+            color="red.500"
+            _hover={{ bg: "red.100", color: "red.600" }}
+            onClick={onDeleteOpen} // Trigger Delete Confirmation Modal
+          />
+        </Tooltip>
+      </Flex>
+
+      {/* Modals */}
+      {isEditOpen && (
+        <EditBotModal
+          isOpen={isEditOpen}
+          onClose={onEditClose}
+          botDetails={botDetails}
+          onSave={handleSave}
+        />
+      )}
+
+      {isShareOpen && (
+        <ShareModal
+          isOpen={isShareOpen}
+          onClose={onShareClose}
+          botData={botData} // Pass botData (botId, apiKey)
+        />
+      )}
+
+      {isDeleteOpen && (
+        <DeleteConfirmationModal
+          isOpen={isDeleteOpen}
+          onClose={onDeleteClose}
+          onDelete={handleDeleteBot} // Pass the delete handler
+        />
+      )}
     </Flex>
   );
 };

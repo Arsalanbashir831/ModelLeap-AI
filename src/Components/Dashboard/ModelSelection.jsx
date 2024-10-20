@@ -30,8 +30,13 @@ const ModelSelection = ({
   // Fetch models based on the type (chat or image)
   useEffect(() => {
     const fetchModels = async () => {
+      const token = localStorage.getItem('authToken')
       try {
-        const response = await fetch(`${BASE_URL}/api/get-models?model_type=${type}`);
+        const response = await fetch(`${BASE_URL}/api/model/get-models?model_type=${type}` , {
+          headers:{
+            "Authorization":`Bearer ${token}`
+          }
+        });
         const data = await response.json();
 
         if (response.ok) {

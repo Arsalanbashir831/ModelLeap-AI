@@ -22,7 +22,7 @@ import { BASE_URL } from '../../Constants';
 import { useRecoilValue } from 'recoil';
 import modelState from '../../atoms/modelState';
 
-const CreateBotModel = ({ isOpen, onClose }) => {
+const CreateBotModel = ({ isOpen, onClose , refresh , setRefresh }) => {
   const [botName, setBotName] = useState('');
   const [systemContext, setSystemContext] = useState('');
   const [modelType, setModelType] = useState('chat'); 
@@ -32,6 +32,7 @@ const selectedModel = useRecoilValue(modelState)
   const handleSubmit = async () => {
     setLoading(true); 
     const botData = {
+      botName,
       systemContext, 
       modelName: selectedModel.value, 
     };
@@ -60,6 +61,7 @@ const token = localStorage.getItem('authToken')
         duration: 3000,
         isClosable: true,
       });
+      setRefresh(!refresh)
       onClose(); 
     } catch (error) {
       console.error('Error creating bot:', error);

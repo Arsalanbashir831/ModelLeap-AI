@@ -75,7 +75,7 @@ const {theme} = useTheme()
           
            height={250} overflowY={'scroll'} zIndex={10} bg={theme.background} borderColor={borderColor} borderRadius="lg" boxShadow="lg" p={2}>
          
-            {options.map((group) => (
+            {options?.map((group) => (
               <Box key={group.label} my={2}>
                 <Text ml={3} fontWeight="bolder" color={theme.textColor} fontSize="sm" letterSpacing="wide">
                   {group.label} Models
