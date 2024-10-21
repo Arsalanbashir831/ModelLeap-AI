@@ -14,17 +14,18 @@ import {
   ListItem,
   useDisclosure,
   Image,
+  Spinner,
+  IconButton,
 } from "@chakra-ui/react";
 import { useLocation, useParams } from "react-router-dom";
 import { BASE_URL } from "../../Constants";
 import CreateChatModel from "../../Components/Dashboard/CreateChatModel";
 import { FaShare } from "react-icons/fa";
+import { ChevronLeftIcon, ChevronRightIcon } from "@chakra-ui/icons";
 import ShareModal from "../../Components/Dashboard/ShareModal";
 
 // Function to format Firebase timestamp
 const formatTimestamp = (timestamp) => {
-  console.log('timestamp',timestamp);
-  
   if (timestamp?._seconds) {
     const date = new Date(
       timestamp._seconds * 1000 + timestamp._nanoseconds / 1000000
@@ -37,11 +38,13 @@ const formatTimestamp = (timestamp) => {
 const ChatbotHistory = () => {
   const { botId } = useParams();
   const location = useLocation();
-  const { apiKey , modelName} = location.state;
-
+  const { apiKey, modelName } = location.state;
+  const [loading, setLoading] = useState(false);
   const [chats, setChats] = useState([]); // Store chats fetched from API
   const [selectedChat, setSelectedChat] = useState(null); // Active selected chat
   const [chatHistory, setChatHistory] = useState([]); // Chat history for the selected chat
+  const [currentPage, setCurrentPage] = useState(1); // For pagination
+  const [itemsPerPage] = useState(4); // Items per page
 
   const { isOpen, onOpen, onClose } = useDisclosure(); // For managing the modal state for creating a new chat
   const {
@@ -55,6 +58,7 @@ const ChatbotHistory = () => {
   useEffect(() => {
     const fetchChats = async () => {
       try {
+        setLoading(true);
         const response = await fetch(`${BASE_URL}/api/bot/${botId}/chats`, {
           headers: {
             "x-api-key": apiKey,
@@ -63,6 +67,7 @@ const ChatbotHistory = () => {
         if (response.ok) {
           const data = await response.json();
           setChats(data?.chats); // Update chats with data from API
+          setLoading(false);
         } else {
           console.error("Failed to fetch chats");
         }
@@ -76,6 +81,7 @@ const ChatbotHistory = () => {
   // Fetch chat history from the API
   const fetchChatHistory = async (chatId) => {
     try {
+      setLoading(true);
       const token = localStorage.getItem("authToken");
       const response = await fetch(`${BASE_URL}/api/bot/${botId}/chat/${chatId}`, {
         headers: {
@@ -85,13 +91,13 @@ const ChatbotHistory = () => {
       });
 
       if (response.ok) {
+        setLoading(false);
         const data = await response.json();
         const processedMessages = await Promise.all(
           data.messages.map(async (message) => {
             const from = message.role === "user" ? "You" : "AI";
             const time = formatTimestamp(message.timestamp); // Format timestamp
 
-            // Check if content is an image ID (integer)
             if (Number.isInteger(message.content)) {
               const imageId = message.content;
               try {
@@ -148,7 +154,9 @@ const ChatbotHistory = () => {
           })
         );
 
-        setChatHistory(processedMessages); // Update chat history with processed messages
+        // Sort messages by timestamp (latest first)
+        const sortedMessages = processedMessages.sort((a, b) => new Date(b.time) - new Date(a.time));
+        setChatHistory(sortedMessages); // Update chat history with processed messages
       } else {
         console.error("Failed to fetch chat history:", response.status, response.statusText);
       }
@@ -162,6 +170,14 @@ const ChatbotHistory = () => {
     setSelectedChat(chat); // Set the selected chat
     fetchChatHistory(chat.chatId); // Fetch chat history for the selected chat
   };
+
+  // Pagination Logic
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentItems = chatHistory.slice(indexOfFirstItem, indexOfLastItem);
+
+  // Change page
+  const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
   // Handle adding a new chat
   const handleNewChat = async (newChatTitle) => {
@@ -180,8 +196,7 @@ const ChatbotHistory = () => {
 
       if (response.ok) {
         const data = await response.json();
-        window.location.reload()
-        // setChats((prevChats) => [...prevChats, ...data?.chats]);
+        window.location.reload();
       } else {
         console.error("Failed to create chat:", response.status, response.statusText);
       }
@@ -196,38 +211,58 @@ const ChatbotHistory = () => {
     onShareOpen();
   };
 
-  // Render chat history table
+  // Render chat history table with pagination
   const renderChatHistoryTable = () => {
     if (!selectedChat || chatHistory.length === 0) {
       return <Box>No chat history available for this selection</Box>;
     }
 
     return (
-      <Table variant="striped" colorScheme="gray">
-        <Thead>
-          <Tr>
-            <Th>Message</Th>
-            <Th>Sender</Th>
-            <Th>Timestamp</Th>
-          </Tr>
-        </Thead>
-        <Tbody>
-        {console.log(chatHistory)}
-          {chatHistory.map((message, index) => (
-            <Tr key={message.id || index}>
-              <Td>
-                {typeof message.content === "string" && message.content.startsWith("https://") ? (
-                  <Image src={message.content} alt="Generated Image" maxWidth="200px" />
-                ) : (
-                  message.content
-                )}
-              </Td>
-              <Td>{message.from === "You" ? "User" : "AI"}</Td>
-              <Td>{message.time}</Td>
+      <>
+        <Table variant="striped" colorScheme="gray">
+          <Thead>
+            <Tr>
+              <Th>Message</Th>
+              <Th>Sender</Th>
+              <Th>Timestamp</Th>
             </Tr>
-          ))}
-        </Tbody>
-      </Table>
+          </Thead>
+          <Tbody>
+            {currentItems.map((message, index) => (
+              <Tr key={message.id || index}>
+                <Td>
+                  {typeof message.content === "string" && message.content.startsWith("https://") ? (
+                    <Image src={message.content} alt="Generated Image" maxWidth="200px" />
+                  ) : (
+                    message.content
+                  )}
+                </Td>
+                <Td>{message.from === "You" ? "User" : "AI"}</Td>
+                <Td>{message.time}</Td>
+              </Tr>
+            ))}
+          </Tbody>
+        </Table>
+
+        {/* Pagination Controls */}
+        <Flex justifyContent="space-between" alignItems="center" mt={4}>
+          <Button
+            disabled={currentPage === 1}
+            onClick={() => paginate(currentPage - 1)}
+            leftIcon={<ChevronLeftIcon />}
+          >
+            Previous
+          </Button>
+          <Box>Page {currentPage}</Box>
+          <Button
+            disabled={indexOfLastItem >= chatHistory.length}
+            onClick={() => paginate(currentPage + 1)}
+            rightIcon={<ChevronRightIcon />}
+          >
+            Next
+          </Button>
+        </Flex>
+      </>
     );
   };
 
@@ -269,8 +304,13 @@ const ChatbotHistory = () => {
         <Heading size="md" mb={4}>
           Chats
         </Heading>
-
-        {renderChatList()}
+        {loading ? (
+          <Flex h={"100vh"} justifyContent={"center"} alignItems={"center"}>
+            <Spinner size={"xl"} />
+          </Flex>
+        ) : (
+          renderChatList()
+        )}
       </Box>
 
       {/* Main content area for chat history */}
@@ -278,7 +318,14 @@ const ChatbotHistory = () => {
         <Heading size="md" mb={4}>
           Chat History {selectedChat ? `for ${selectedChat.name}` : ""}
         </Heading>
-        {renderChatHistoryTable()}
+
+        {loading ? (
+          <Flex h={"100vh"} justifyContent={"center"} alignItems={"center"}>
+            <Spinner size={"xl"} />
+          </Flex>
+        ) : (
+          renderChatHistoryTable()
+        )}
       </Box>
 
       {/* Create Chat Modal */}
