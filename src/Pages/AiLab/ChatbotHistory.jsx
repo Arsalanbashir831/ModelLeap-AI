@@ -16,11 +16,15 @@ import {
   Image,
   Spinner,
   IconButton,
+  Stack,
+  Avatar,
+  Tooltip,
+  Text,
 } from "@chakra-ui/react";
 import { useLocation, useParams } from "react-router-dom";
 import { BASE_URL } from "../../Constants";
 import CreateChatModel from "../../Components/Dashboard/CreateChatModel";
-import { FaShare } from "react-icons/fa";
+import { FaRobot, FaShare } from "react-icons/fa";
 import { ChevronLeftIcon, ChevronRightIcon } from "@chakra-ui/icons";
 import ShareModal from "../../Components/Dashboard/ShareModal";
 
@@ -289,33 +293,71 @@ const ChatbotHistory = () => {
   };
 
   // Render chat list in the sidebar
-  const renderChatList = () => {
-    return (
-      <List spacing={3}>
-        {chats.map((chat) => (
-          <ListItem key={chat.chatId}>
-            <Flex alignItems={"center"} px={5} rounded={"md"}>
-              <Button
-                width="100%"
-                variant={
-                  selectedChat?.chatId === chat.chatId ? "solid" : "outline"
-                }
-                colorScheme="blue"
-                onClick={() => handleChatSelection(chat)} // Set active chat on click
-              >
-                {chat.name}
-              </Button>
-              <FaShare
-                onClick={() => handleShare(chat)} // Trigger sharing on click
-                cursor={"pointer"}
-                style={{ marginLeft: "10px" }}
+
+const renderChatList = () => {
+  return (
+    <List spacing={4}>
+      {chats.map((chat) => (
+        <ListItem key={chat.chatId}>
+          <Flex
+          onClick={()=>handleChatSelection(chat)}
+            alignItems="center"
+            px={4}
+            py={2}
+            borderRadius="lg"
+            bg={selectedChat?.chatId === chat.chatId ? "blue.50" : "gray.50"}
+            boxShadow="md"
+            _hover={{ bg: "gray.100", cursor: "pointer" }}
+            transition="background-color 0.3s ease"
+          >
+            <Stack direction="row" align="center" spacing={4} width="100%">
+              {/* Avatar */}
+              <Avatar
+                name={chat.name}
+                bg={selectedChat?.chatId === chat.chatId ? "blue.500" : "gray.500"}
+                size="md"
               />
-            </Flex>
-          </ListItem>
-        ))}
-      </List>
-    );
-  };
+
+              {/* Chat Name */}
+              <Box flex="1">
+                <Text fontWeight="md" fontSize="sm" noOfLines={1}>
+                  {chat.name}
+                </Text>
+                {/* <Text fontSize="sm" color="gray.500">
+                  Last Active: {chat.lastActive || "N/A"}
+                </Text> */}
+              </Box>
+
+              {/* Action Buttons */}
+              <Stack direction="row" spacing={2}>
+                <Tooltip label="Share Chat" aria-label="Share Chat">
+                  <IconButton
+                    icon={<FaShare />}
+                    size="sm"
+                    colorScheme="blue"
+                    variant="ghost"
+                    onClick={() => handleShare(chat)}
+                  />
+                </Tooltip>
+
+                {/* <Tooltip label="Chatbot Actions" aria-label="Chatbot Actions">
+                  <IconButton
+                    icon={<FaRobot />}
+                    size="sm"
+                    colorScheme="blue"
+                    variant="ghost"
+                    onClick={() => handleChatbotActions(chat)}
+                  />
+                </Tooltip> */}
+              </Stack>
+            </Stack>
+          </Flex>
+        </ListItem>
+      ))}
+    </List>
+  );
+};
+
 
   return (
     <Flex>
@@ -328,13 +370,9 @@ const ChatbotHistory = () => {
         <Heading size="md" mb={4}>
           Chats
         </Heading>
-        {loading ? (
-          <Flex h={"100vh"} justifyContent={"center"} alignItems={"center"}>
-            <Spinner size={"xl"} />
-          </Flex>
-        ) : (
+        {
           renderChatList()
-        )}
+        }
       </Box>
 
       {/* Main content area for chat history */}
@@ -343,13 +381,9 @@ const ChatbotHistory = () => {
           Chat History {selectedChat ? `for ${selectedChat.name}` : ""}
         </Heading>
 
-        {loading ? (
-          <Flex h={"100vh"} justifyContent={"center"} alignItems={"center"}>
-            <Spinner size={"xl"} />
-          </Flex>
-        ) : (
+        {
           renderChatHistoryTable()
-        )}
+        }
       </Box>
 
       {/* Create Chat Modal */}

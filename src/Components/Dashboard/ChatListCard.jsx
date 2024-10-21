@@ -10,7 +10,7 @@ import {
   Badge,
   useDisclosure,
 } from "@chakra-ui/react";
-import { FaEdit, FaShareAlt, FaTable, FaTrash } from "react-icons/fa";
+import { FaEdit, FaRobot, FaShareAlt, FaTable, FaTrash } from "react-icons/fa";
 import EditBotModal from "./EditBotModalBox";
 import ShareModal from "./ShareModal";
 import DeleteConfirmationModal from "./DeleteModal"; // Import delete modal
@@ -104,13 +104,7 @@ const navigate = useNavigate()
     }
   };
   
-  const truncateText = (text, maxWords) => {
-    const wordsArray = text.split(" ");
-    if (wordsArray.length > maxWords) {
-      return wordsArray.slice(0, maxWords).join(" ") + "...";
-    }
-    return text;
-  };
+  
 
   // Format creation date
   const formatDate = (timestamp) => {
@@ -166,6 +160,16 @@ const navigate = useNavigate()
 
       {/* Bottom section: Actions */}
       <Flex mt={4} justify="flex-end" alignItems="center" gap={3}>
+        <Tooltip label={ "Test Bot"}>
+          <IconButton
+            icon={<FaRobot />}
+            size="md"
+            bg="green.100"
+            color="green.500"
+            _hover={{ bg: "green.100", color: "green.600" }}
+            onClick={()=>navigate(`/app/ailab/chat/${id}`,{state:{apiKey:apiKey , modelName:modelName}})} // Add functionality for chat history
+          />
+        </Tooltip>
         <Tooltip label={ "Bot Chat History"}>
           <IconButton
             icon={<FaTable />}

@@ -13,6 +13,7 @@ import {
   Spinner,
   Image,
   SkeletonText,
+  useDisclosure,
 } from "@chakra-ui/react";
 import { FiSend } from "react-icons/fi";
 import { BsClock, BsClipboard, BsArrowDown } from "react-icons/bs";
@@ -22,8 +23,9 @@ import { useRecoilValue } from "recoil";
 import modelState from "../../atoms/modelState";
 import modelStateParameter from "../../atoms/modelParameterState";
 import { useNavigate } from "react-router-dom";
+import CreateChatModel from "./CreateChatModel";
 
-const LabChatBox = ({ chatId }) => {
+const LabChatBox = ({ botId, apiKey, modelName }) => {
   const [messages, setMessages] = useState([]);
   const { theme } = useTheme();
   const [inputValue, setInputValue] = useState("");
@@ -34,109 +36,12 @@ const LabChatBox = ({ chatId }) => {
   const modelParams = useRecoilValue(modelStateParameter);
   const [isLoading, setIsLoading] = useState(false); // For loading animation
   const [showScrollButton, setShowScrollButton] = useState(false); // For scroll-to-bottom button
-
+  const { isOpen, onOpen, onClose } = useDisclosure();
   const messagesEndRef = useRef(null);
   const messagesContainerRef = useRef(null);
+  const [chatId, setChatId] = useState(null);
 
-  const checkIfImageContent = (content) => {
-    return Number.isInteger(content);
-  };
-
-  const fetchMessages = async () => {
-    const token = localStorage.getItem("authToken");
-    const apiKey = localStorage.getItem("apiKey");
-    try {
-      const response = await fetch(`${BASE_URL}/api/chat/${chatId}`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "x-api-key": apiKey,
-        },
-      });
-      if (response.status===403|| response.status==='403') {
-        navigate('/auth')
-      }
-      if (response.ok) {
-        const data = await response.json();
-
-        const processedMessages = await Promise.all(
-          data.messages.map(async (message) => {
-            const from = message.role === "user" ? "You" : "AI";
-            const time = new Date(
-              message.timestamp._seconds * 1000
-            ).toLocaleTimeString();
-
-            if (checkIfImageContent(message.content)) {
-              const imageId = message.content;
-              const imageResponse = await fetch(
-                `${BASE_URL}/api/get_images`,
-                {
-                  method: "POST",
-                  headers: {
-                    "Content-Type": "application/json",
-                    Authorization: `Bearer ${token}`,
-                    "x-api-key": apiKey,
-                  },
-                  body: JSON.stringify({
-                    request_id: imageId.toString(),
-                  }),
-                }
-              );
-
-              if (imageResponse.ok) {
-                const imageData = await imageResponse.json();
-                if (imageData.status === "success") {
-                  const imageUrl = imageData.output[0];
-
-                  return {
-                    id: message.id,
-                    from,
-                    content: imageUrl,
-                    time,
-                    type: "image",
-                    status: "complete",
-                  };
-                } else {
-                  return {
-                    id: message.id,
-                    from,
-                    content: "Image generation failed.",
-                    time,
-                    type: "text",
-                  };
-                }
-              } else {
-                return {
-                  id: message.id,
-                  from,
-                  content: "Failed to fetch image.",
-                  time,
-                  type: "text",
-                };
-              }
-            } else {
-              return {
-                id: message.id,
-                from,
-                content: message.content,
-                time,
-                type: "text",
-              };
-            }
-          })
-        );
-
-        setMessages(processedMessages);
-      } else if (response.status === 403 || response.status === "403") {
-        navigate("/auth");
-      }
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
-  useEffect(() => {
-    fetchMessages();
-  }, [chatId]);
+  useEffect(() => {console.log(modelName);}, [chatId]);
 
   useEffect(() => {
     scrollToBottom();
@@ -159,11 +64,33 @@ const LabChatBox = ({ chatId }) => {
     }
   };
 
+  const handleNewChat = async (name) => {
+    try {
+      const token = localStorage.getItem("authToken");
+      const response = await fetch(`${BASE_URL}/api/bot/${botId}/chat/start`, {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "x-api-key": apiKey,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ name: name }),
+      });
+      if (response.ok) {
+        const data = await response.json();
+        setChatId(data.chatId);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   const handleSendMessage = async () => {
     const token = localStorage.getItem("authToken");
-    const apiKey = localStorage.getItem("apiKey");
-
+    // const apiKey = localStorage.getItem("apiKey");
+    const isImageModel = modelName.startsWith("imagegen:");
     if (inputValue.trim()) {
+      let userConversation = [];
       let updatedMessages = [];
       // Add the user's message to the chat
       const userMessage = {
@@ -172,22 +99,28 @@ const LabChatBox = ({ chatId }) => {
         time: new Date().toLocaleTimeString(),
         type: "text",
       };
+      if (!isImageModel) {
+        userConversation.push({ role: "user", content: inputValue });
+      }
+     
+      
       updatedMessages = [...messages, userMessage];
       setMessages(updatedMessages);
+
 
       // Clear the input field
       setInputValue("");
 
       try {
-        const isImageModel = selectedModel.value.startsWith("imagegen:");
+    
 
         setIsLoading(true); // Start loading
 
         // Send the message to either the image or text generation endpoint
         const response = await fetch(
           isImageModel
-            ? `${BASE_URL}/api/image/${chatId}`
-            : `${BASE_URL}/api/stream/${chatId}`,
+            ? `${BASE_URL}/api/bot/${botId}/chat/${chatId}/image`
+            : `${BASE_URL}/api/bot/${botId}/chat/${chatId}/stream`,
           {
             method: "POST",
             headers: {
@@ -195,25 +128,18 @@ const LabChatBox = ({ chatId }) => {
               Authorization: `Bearer ${token}`,
               "x-api-key": apiKey,
             },
-            body: JSON.stringify({
-              modelName: selectedModel.value,
-              message: inputValue,
-              kwargs: {
-                topP: parseFloat(modelParams.topP),
-                topK: parseInt(modelParams.topK),
-                temperature: parseFloat(modelParams.temperature),
-                maxOutputTokens: parseInt(modelParams.outputLength),
-              },
-            }),
+            body: JSON.stringify(
+              isImageModel
+                ? { message: inputValue } 
+                : { messages: userConversation } 
+            ),
           }
         );
 
-        // If it's an image generation request
         if (isImageModel && response.ok) {
           const data = await response.json();
           const imageId = data.response; // Get imageId from response
 
-          // Add a placeholder AI message for loading the image
           let aiMessage = {
             from: "AI",
             content: "Generating image...",
@@ -228,20 +154,17 @@ const LabChatBox = ({ chatId }) => {
           while (imageStatus === "processing") {
             await new Promise((resolve) => setTimeout(resolve, 3000)); // Poll every 3 seconds
 
-            const imageResponse = await fetch(
-              `${BASE_URL}/api/get_images`,
-              {
-                method: "POST",
-                headers: {
-                  "Content-Type": "application/json",
-                  Authorization: `Bearer ${token}`,
-                  "x-api-key": apiKey,
-                },
-                body: JSON.stringify({
-                  request_id: imageId.toString(),
-                }),
-              }
-            );
+            const imageResponse = await fetch(`${BASE_URL}/api/bot/get_images`, {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+                // Authorization: `Bearer ${token}`,
+                "x-api-key": apiKey,
+              },
+              body: JSON.stringify({
+                request_id: imageId.toString(),
+              }),
+            });
 
             if (imageResponse.ok) {
               const imageData = await imageResponse.json();
@@ -266,9 +189,8 @@ const LabChatBox = ({ chatId }) => {
           }
         }
 
-        // If it's a text generation request, handle streaming
         if (!isImageModel && response.ok) {
-          setIsLoading(false)
+          setIsLoading(false);
           const reader = response.body.getReader();
           const decoder = new TextDecoder("utf-8");
 
@@ -288,15 +210,17 @@ const LabChatBox = ({ chatId }) => {
             if (value) {
               const chunk = decoder.decode(value);
               aiMessage.content += chunk;
+              userConversation.push({
+                role: "assistant",
+                content: aiMessage.content,
+              });
               updatedMessages[updatedMessages.length - 1] = { ...aiMessage };
               setMessages([...updatedMessages]);
               scrollToBottom();
             }
           }
-         
         }
       } catch (error) {
-      
         toast({
           title: "Error",
           description: error.message || "Something went wrong",
@@ -304,8 +228,8 @@ const LabChatBox = ({ chatId }) => {
           duration: 3000,
           isClosable: true,
         });
-      }finally{
-        setIsLoading(false)
+      } finally {
+        setIsLoading(false);
       }
     }
   };
@@ -355,10 +279,7 @@ const LabChatBox = ({ chatId }) => {
 
       // Regular text
       return (
-        <Text
-          key={index}
-          color={from === "You" ? theme.textColor : "white"}
-        >
+        <Text key={index} color={from === "You" ? theme.textColor : "white"}>
           <span dangerouslySetInnerHTML={{ __html: line }} />
         </Text>
       );
@@ -368,7 +289,15 @@ const LabChatBox = ({ chatId }) => {
   };
 
   return (
-    <Box w="100%" maxW="1000px" mx="auto" p={4} borderRadius="lg" position="relative">
+    <Box
+      w="100%"
+      maxW="1000px"
+      mx="auto"
+      p={4}
+      borderRadius="lg"
+      position="relative"
+      shadow={"lg"}
+    >
       <VStack
         ref={messagesContainerRef}
         onScroll={handleScroll}
@@ -394,8 +323,23 @@ const LabChatBox = ({ chatId }) => {
           },
         }}
       >
-        {messages?.length === 0 ? (
-          <Text color="gray.300">No messages yet. Start the conversation!</Text>
+        {chatId === null ? (
+          <>
+            <Flex
+              gap={10}
+              flexDirection={"column"}
+              h={"100vh"}
+              justifyContent={"center"}
+              alignItems={"center"}
+            >
+              <Text color="gray.500">
+                Click here to start conversation with Bot
+              </Text>
+              <Button colorScheme="pink" onClick={onOpen}>
+                Start Chat
+              </Button>
+            </Flex>
+          </>
         ) : (
           <>
             {messages?.map((message, index) => (
@@ -431,14 +375,12 @@ const LabChatBox = ({ chatId }) => {
                   }
                 >
                   {message.type === "text" &&
-                    (message.from === "AI" && isLoading && index === messages.length - 1 ? (
+                    (message.from === "AI" &&
+                    isLoading &&
+                    index === messages.length - 1 ? (
                       <SkeletonText noOfLines={4} spacing="4" />
                     ) : (
-                      renderMessageContent(
-                        message.content,
-                        message.from,
-                        theme
-                      )
+                      renderMessageContent(message.content, message.from, theme)
                     ))}
                   {message.type === "image" && (
                     <>
@@ -464,9 +406,7 @@ const LabChatBox = ({ chatId }) => {
                   <Flex
                     mt={2}
                     align="center"
-                    justify={
-                      message.from === "You" ? "flex-start" : "flex-end"
-                    }
+                    justify={message.from === "You" ? "flex-start" : "flex-end"}
                     color="gray.400"
                   >
                     <BsClock />
@@ -516,33 +456,42 @@ const LabChatBox = ({ chatId }) => {
       )}
 
       <Flex mt={4} align="center">
-        <Input
-          placeholder="Enter to send, Shift+Enter for newline"
-          value={inputValue}
-          onChange={(e) => setInputValue(e.target.value)}
-          onKeyDown={handleKeyPress}
-          size={buttonSize}
-          bg="rgba(255, 255, 255, 0.1)"
-          color={theme.textColor}
-          border="none"
-          borderRadius="full"
-          _placeholder={{ color: "gray.500" }}
-          _focus={{ bg: "rgba(255, 255, 255, 0.15)" }}
-        />
-        <Button
-          ml={2}
-          size={buttonSize}
-          onClick={handleSendMessage}
-          bg="linear-gradient(90deg, #8e44ad, #ff914d)"
-          color="white"
-          borderRadius="full"
-          _hover={{ bg: "#8e44ad" }}
-          _active={{ bg: "#8e44ad" }}
-          isLoading={isLoading && inputValue.trim() !== ""} // Disable button while loading
-        >
-          <FiSend />
-        </Button>
+        {chatId != null && (
+          <>
+            <Input
+              placeholder="Enter to send, Shift+Enter for newline"
+              value={inputValue}
+              onChange={(e) => setInputValue(e.target.value)}
+              onKeyDown={handleKeyPress}
+              size={buttonSize}
+              bg="rgba(255, 255, 255, 0.1)"
+              color={theme.textColor}
+              border="none"
+              borderRadius="full"
+              _placeholder={{ color: "gray.500" }}
+              _focus={{ bg: "rgba(255, 255, 255, 0.15)" }}
+            />
+            <Button
+              ml={2}
+              size={buttonSize}
+              onClick={handleSendMessage}
+              bg="linear-gradient(90deg, #8e44ad, #ff914d)"
+              color="white"
+              borderRadius="full"
+              _hover={{ bg: "#8e44ad" }}
+              _active={{ bg: "#8e44ad" }}
+              isLoading={isLoading && inputValue.trim() !== ""} // Disable button while loading
+            >
+              <FiSend />
+            </Button>
+          </>
+        )}
       </Flex>
+      <CreateChatModel
+        isOpen={isOpen}
+        onClose={onClose}
+        onSave={handleNewChat}
+      />
     </Box>
   );
 };

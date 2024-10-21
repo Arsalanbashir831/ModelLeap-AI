@@ -41,7 +41,7 @@ const router = createBrowserRouter([
       { path: "/app/ailab", element: <AiLab /> },
     ],
   },
-  { path: "/app/ailab/chat/:chatId", element: <AiLabChat /> },
+  { path: "/app/ailab/chat/:botId", element: <AiLabChat /> },
   { path: "/app/ailab/history/:botId", element: <ChatbotHistory /> },
   { path: "*", element: <NotFound /> },
 ]);

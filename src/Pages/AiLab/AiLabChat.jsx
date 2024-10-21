@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import Header from "../../Components/Dashboard/Header";
 import LabChatBox from "../../Components/Dashboard/LabChatBox";
 import { useParams, Link, useLocation, useNavigate } from "react-router-dom";
@@ -14,8 +14,11 @@ import ChatHeader from "../../Components/common/ChatHeader";
 
 
 const AiLabChat = () => {
-  const { chatId } = useParams();
+  const { botId } = useParams();
   const { theme } = useTheme();
+  const location = useLocation()
+  const {apiKey , modelName} = location.state
+
 const navigate = useNavigate()
   return (
     <Box bg={theme.background} minH="100vh" p={3}>
@@ -59,9 +62,9 @@ const navigate = useNavigate()
         </Box> */}
         <Flex  gap={5}>
          
-          <HistoryBox chatId={chatId}/>
+          {/* <HistoryBox chatId={chatId}/> */}
 
-          <Box
+          {/* <Box
             p={2}
             borderRadius="md"
             // boxShadow="md"
@@ -69,10 +72,10 @@ const navigate = useNavigate()
             maxH="800px"
             overflowY="auto"
             flex="1"
-          >
-            <ChatHeader chatId={chatId} />
-            <LabChatBox chatId={chatId}/>
-          </Box>
+          > */}
+            {/* <ChatHeader chatId={chatId} /> */}
+            <LabChatBox apiKey={apiKey} botId={botId} modelName={modelName}/>
+          {/* </Box> */}
         </Flex>
       </Box>
     </Box>
