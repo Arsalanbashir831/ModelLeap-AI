@@ -104,7 +104,13 @@ const navigate = useNavigate()
     }
   };
   
-
+  const truncateText = (text, maxWords) => {
+    const wordsArray = text.split(" ");
+    if (wordsArray.length > maxWords) {
+      return wordsArray.slice(0, maxWords).join(" ") + "...";
+    }
+    return text;
+  };
 
   // Format creation date
   const formatDate = (timestamp) => {
@@ -126,7 +132,7 @@ const navigate = useNavigate()
       borderRadius="lg"
       px={6}
       py={5}
-      w="100%"
+      w="500px"
       maxW="800px"
       my={4}
       boxShadow="lg"
@@ -143,8 +149,10 @@ const navigate = useNavigate()
           <Text fontSize="xl" fontWeight="bold" color="gray.700" mb={2}>
             {botName}
           </Text>
-          <Badge colorScheme="purple" mb={2}>
-            {systemContext}
+          <Badge maxW={'300px'}  colorScheme="purple" mb={2}>
+        <Text isTruncated >
+        {systemContext}
+        </Text>
           </Badge>
         </Box>
 

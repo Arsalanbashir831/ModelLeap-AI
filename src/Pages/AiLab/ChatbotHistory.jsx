@@ -67,13 +67,12 @@ const ChatbotHistory = () => {
         if (response.ok) {
           const data = await response.json();
           setChats(data?.chats); // Update chats with data from API
-         
         } else {
           console.error("Failed to fetch chats");
         }
       } catch (error) {
         console.error("Error fetching chats:", error);
-      } finally{
+      } finally {
         setLoading(false);
       }
     };
@@ -85,13 +84,19 @@ const ChatbotHistory = () => {
     try {
       setLoading(true);
       const token = localStorage.getItem("authToken");
-      const response = await fetch(`${BASE_URL}/api/bot/${botId}/chat/${chatId}`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "x-api-key": apiKey,
-        },
-      });
-
+      const response = await fetch(
+        `${BASE_URL}/api/bot/${botId}/chat/${chatId}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "x-api-key": apiKey,
+          },
+        }
+      );
+      if (response.status === 404 || response.status === "404") {
+        setLoading(false);
+        setChatHistory([]);
+      }
       if (response.ok) {
         // setLoading(false);
         const data = await response.json();
@@ -103,16 +108,19 @@ const ChatbotHistory = () => {
             if (Number.isInteger(message.content)) {
               const imageId = message.content;
               try {
-                const imageResponse = await fetch(`${BASE_URL}/api/bot/get_images`, {
-                  method: "POST",
-                  headers: {
-                    "Content-Type": "application/json",
-                    "x-api-key": apiKey,
-                  },
-                  body: JSON.stringify({
-                    request_id: imageId.toString(),
-                  }),
-                });
+                const imageResponse = await fetch(
+                  `${BASE_URL}/api/bot/get_images`,
+                  {
+                    method: "POST",
+                    headers: {
+                      "Content-Type": "application/json",
+                      "x-api-key": apiKey,
+                    },
+                    body: JSON.stringify({
+                      request_id: imageId.toString(),
+                    }),
+                  }
+                );
 
                 if (imageResponse.ok) {
                   const imageData = await imageResponse.json();
@@ -143,8 +151,7 @@ const ChatbotHistory = () => {
                   time,
                   type: "text",
                 };
-              }
-              finally{
+              } finally {
                 setLoading(false);
               }
             } else {
@@ -159,10 +166,16 @@ const ChatbotHistory = () => {
           })
         );
 
-        const sortedMessages = processedMessages.sort((a, b) => new Date(b.time) - new Date(a.time));
-        setChatHistory(sortedMessages); 
+        const sortedMessages = processedMessages.sort(
+          (a, b) => new Date(b.time) - new Date(a.time)
+        );
+        setChatHistory(sortedMessages);
       } else {
-        console.error("Failed to fetch chat history:", response.status, response.statusText);
+        console.error(
+          "Failed to fetch chat history:",
+          response.status,
+          response.statusText
+        );
       }
     } catch (error) {
       console.error("Error fetching chat history:", error);
@@ -198,7 +211,11 @@ const ChatbotHistory = () => {
         const data = await response.json();
         window.location.reload();
       } else {
-        console.error("Failed to create chat:", response.status, response.statusText);
+        console.error(
+          "Failed to create chat:",
+          response.status,
+          response.statusText
+        );
       }
     } catch (error) {
       console.error("Error creating new chat:", error);
@@ -231,8 +248,13 @@ const ChatbotHistory = () => {
             {currentItems.map((message, index) => (
               <Tr key={message.id || index}>
                 <Td>
-                  {typeof message.content === "string" && message.content.startsWith("https://") ? (
-                    <Image src={message.content} alt="Generated Image" maxWidth="200px" />
+                  {typeof message.content === "string" &&
+                  message.content.startsWith("https://") ? (
+                    <Image
+                      src={message.content}
+                      alt="Generated Image"
+                      maxWidth="200px"
+                    />
                   ) : (
                     message.content
                   )}
@@ -275,7 +297,9 @@ const ChatbotHistory = () => {
             <Flex alignItems={"center"} px={5} rounded={"md"}>
               <Button
                 width="100%"
-                variant={selectedChat?.chatId === chat.chatId ? "solid" : "outline"}
+                variant={
+                  selectedChat?.chatId === chat.chatId ? "solid" : "outline"
+                }
                 colorScheme="blue"
                 onClick={() => handleChatSelection(chat)} // Set active chat on click
               >
@@ -329,7 +353,11 @@ const ChatbotHistory = () => {
       </Box>
 
       {/* Create Chat Modal */}
-      <CreateChatModel isOpen={isOpen} onClose={onClose} onSave={handleNewChat} />
+      <CreateChatModel
+        isOpen={isOpen}
+        onClose={onClose}
+        onSave={handleNewChat}
+      />
 
       {/* Share Chat Modal */}
       {selectedChatForShare && (
