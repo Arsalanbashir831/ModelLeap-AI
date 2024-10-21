@@ -42,8 +42,8 @@ const Sidebar = ({ isOpen, onToggle }) => {
     { label: "Billings", icon: FaMoneyBill, path: "/app/billing" },
     { label: "Usage", icon: RiProgress1Fill, path: "/app/usage" },
     { label: "Settings", icon: FaCog, path: "/app/settings" },
-    { label: "Support", icon: FaQuestionCircle, path: "/app/helpcenter" },
-    { label: "Documentation", icon: FaBook, path: "/app/documentation" },
+    // { label: "Support", icon: FaQuestionCircle, path: "/app/helpcenter" },
+    // { label: "Documentation", icon: FaBook, path: "/app/documentation" },
   ];
 
   const sidebarVariants = {
