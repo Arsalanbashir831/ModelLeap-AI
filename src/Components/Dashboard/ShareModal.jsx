@@ -22,9 +22,9 @@ import { useRecoilValue } from "recoil";
 import BotState from "../../atoms/BotState";
 import { BASE_URL } from "../../Constants";
 
-const ShareModal = ({ isOpen, onClose ,botData }) => {
+const ShareModal = ({ isOpen, onClose, botData , modelName}) => {
   const [tabIndex, setTabIndex] = useState(0); // To manage tab selection
-//   const botData = useRecoilValue(BotState);
+  //   const botData = useRecoilValue(BotState);
   const [htmlSnippet, setHtmlSnippet] = useState("");
   const [genCode, setGenCode] = useState("");
 
@@ -39,7 +39,7 @@ const ShareModal = ({ isOpen, onClose ,botData }) => {
   const fetchHtmlSnippet = async () => {
     try {
       const response = await fetch(
-        `${BASE_URL}/api/bot/${botData.botId}/embed`,
+        `${BASE_URL}/api/bot/${botData.botId}/chat/${botData.chatId}/embed?width=400&height=600&modelName=${modelName}`,
         {
           headers: {
             "x-api-key": botData.apiKey,
@@ -57,7 +57,7 @@ const ShareModal = ({ isOpen, onClose ,botData }) => {
   const fetchAPIKit = async (language) => {
     try {
       const response = await fetch(
-        `${BASE_URL}/api/bot/${botData.botId}/code-snippet/${language}`,
+        `${BASE_URL}/api/bot/${botData.botId}/chat/${botData.chatId}/code-snippet/${language}`,
         {
           headers: {
             "x-api-key": botData.apiKey,
@@ -80,7 +80,7 @@ const ShareModal = ({ isOpen, onClose ,botData }) => {
   useEffect(() => {
     fetchHtmlSnippet();
     fetchAPIKit(languages[tabIndex].lang);
-  }, [tabIndex , botData]);
+  }, [tabIndex, botData ]);
 
   return (
     <Modal isOpen={isOpen} onClose={onClose} size="lg">

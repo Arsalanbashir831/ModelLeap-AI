@@ -165,11 +165,11 @@ const navigate = useNavigate()
             bg="pink.100"
             color="pink.500"
             _hover={{ bg: "pink.100", color: "pink.600" }}
-            onClick={()=>navigate(`/app/ailab/history/${id}`)} // Add functionality for chat history
+            onClick={()=>navigate(`/app/ailab/history/${id}`,{state:{apiKey:apiKey , modelName:modelName}})} // Add functionality for chat history
           />
         </Tooltip>
 
-        <Tooltip label={"Share Bot"} aria-label="Share Bot">
+        {/* <Tooltip label={"Share Bot"} aria-label="Share Bot">
           <IconButton
             aria-label="Share Bot"
             icon={<FaShareAlt />}
@@ -179,7 +179,7 @@ const navigate = useNavigate()
             _hover={{ bg: "green.100", color: "green.600" }}
             onClick={onShareOpen} // Trigger Share Modal
           />
-        </Tooltip>
+        </Tooltip> */}
 
         <Tooltip label="Edit Bot" aria-label="Edit Bot">
           <IconButton

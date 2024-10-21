@@ -20,6 +20,7 @@ import {
 } from "@chakra-ui/react";
 import { BASE_URL } from "../../Constants";
 
+
 const EditBotModal = ({ isOpen, onClose, botDetails, onSave }) => {
   const [formData, setFormData] = useState({
     botName: botDetails.botName || "",
@@ -31,6 +32,7 @@ const EditBotModal = ({ isOpen, onClose, botDetails, onSave }) => {
 
   const [modelsData, setModelsData] = useState([]); // Store fetched models
   const [loadingModels, setLoadingModels] = useState(false); // Handle loading state
+ 
   const toast = useToast();
 
 

@@ -61,7 +61,8 @@ const token = localStorage.getItem('authToken')
         duration: 3000,
         isClosable: true,
       });
-      setRefresh(!refresh)
+       setRefresh(!refresh)
+      
       onClose(); 
     } catch (error) {
       console.error('Error creating bot:', error);
