@@ -34,7 +34,7 @@ const CreateChatModel = ({ isOpen, onClose, onSave }) => {
 
     // Call the onSave function passed via props with the new chat title
     onSave(chatTitle);
-window.location.reload()
+
     toast({
       title: 'Success',
       description: `Chat "${chatTitle}" created successfully.`,

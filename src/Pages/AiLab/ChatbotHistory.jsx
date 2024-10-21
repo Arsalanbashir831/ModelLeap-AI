@@ -180,7 +180,8 @@ const ChatbotHistory = () => {
 
       if (response.ok) {
         const data = await response.json();
-        setChats((prevChats) => [...prevChats, ...data?.chats]);
+        window.location.reload()
+        // setChats((prevChats) => [...prevChats, ...data?.chats]);
       } else {
         console.error("Failed to create chat:", response.status, response.statusText);
       }
