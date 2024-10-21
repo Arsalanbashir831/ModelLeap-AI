@@ -67,12 +67,14 @@ const ChatbotHistory = () => {
         if (response.ok) {
           const data = await response.json();
           setChats(data?.chats); // Update chats with data from API
-          setLoading(false);
+         
         } else {
           console.error("Failed to fetch chats");
         }
       } catch (error) {
         console.error("Error fetching chats:", error);
+      } finally{
+        setLoading(false);
       }
     };
     fetchChats();
@@ -91,7 +93,7 @@ const ChatbotHistory = () => {
       });
 
       if (response.ok) {
-        setLoading(false);
+        // setLoading(false);
         const data = await response.json();
         const processedMessages = await Promise.all(
           data.messages.map(async (message) => {
@@ -142,6 +144,9 @@ const ChatbotHistory = () => {
                   type: "text",
                 };
               }
+              finally{
+                setLoading(false);
+              }
             } else {
               return {
                 id: message.id,
@@ -154,9 +159,8 @@ const ChatbotHistory = () => {
           })
         );
 
-        // Sort messages by timestamp (latest first)
         const sortedMessages = processedMessages.sort((a, b) => new Date(b.time) - new Date(a.time));
-        setChatHistory(sortedMessages); // Update chat history with processed messages
+        setChatHistory(sortedMessages); 
       } else {
         console.error("Failed to fetch chat history:", response.status, response.statusText);
       }
@@ -165,21 +169,17 @@ const ChatbotHistory = () => {
     }
   };
 
-  // Handle chat selection and fetch history
   const handleChatSelection = (chat) => {
     setSelectedChat(chat); // Set the selected chat
     fetchChatHistory(chat.chatId); // Fetch chat history for the selected chat
   };
 
-  // Pagination Logic
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
   const currentItems = chatHistory.slice(indexOfFirstItem, indexOfLastItem);
 
-  // Change page
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
-  // Handle adding a new chat
   const handleNewChat = async (newChatTitle) => {
     try {
       const token = localStorage.getItem("authToken");
