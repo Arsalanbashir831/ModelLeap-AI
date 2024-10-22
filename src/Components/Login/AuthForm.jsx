@@ -38,6 +38,33 @@ const AuthForm = () => {
 
   const toggleShowPassword = () => setShowPassword(!showPassword);
 
+
+  const handleGoogleAuthentication = async (token) => {
+    try {
+      const response = await fetch(`${BASE_URL}/auth/google-auth`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json', // Set the content type
+        },
+        body: JSON.stringify({
+          googleIdToken: token, // Pass the token as required
+        }),
+      });
+  
+      if (!response.ok) {
+        // If the response is not OK, throw an error to catch
+        throw new Error(`Request failed with status ${response.status}`);
+      }
+  
+      const data = await response.json(); // Parse the response if needed
+  
+      // Navigate to the app if the request is successful
+      navigate('/app');
+    } catch (error) {
+      console.error('Error during Google authentication:', error);
+    }
+  };
+  
   const handleGoogle = async (e) => {
     const provider = new GoogleAuthProvider();
     const result = await signInWithPopup(auth, provider);
@@ -46,7 +73,8 @@ const AuthForm = () => {
     const localId = result._tokenResponse.localId
     localStorage.setItem("authToken", token);
     localStorage.setItem("localId",   localId);
-    navigate("/app");
+    // navigate("/app");
+    await handleGoogleAuthentication(token)
   };
   const handleSignup = async () => {
     setIsLoading(true);
