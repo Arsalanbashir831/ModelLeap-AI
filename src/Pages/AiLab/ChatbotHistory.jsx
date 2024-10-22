@@ -64,6 +64,15 @@ const navigate = useNavigate()
           data.messages.map(async (message) => {
             const from = message.role === "user" ? "You" : "AI";
             const time = formatTimestamp(message.timestamp);
+            if (Array.isArray(message.content)) {
+              return {
+                id: message.id,
+                from,
+                content: message.content[0].url,
+                time,
+                type: "image",
+              };
+            }
             if (isInteger(message.content)) {
               const imageId = message.content;
               const imageUrl = await generateImage(imageId, apiKey);

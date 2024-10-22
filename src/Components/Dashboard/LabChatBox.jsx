@@ -42,7 +42,9 @@ const LabChatBox = ({ botId, apiKey, modelName }) => {
   const messagesContainerRef = useRef(null);
   const [chatId, setChatId] = useState(null);
 
-  useEffect(() => {console.log(modelName);}, [chatId]);
+  useEffect(() => {
+    console.log(modelName);
+  }, [chatId]);
 
   useEffect(() => {
     scrollToBottom();
@@ -71,6 +73,7 @@ const LabChatBox = ({ botId, apiKey, modelName }) => {
       const response = await fetch(`${BASE_URL}/api/bot/${botId}/chat/start`, {
         method: "POST",
         headers: {
+      
           Authorization: `Bearer ${token}`,
           "x-api-key": apiKey,
           "Content-Type": "application/json",
@@ -90,6 +93,7 @@ const LabChatBox = ({ botId, apiKey, modelName }) => {
     const token = localStorage.getItem("authToken");
     // const apiKey = localStorage.getItem("apiKey");
     const isImageModel = modelName.startsWith("imagegen:");
+    const isDalle = modelName.startsWith("dalle:");
     if (inputValue.trim()) {
       let userConversation = [];
       let updatedMessages = [];
@@ -103,20 +107,17 @@ const LabChatBox = ({ botId, apiKey, modelName }) => {
       if (!isImageModel) {
         userConversation.push({ role: "user", content: inputValue });
       }
-     
-      
+
       updatedMessages = [...messages, userMessage];
       setMessages(updatedMessages);
-
 
       // Clear the input field
       setInputValue("");
 
       try {
-    
-let aiMessage=null
+        let aiMessage = null;
         setIsLoading(true); // Start loading
-        if (isImageModel) {
+        if (isImageModel || isDalle) {
           aiMessage = {
             from: "AI",
             content: "Generating image...",
@@ -127,74 +128,98 @@ let aiMessage=null
           updatedMessages = [...updatedMessages, aiMessage];
           setMessages(updatedMessages);
         }
-        
-        // Send the message to either the image or text generation endpoint
-        const response = await fetch(
-          isImageModel
-            ? `${BASE_URL}/api/bot/${botId}/chat/${chatId}/image`
-            : `${BASE_URL}/api/bot/${botId}/chat/${chatId}/stream`,
-          {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${token}`,
-              "x-api-key": apiKey,
-            },
-            body: JSON.stringify(
-              isImageModel
-                ? { message: inputValue } 
-                : { messages: userConversation } 
-            ),
+
+        if (isDalle) {
+          const response = await fetch(
+            `${BASE_URL}/api/bot/${botId}/chat/${chatId}/image`,
+            {
+              method: "POST",
+              headers: {
+                Authorization: `Bearer ${token}`,
+                "x-api-key": apiKey,
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({ message: inputValue }),
+            }
+          );
+          if (response.ok) {
+            const data = await response.json();
+            updatedMessages[updatedMessages.length - 1] = {
+              ...updatedMessages[updatedMessages.length - 1],
+              content: data.response[0].url,
+              status: "complete",
+            };
+            setMessages([...updatedMessages]);
+            setIsLoading(false); // Stop loading
+            scrollToBottom();
           }
-        );
+        } else {
+          // Send the message to either the image or text generation endpoint
+          const response = await fetch(
+            isImageModel
+              ? `${BASE_URL}/api/bot/${botId}/chat/${chatId}/image`
+              : `${BASE_URL}/api/bot/${botId}/chat/${chatId}/stream`,
+            {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${token}`,
+                "x-api-key": apiKey,
+              },
+              body: JSON.stringify(
+                isImageModel
+                  ? { message: inputValue }
+                  : { messages: userConversation }
+              ),
+            }
+          );
 
-        if (isImageModel && response.ok) {
-          const data = await response.json();
-          const imageId = data.response; // Get imageId from response
+          if (isImageModel && response.ok) {
+            const data = await response.json();
+            const imageId = data.response; // Get imageId from response
 
-         
-       
-          const imageUrl = await generateImage(imageId, apiKey)
-          if (imageUrl) {
-                     updatedMessages[updatedMessages.length - 1] = {
-                  ...updatedMessages[updatedMessages.length - 1],
-                  content: imageUrl,
-                  status: "complete",
-                };
-                setMessages([...updatedMessages]);
-                setIsLoading(false); // Stop loading
-                scrollToBottom();
-          }
-        }
-
-        if (!isImageModel && response.ok) {
-          setIsLoading(false);
-          const reader = response.body.getReader();
-          const decoder = new TextDecoder("utf-8");
-
-          let aiMessage = {
-            from: "AI",
-            content: "",
-            time: new Date().toLocaleTimeString(),
-            type: "text",
-          };
-          updatedMessages = [...updatedMessages, aiMessage];
-          setMessages(updatedMessages);
-
-          let done = false;
-          while (!done) {
-            const { value, done: readerDone } = await reader.read();
-            done = readerDone;
-            if (value) {
-              const chunk = decoder.decode(value);
-              aiMessage.content += chunk;
-              userConversation.push({
-                role: "assistant",
-                content: aiMessage.content,
-              });
-              updatedMessages[updatedMessages.length - 1] = { ...aiMessage };
+            const imageUrl = await generateImage(imageId, apiKey);
+            if (imageUrl) {
+              updatedMessages[updatedMessages.length - 1] = {
+                ...updatedMessages[updatedMessages.length - 1],
+                content: imageUrl,
+                status: "complete",
+              };
               setMessages([...updatedMessages]);
+              setIsLoading(false); // Stop loading
               scrollToBottom();
+            }
+          }
+
+          if (!isImageModel && response.ok) {
+            setIsLoading(false);
+            const reader = response.body.getReader();
+            const decoder = new TextDecoder("utf-8");
+
+            let aiMessage = {
+              from: "AI",
+              content: "",
+              time: new Date().toLocaleTimeString(),
+              type: "text",
+            };
+            updatedMessages = [...updatedMessages, aiMessage];
+            setMessages(updatedMessages);
+
+            let done = false;
+            while (!done) {
+              const { value, done: readerDone } = await reader.read();
+              done = readerDone;
+              if (value) {
+                const chunk = decoder.decode(value);
+                aiMessage.content += chunk;
+                userConversation.push({
+                  role: "assistant",
+                  content: aiMessage.content,
+                });
+                updatedMessages[updatedMessages.length - 1] = { ...aiMessage };
+                setMessages([...updatedMessages]);
+                scrollToBottom();
+              }
             }
           }
         }
@@ -275,7 +300,6 @@ let aiMessage=null
       borderRadius="lg"
       position="relative"
       shadow={"lg"}
-   
     >
       <VStack
         ref={messagesContainerRef}

@@ -26,9 +26,12 @@ const EditBotModal = ({ isOpen, onClose, botDetails, onSave }) => {
     botName: botDetails.botName || "",
     systemContext: botDetails.systemContext || "",
     modelName: botDetails.modelName || "",
-    modelType: botDetails.modelName.startsWith("imagegen:") ? "image" : "chat", 
+    modelType: botDetails.modelName.startsWith("imagegen:") || botDetails.modelName.startsWith('dalle:') ? "image" :'chat', 
     kwargs: botDetails.kwargs || {},
   });
+
+
+console.log("Model Name",botDetails.modelName);
 
   const [modelsData, setModelsData] = useState([]); // Store fetched models
   const [loadingModels, setLoadingModels] = useState(false); // Handle loading state

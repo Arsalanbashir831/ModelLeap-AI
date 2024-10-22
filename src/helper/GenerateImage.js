@@ -2,7 +2,7 @@ import { BASE_URL } from "../Constants";
 
 const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
-export const generateImage = async (imageId, apiKey, maxRetries = 10, delayTime = 1000) => {
+export const generateImage = async (imageId, apiKey, maxRetries = 10, delayTime = 1000 ) => {
   let retries = 0;
 
   const fetchImage = async () => {
