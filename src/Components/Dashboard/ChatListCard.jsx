@@ -9,18 +9,20 @@ import {
   useToast,
   Badge,
   useDisclosure,
+  Avatar,
 } from "@chakra-ui/react";
 import { FaEdit, FaRobot, FaShareAlt, FaTable, FaTrash } from "react-icons/fa";
 import EditBotModal from "./EditBotModalBox";
 import ShareModal from "./ShareModal";
-import DeleteConfirmationModal from "./DeleteModal"; // Import delete modal
+import DeleteConfirmationModal from "./DeleteModal";
 import { BASE_URL } from "../../Constants";
 import { useNavigate } from "react-router-dom";
 
-const ChatListCard = ({ id, botName, systemContext, createdAt, modelName, kwargs, apiKey ,refresh ,setRefresh }) => {
+const ChatListCard = ({ id, botName, systemContext, createdAt, modelName, kwargs, apiKey, refresh, setRefresh }) => {
   const { hasCopied, onCopy } = useClipboard(botName);
   const toast = useToast();
-const navigate = useNavigate()
+  const navigate = useNavigate();
+
   // Modal controls
   const { isOpen: isEditOpen, onOpen: onEditOpen, onClose: onEditClose } = useDisclosure();
   const { isOpen: isShareOpen, onOpen: onShareOpen, onClose: onShareClose } = useDisclosure();
@@ -51,10 +53,8 @@ const navigate = useNavigate()
           duration: 3000,
           isClosable: true,
         });
-        
-        onDeleteClose(); // Close the delete modal after success
-        // Optionally, remove the card from UI or refresh the list
-        setRefresh(!refresh)
+        onDeleteClose(); 
+        setRefresh(!refresh);
       } else {
         throw new Error("Failed to delete bot.");
       }
@@ -68,6 +68,7 @@ const navigate = useNavigate()
       });
     }
   };
+
   const handleSave = async (updatedDetails) => {
     try {
       const token = localStorage.getItem('authToken');
@@ -75,21 +76,20 @@ const navigate = useNavigate()
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
-          "Authorization": `Bearer ${token}`, // Properly use string interpolation for the token
+          "Authorization": `Bearer ${token}`,
         },
-        body: JSON.stringify(updatedDetails), // Convert updated details to JSON
+        body: JSON.stringify(updatedDetails),
       });
-  
+
       if (response.ok) {
-        const data = await response.json();
-        setBotDetails(updatedDetails); // Update the bot details after a successful save
+        setBotDetails(updatedDetails);
         toast({
           title: "Bot updated successfully.",
           status: "success",
           duration: 3000,
           isClosable: true,
         });
-        setRefresh(!refresh)
+        setRefresh(!refresh);
       } else {
         throw new Error("Failed to update bot.");
       }
@@ -103,8 +103,6 @@ const navigate = useNavigate()
       });
     }
   };
-  
-  
 
   // Format creation date
   const formatDate = (timestamp) => {
@@ -115,42 +113,49 @@ const navigate = useNavigate()
   // Bot data for sharing
   const botData = {
     botId: id,
-    apiKey: apiKey, // Assuming you're using the token as an API key
+    apiKey: apiKey,
   };
 
   return (
     <Flex
       direction="column"
       justify="space-between"
-      bg="white"
-      borderRadius="lg"
+      bg="linear-gradient(145deg, #f0f1f6, #e2e3ec)" // Adds a subtle gradient background
+      borderRadius="2xl"
       px={6}
       py={5}
-      w="500px"
-      maxW="800px"
+      w="100%"
+      maxW="600px"
       my={4}
       boxShadow="lg"
-      transition="background-color 0.3s ease"
+      transition="all 0.3s ease-in-out"
       _hover={{
-        bg: "gray.50",
+        boxShadow: "xl",
+        transform: "scale(1.03)", // Slight hover effect to give more emphasis
       }}
       border="1px solid"
       borderColor="gray.200"
     >
-      {/* Top section: Bot details */}
       <Flex justify="space-between" alignItems="center">
-        <Box>
-          <Text fontSize="xl" fontWeight="bold" color="gray.700" mb={2}>
-            {botName}
-          </Text>
-          <Badge maxW={'300px'}  colorScheme="purple" mb={2}>
-        <Text isTruncated >
-        {systemContext}
-        </Text>
-          </Badge>
-        </Box>
-
-        {/* Created date */}
+        {/* Bot Icon and Details */}
+        <Flex align="center">
+          <Avatar
+            size="lg"
+            bg="purple.500"
+            name={botName}
+            color="white"
+            mr={4}
+          />
+          <Box>
+            <Text fontSize="2xl" fontWeight="bold" color="gray.800">
+              {botName}
+            </Text>
+            <Badge colorScheme="purple" mt={2} fontSize="sm" maxW="250px" isTruncated>
+              {systemContext}
+            </Badge>
+          </Box>
+        </Flex>
+        {/* Created Date */}
         <Box textAlign="right">
           <Text fontSize="sm" color="gray.500">
             Created: {formatDate(createdAt)}
@@ -158,62 +163,46 @@ const navigate = useNavigate()
         </Box>
       </Flex>
 
-      {/* Bottom section: Actions */}
-      <Flex mt={4} justify="flex-end" alignItems="center" gap={3}>
-        <Tooltip label={ "Test Bot"}>
+      {/* Action Buttons */}
+      <Flex mt={6} justify="flex-end" alignItems="center" gap={4}>
+        <Tooltip label="Test Bot" placement="top">
           <IconButton
             icon={<FaRobot />}
-            size="md"
+            size="lg"
             bg="green.100"
             color="green.500"
-            _hover={{ bg: "green.100", color: "green.600" }}
-            onClick={()=>navigate(`/app/ailab/chat/${id}`,{state:{apiKey:apiKey , modelName:modelName}})} // Add functionality for chat history
+            _hover={{ bg: "green.200", color: "green.600" }}
+            onClick={() => navigate(`/app/ailab/chat/${id}`, { state: { apiKey: apiKey, modelName: modelName } })}
           />
         </Tooltip>
-        <Tooltip label={ "Bot Chat History"}>
+        <Tooltip label="Bot Chat History" placement="top">
           <IconButton
             icon={<FaTable />}
-            size="md"
-            bg="pink.100"
-            color="pink.500"
-            _hover={{ bg: "pink.100", color: "pink.600" }}
-            onClick={()=>navigate(`/app/ailab/history/${id}`,{state:{apiKey:apiKey , modelName:modelName}})} // Add functionality for chat history
-          />
-        </Tooltip>
-
-        {/* <Tooltip label={"Share Bot"} aria-label="Share Bot">
-          <IconButton
-            aria-label="Share Bot"
-            icon={<FaShareAlt />}
-            size="md"
-            bg="green.100"
-            color="green.500"
-            _hover={{ bg: "green.100", color: "green.600" }}
-            onClick={onShareOpen} // Trigger Share Modal
-          />
-        </Tooltip> */}
-
-        <Tooltip label="Edit Bot" aria-label="Edit Bot">
-          <IconButton
-            aria-label="Edit Bot"
-            icon={<FaEdit />}
-            size="md"
-            bg="gray.100"
+            size="lg"
+            bg="blue.100"
             color="blue.500"
-            _hover={{ bg: "blue.100", color: "blue.600" }}
-            onClick={onEditOpen} // Trigger Edit Modal
+            _hover={{ bg: "blue.200", color: "blue.600" }}
+            onClick={() => navigate(`/app/ailab/history/${id}`, { state: { apiKey: apiKey, modelName: modelName } })}
           />
         </Tooltip>
-
-        <Tooltip label="Delete Bot" aria-label="Delete Bot">
+        <Tooltip label="Edit Bot" placement="top">
           <IconButton
-            aria-label="Delete Bot"
+            icon={<FaEdit />}
+            size="lg"
+            bg="gray.100"
+            color="gray.600"
+            _hover={{ bg: "gray.200", color: "gray.700" }}
+            onClick={onEditOpen}
+          />
+        </Tooltip>
+        <Tooltip label="Delete Bot" placement="top">
+          <IconButton
             icon={<FaTrash />}
-            size="md"
+            size="lg"
             bg="red.100"
             color="red.500"
-            _hover={{ bg: "red.100", color: "red.600" }}
-            onClick={onDeleteOpen} // Trigger Delete Confirmation Modal
+            _hover={{ bg: "red.200", color: "red.600" }}
+            onClick={onDeleteOpen}
           />
         </Tooltip>
       </Flex>
@@ -232,7 +221,7 @@ const navigate = useNavigate()
         <ShareModal
           isOpen={isShareOpen}
           onClose={onShareClose}
-          botData={botData} // Pass botData (botId, apiKey)
+          botData={botData}
         />
       )}
 
@@ -240,7 +229,7 @@ const navigate = useNavigate()
         <DeleteConfirmationModal
           isOpen={isDeleteOpen}
           onClose={onDeleteClose}
-          onDelete={handleDeleteBot} // Pass the delete handler
+          onDelete={handleDeleteBot}
         />
       )}
     </Flex>

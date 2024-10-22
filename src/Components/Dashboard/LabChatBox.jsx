@@ -291,12 +291,13 @@ const LabChatBox = ({ botId, apiKey, modelName }) => {
   return (
     <Box
       w="100%"
-      maxW="1000px"
+      maxW="100%"
       mx="auto"
       p={4}
       borderRadius="lg"
       position="relative"
       shadow={"lg"}
+   
     >
       <VStack
         ref={messagesContainerRef}
