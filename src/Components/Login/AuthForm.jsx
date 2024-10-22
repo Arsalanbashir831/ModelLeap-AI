@@ -22,8 +22,8 @@ import { FcGoogle } from "react-icons/fc";
 import { primaryColorPurple, primaryColorOrange } from "../../colorCodes";
 import { Link, useNavigate } from "react-router-dom";
 import { BASE_URL } from "../../Constants";
-
-
+import { GoogleAuthProvider, signInWithPopup } from "firebase/auth";
+import { auth } from "../../firebase";
 
 const AuthForm = () => {
   const [showPassword, setShowPassword] = useState(false);
@@ -36,9 +36,16 @@ const AuthForm = () => {
   const inputBg = "gray.100";
   const navigate = useNavigate();
 
-
   const toggleShowPassword = () => setShowPassword(!showPassword);
 
+  const handleGoogle = async (e) => {
+    const provider = new GoogleAuthProvider();
+    const result = await signInWithPopup(auth, provider);
+    // console.log(result);
+    const token = result._tokenResponse.idToken;
+    localStorage.setItem("authToken", token);
+    navigate("/app");
+  };
   const handleSignup = async () => {
     setIsLoading(true);
     try {
@@ -64,7 +71,7 @@ const AuthForm = () => {
       if (response.ok) {
         console.log("Signup successful", data);
         localStorage.setItem("authToken", data.idToken);
-        
+
         navigate("/app");
       } else {
         console.log("Signup failed", data);
@@ -95,11 +102,10 @@ const AuthForm = () => {
         console.log("Login successful", data);
         localStorage.setItem("authToken", data.idToken);
         localStorage.setItem("localId", data.localId);
-       
-          // console.log('auth',userData);
-          // setUserContext(userData);
-          navigate("/app");
-     
+
+        // console.log('auth',userData);
+        // setUserContext(userData);
+        navigate("/app");
       } else {
         console.log("Login failed", data);
       }
@@ -132,6 +138,7 @@ const AuthForm = () => {
       </Box>
 
       <Button
+        onClick={handleGoogle}
         leftIcon={<FcGoogle />}
         colorScheme="gray"
         variant="outline"

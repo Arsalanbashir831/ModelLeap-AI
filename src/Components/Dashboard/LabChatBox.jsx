@@ -165,43 +165,6 @@ let aiMessage=null
                 setIsLoading(false); // Stop loading
                 scrollToBottom();
           }
-          // let imageStatus = "processing";
-          // while (imageStatus === "processing") {
-          //   await new Promise((resolve) => setTimeout(resolve, 3000)); // Poll every 3 seconds
-
-          //   const imageResponse = await fetch(`${BASE_URL}/api/bot/get_images`, {
-          //     method: "POST",
-          //     headers: {
-          //       "Content-Type": "application/json",
-          //       // Authorization: `Bearer ${token}`,
-          //       "x-api-key": apiKey,
-          //     },
-          //     body: JSON.stringify({
-          //       request_id: imageId.toString(),
-          //     }),
-          //   });
-
-          //   if (imageResponse.ok) {
-          //     const imageData = await imageResponse.json();
-          //     imageStatus = imageData.status; // Check status of image generation
-
-          //     if (imageStatus === "success") {
-          //       const imageUrl = imageData.output[0]; // Get the image URL
-
-          //       // Update the last message in the array with the image URL
-          //       updatedMessages[updatedMessages.length - 1] = {
-          //         ...updatedMessages[updatedMessages.length - 1],
-          //         content: imageUrl,
-          //         status: "complete",
-          //       };
-          //       setMessages([...updatedMessages]);
-          //       setIsLoading(false); // Stop loading
-          //       scrollToBottom();
-          //     }
-          //   } else {
-          //     throw new Error("Failed to fetch image status.");
-          //   }
-          // }
         }
 
         if (!isImageModel && response.ok) {
