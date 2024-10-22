@@ -41,7 +41,7 @@ const AuthForm = () => {
   const handleGoogle = async (e) => {
     const provider = new GoogleAuthProvider();
     const result = await signInWithPopup(auth, provider);
-    // console.log(result);
+     console.log(result);
     const token = result._tokenResponse.idToken;
     const localId = result._tokenResponse.localId
     localStorage.setItem("authToken", token);

@@ -54,9 +54,9 @@ const Usage = () => {
             <Badge colorScheme={subscriptionStatus === "active" ? "green" : "red"}>{subscriptionStatus}</Badge>
           </HStack>
           <Divider my={2} />
-          <Text color={theme.textColor} fontSize="lg">
+          {/* <Text color={theme.textColor} fontSize="lg">
             <strong>Plan:</strong> {subscriptionPlan || "N/A"}
-          </Text>
+          </Text> */}
           <Text color={theme.textColor} fontSize="lg">
             <strong>Tier:</strong> {subscriptionTier || "N/A"} <FaCrown color={primaryColorPurple} style={{ display: "inline" }} />
           </Text>
