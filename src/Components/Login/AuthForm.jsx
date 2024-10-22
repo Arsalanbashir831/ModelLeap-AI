@@ -43,7 +43,9 @@ const AuthForm = () => {
     const result = await signInWithPopup(auth, provider);
     // console.log(result);
     const token = result._tokenResponse.idToken;
+    const localId = result._tokenResponse.localId
     localStorage.setItem("authToken", token);
+    localStorage.setItem("localId",   localId);
     navigate("/app");
   };
   const handleSignup = async () => {
@@ -71,7 +73,7 @@ const AuthForm = () => {
       if (response.ok) {
         console.log("Signup successful", data);
         localStorage.setItem("authToken", data.idToken);
-
+        localStorage.setItem("localId", data.localId);
         navigate("/app");
       } else {
         console.log("Signup failed", data);

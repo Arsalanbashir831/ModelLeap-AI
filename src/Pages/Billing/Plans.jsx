@@ -15,6 +15,7 @@ const Plans = () => {
   useEffect(() => {
     setSelectedPlan(userContext?.subscriptionTier);
   }, [userContext]);
+// console.log(userContext.subscriptionTier);
 
   const fetchPlans = async () => {
     try {
@@ -22,6 +23,8 @@ const Plans = () => {
       if (response.ok) {
         const data = await response.json();
         setPlans(data.plans);
+        
+        
       }
     } catch (error) {
       console.log(error);
@@ -101,7 +104,7 @@ const Plans = () => {
               title={plan.name}
               price={plan.price}
               features={plan.features}
-              selected={selectedPlan === plan.value}
+              selected={  selectedPlan.toLowerCase() === plan.value.toLowerCase()}
               onClick={() => selectPlanHandling(plan.value)}
             />
           ))}
