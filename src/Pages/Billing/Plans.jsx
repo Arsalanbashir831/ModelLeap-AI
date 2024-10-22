@@ -104,7 +104,7 @@ const Plans = () => {
               title={plan.name}
               price={plan.price}
               features={plan.features}
-              selected={  selectedPlan.toLowerCase() === plan.value.toLowerCase()}
+              selected={  selectedPlan?.toLowerCase() === plan.value?.toLowerCase()}
               onClick={() => selectPlanHandling(plan.value)}
             />
           ))}

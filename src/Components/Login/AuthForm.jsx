@@ -59,7 +59,8 @@ const AuthForm = () => {
       const data = await response.json(); // Parse the response if needed
   
       // Navigate to the app if the request is successful
-      navigate('/app');
+       window.location.href='/app'
+     
     } catch (error) {
       console.error('Error during Google authentication:', error);
     }
@@ -102,7 +103,7 @@ const AuthForm = () => {
         console.log("Signup successful", data);
         localStorage.setItem("authToken", data.idToken);
         localStorage.setItem("localId", data.localId);
-        navigate("/app");
+      window.location.href='/app'
       } else {
         console.log("Signup failed", data);
       }
@@ -134,8 +135,9 @@ const AuthForm = () => {
         localStorage.setItem("localId", data.localId);
 
         // console.log('auth',userData);
-        // setUserContext(userData);
-        navigate("/app");
+        //  setUserContext(userData);
+        // navigate("/app");
+        window.location.href='/app'
       } else {
         console.log("Login failed", data);
       }
