@@ -12,9 +12,7 @@ import AiLab from "./Pages/AiLab/AiLab";
 import AiLabChat from "./Pages/AiLab/AiLabChat";
 import Auth from "./Pages/Auth/Auth";
 import Support from "./Pages/Support/Support";
-import { useRecoilValue } from "recoil";
-import useAuthValidation from "./hooks/useAuthValidation";
-import authState from "./atoms/authState";
+
 import ProtectedRoute from "./Components/common/ProtectedRoute";
 import useUserData from "./hooks/useUserData";
 import Usage from "./Pages/Usage/Usage";
