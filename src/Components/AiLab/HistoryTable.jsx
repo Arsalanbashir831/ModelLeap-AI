@@ -29,6 +29,7 @@ export const HistoryTable = ({ selectedChat, chatHistory }) => {
   const { theme } = useTheme(); // Get theme from context
   const { isOpen, onOpen, onClose } = useDisclosure(); // For modal
   const [previewContent, setPreviewContent] = useState(""); // State to store content to preview
+console.log(chatHistory);
 
   // Pagination state
   const [currentPage, setCurrentPage] = useState(1);
@@ -85,25 +86,30 @@ export const HistoryTable = ({ selectedChat, chatHistory }) => {
           </Tr>
         </Thead>
         <Tbody>
-          {currentItems.map((message, index) => (
+          {currentItems?.map((message, index) => (
             <Tr
               key={message.id || index}
               _hover={{ bg: useColorModeValue("gray.100", "gray.600") }}
               transition="background-color 0.3s ease"
             >
-              <Td maxWidth="200px" isTruncated>
-                {message.content.startsWith("https://") ? (
-                  <Image
-                    src={message.content}
-                    alt="Generated Image"
-                    maxWidth="150px"
-                    borderRadius="md"
-                    border={`2px solid ${theme.iconColor}`}
-                  />
-                ) : (
-                  message.content
-                )}
-              </Td>
+            <Td maxWidth="200px" isTruncated>
+  {message?.content ? (
+    message?.content?.startsWith("https://") ? (
+      <Image
+        src={message.content}
+        alt="Generated Image"
+        maxWidth="150px"
+        borderRadius="md"
+        border={`2px solid ${theme.iconColor}`}
+      />
+    ) : (
+      message.content
+    )
+  ) : (
+    "No content available"
+  )}
+</Td>
+
               <Td fontWeight="bold" color={theme.textColor}>
                 {message.from === "You" ? "User" : "AI"}
               </Td>

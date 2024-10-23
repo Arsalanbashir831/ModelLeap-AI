@@ -129,34 +129,34 @@ const LabChatBox = ({ botId, apiKey, modelName }) => {
           setMessages(updatedMessages);
         }
 
-        if (isDalle) {
-          const response = await fetch(
-            `${BASE_URL}/api/bot/${botId}/chat/${chatId}/image`,
-            {
-              method: "POST",
-              headers: {
-                Authorization: `Bearer ${token}`,
-                "x-api-key": apiKey,
-                "Content-Type": "application/json",
-              },
-              body: JSON.stringify({ message: inputValue }),
-            }
-          );
-          if (response.ok) {
-            const data = await response.json();
-            updatedMessages[updatedMessages.length - 1] = {
-              ...updatedMessages[updatedMessages.length - 1],
-              content: data.response[0].url,
-              status: "complete",
-            };
-            setMessages([...updatedMessages]);
-            setIsLoading(false); // Stop loading
-            scrollToBottom();
-          }
-        } else {
+        // if (isDalle) {
+        //   const response = await fetch(
+        //     `${BASE_URL}/api/bot/${botId}/chat/${chatId}/image`,
+        //     {
+        //       method: "POST",
+        //       headers: {
+        //         Authorization: `Bearer ${token}`,
+        //         "x-api-key": apiKey,
+        //         "Content-Type": "application/json",
+        //       },
+        //       body: JSON.stringify({ message: inputValue }),
+        //     }
+        //   );
+        //   if (response.ok) {
+        //     const data = await response.json();
+        //     updatedMessages[updatedMessages.length - 1] = {
+        //       ...updatedMessages[updatedMessages.length - 1],
+        //       content: data.response[0].url,
+        //       status: "complete",
+        //     };
+        //     setMessages([...updatedMessages]);
+        //     setIsLoading(false); // Stop loading
+        //     scrollToBottom();
+        //   }
+        // } else {
           // Send the message to either the image or text generation endpoint
           const response = await fetch(
-            isImageModel
+            isImageModel || isDalle
               ? `${BASE_URL}/api/bot/${botId}/chat/${chatId}/image`
               : `${BASE_URL}/api/bot/${botId}/chat/${chatId}/stream`,
             {
@@ -167,18 +167,15 @@ const LabChatBox = ({ botId, apiKey, modelName }) => {
                 "x-api-key": apiKey,
               },
               body: JSON.stringify(
-                isImageModel
+                isImageModel || isDalle
                   ? { message: inputValue }
                   : { messages: userConversation }
               ),
             }
           );
-
-          if (isImageModel && response.ok) {
-            const data = await response.json();
-            const imageId = data.response; // Get imageId from response
-
-            const imageUrl = await generateImage(imageId, apiKey);
+          if (isDalle  && response.ok) {
+            const data = await response.json()
+            const imageUrl = data.response
             if (imageUrl) {
               updatedMessages[updatedMessages.length - 1] = {
                 ...updatedMessages[updatedMessages.length - 1],
@@ -186,12 +183,27 @@ const LabChatBox = ({ botId, apiKey, modelName }) => {
                 status: "complete",
               };
               setMessages([...updatedMessages]);
-              setIsLoading(false); // Stop loading
+              setIsLoading(false); 
+              scrollToBottom();
+            }
+          }
+         else if (isImageModel  && response.ok) {
+            const data = await response.json();
+            const imageId = data.response; 
+            const imageUrl = await generateImage(imageId, apiKey ,chatId );
+            if (imageUrl) {
+              updatedMessages[updatedMessages.length - 1] = {
+                ...updatedMessages[updatedMessages.length - 1],
+                content: imageUrl,
+                status: "complete",
+              };
+              setMessages([...updatedMessages]);
+              setIsLoading(false); 
               scrollToBottom();
             }
           }
 
-          if (!isImageModel && response.ok) {
+        else {
             setIsLoading(false);
             const reader = response.body.getReader();
             const decoder = new TextDecoder("utf-8");
@@ -223,7 +235,7 @@ const LabChatBox = ({ botId, apiKey, modelName }) => {
             }
           }
         }
-      } catch (error) {
+       catch (error) {
         toast({
           title: "Error",
           description: error.message || "Something went wrong",

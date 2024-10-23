@@ -60,22 +60,24 @@ const navigate = useNavigate()
       }
       if (response.ok) {
         const data = await response.json();
+        
+        
         const processedMessages = await Promise.all(
           data.messages.map(async (message) => {
             const from = message.role === "user" ? "You" : "AI";
             const time = formatTimestamp(message.timestamp);
-            if (Array.isArray(message.content)) {
+            if (message.generation==='dalle') {
               return {
                 id: message.id,
                 from,
-                content: message.content[0].url,
+                content: message.content,
                 time,
                 type: "image",
               };
             }
             if (isInteger(message.content)) {
               const imageId = message.content;
-              const imageUrl = await generateImage(imageId, apiKey);
+              const imageUrl = await generateImage(imageId, apiKey, selectedChat.chatId);
               if (imageUrl) {
                 return {
                   id: message.id,
