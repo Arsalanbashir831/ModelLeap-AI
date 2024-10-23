@@ -19,13 +19,13 @@ import ProtectedRoute from "./Components/common/ProtectedRoute";
 import useUserData from "./hooks/useUserData";
 import Usage from "./Pages/Usage/Usage";
 import ChatbotHistory from "./Pages/AiLab/ChatbotHistory";
-import Pricing from "./Pages/Pricing/pricing";
+// import Pricing from './Pages/Pricing/Pricing'
 import Contact from "./Pages/ContactUs/Contact";
 
 const router = createBrowserRouter([
   { path: "/", element: <Landing /> },
   { path: "/auth", element:  <Auth /> },
-  { path: "/pricing", element:  <Pricing/> },
+  // { path: "/pricing", element:  <Pricing/> },
   { path: "/contact", element:  <Contact/> },
   {
     path: "/app",
