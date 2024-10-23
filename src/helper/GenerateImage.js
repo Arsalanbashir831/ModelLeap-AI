@@ -2,9 +2,7 @@ import { BASE_URL } from "../Constants";
 
 const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
-export const generateImage = async (imageId, apiKey, maxRetries = 30, delayTime = 1000 ) => {
-  let retries = 0;
-
+export const generateImage = async (imageId, apiKey, delayTime = 1000) => {
   const fetchImage = async () => {
     try {
       const response = await fetch(`${BASE_URL}/api/bot/get_images`, {
@@ -22,12 +20,9 @@ export const generateImage = async (imageId, apiKey, maxRetries = 30, delayTime 
         const data = await response.json();
         if (data.status === 'success') {
           return data.output[0]; 
-        } else if (retries < maxRetries) {
-          retries++;
+        } else {
           await delay(delayTime); 
           return fetchImage(); 
-        } else {
-          throw new Error('Max retries reached. Image generation failed.');
         }
       } else {
         throw new Error('Failed to fetch image generation status.');
