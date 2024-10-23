@@ -15,55 +15,58 @@ const ModelCard = ({ model }) => {
   return (
     <Box
       border="1px solid"
-      borderColor="gray.500"
-      borderRadius="xl"
+      borderColor="gray.300"
+      borderRadius="lg"
       p={[4, 5]}
       shadow="md"
-      w={["100%", "300px"]}
+      w={["100%", "320px"]} // Responsive width for better scaling
       transition="all 0.3s ease"
-      _hover={{ shadow: "lg", transform: "translateY(-5px)" }}
+      _hover={{ shadow: "lg", transform: "translateY(-8px)" }} // Increase hover elevation
       cursor="pointer"
       bg="white"
       maxW="full"
       overflow="hidden"
     >
       <Flex
-        justifyContent="flex-start"
+        justifyContent="space-between"
         alignItems="center"
-        mb={[3, 10]}
-        wrap="nowrap"
-        h={100}
+        mb={[3, 5]} // Adjust margin for better spacing
+        h={["auto", "120px"]} // Set height responsive
       >
-        <Image boxSize={["40px", "48px"]} src={model.image} alt={model.name} />
-        <Flex flexDir="column" ml={[2, 3]} mt={[2, 0]}>
+        <Image
+          boxSize={["50px", "60px"]} // Slightly increase size for desktop
+          src={model.image}
+          alt={model.name}
+        />
+        <Flex
+          flexDir="column"
+          ml={4} // Ensure spacing
+          maxW="calc(100% - 70px)" // Make text content responsive
+        >
           <Text
-            fontSize={["md", "lg"]}
+            fontSize={["md", "xl"]} // Responsive font sizes
             fontWeight="bold"
+            isTruncated // Truncate for long names
             lineHeight="short"
-            whiteSpace="nowrap"
-            align={"left"}
+            textAlign={"left"}
           >
             {model.name}
           </Text>
-          <Text fontSize="sm" color="gray.500" align={"left"}>
+          <Text fontSize={["sm", "md"]} color="gray.500" textAlign={"left"}>
             {model.brand}
           </Text>
         </Flex>
       </Flex>
 
       <Flex
-        direction={["row", "row"]}
+        direction={["column", "row"]}
         justifyContent="space-between"
-        alignItems={["flex-start", "center"]}
-        mb={[1, 1]}
-        wrap="nowrap"
+        alignItems="center"
+        mt={[4, 0]} // Adjust top margin
       >
-        <Flex
-          flexDir="column"
-          maxW="50%"
-        >
-          <Text fontSize="xs" fontWeight="medium" color="gray.500">
-            Model type
+        <Box>
+          <Text fontSize="xs" fontWeight="medium" color="gray.600">
+            Model Type
           </Text>
           <Badge
             bg={primaryColorOrange}
@@ -74,16 +77,14 @@ const ModelCard = ({ model }) => {
             py={1}
             mt={1}
             fontSize="sm"
+            textAlign="center"
           >
             {model.type}
           </Badge>
-        </Flex>
+        </Box>
 
-        <Flex
-          flexDir="column"
-          maxW="50%"
-        >
-          <Text fontSize="xs" fontWeight="medium" color="gray.500">
+        <Box mt={[3, 0]}>
+          <Text fontSize="xs" fontWeight="medium" color="gray.600">
             Context
           </Text>
           <Badge
@@ -95,25 +96,23 @@ const ModelCard = ({ model }) => {
             py={1}
             mt={1}
             fontSize="sm"
+            textAlign="center"
           >
             {model.context}
-
           </Badge>
-        </Flex>
+        </Box>
 
         <Flex
           justifyContent="flex-end"
           alignItems="center"
-          mt={[3, 0]}
+          mt={[4, 0]}
         >
-          <Button
+          <Button onClick={()=>{window.location.href='/auth'}}
             rightIcon={<ArrowForwardIcon />}
-            colorScheme="black"
             variant="solid"
             borderRadius="full"
             w="40px"
             h="40px"
-            p={0}
             bg="black"
             color="white"
             _hover={{ bg: "orange.400" }}
@@ -125,4 +124,3 @@ const ModelCard = ({ model }) => {
 };
 
 export default ModelCard;
-

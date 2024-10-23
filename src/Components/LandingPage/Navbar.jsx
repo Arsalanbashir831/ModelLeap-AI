@@ -16,11 +16,33 @@ import {
 } from "@chakra-ui/react";
 import { HamburgerIcon, CloseIcon, ChevronDownIcon } from "@chakra-ui/icons";
 import { motion } from "framer-motion";
-import logo from "../../../public/model_leap_favicon.png";
 import { Link } from "react-router-dom";
+import logo from "../../../public/model_leap_favicon.png";
 import { primaryColorOrange, primaryColorPurple } from "../../colorCodes";
 
+// Animation wrapper
 const MotionBox = motion(Box);
+
+// Navigation data
+const NAV_ITEMS = [
+  {
+    label: "Home",
+    link: "/",
+  },
+  {
+    label: "Pricing",
+    link: "/pricing",
+  },
+  {
+    label: "AI Custom Bot",
+    link: "/app",
+  },
+  {
+    label: "Contact Us",
+    link: "/contact",
+  },
+  
+];
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = React.useState(false);
@@ -30,112 +52,56 @@ const Navbar = () => {
   };
 
   return (
-    <Box
-      position="fixed"
-      w="100%"
-      backdropFilter="blur(10px)"
-      zIndex="1000"
-      boxShadow="md"
-    >
-      <Flex
-        h={16}
-        alignItems="center"
-        justifyContent="space-between"
-        px={6}
-        maxW="100%"
-        mx="auto"
-      >
+    <Box position="fixed" w="100%" backdropFilter="blur(10px)" zIndex="1000" boxShadow="md">
+      <Flex h={16} alignItems="center" justifyContent="space-between" px={6} maxW="100%" mx="auto">
+        {/* Logo Section */}
         <HStack spacing={4} alignItems="center">
           <Box>
             <Image src={logo} alt="Logo" boxSize="50px" />
           </Box>
-
           <Box
             fontWeight="bold"
             fontSize="xl"
             mt={1}
             color={primaryColorPurple}
             _hover={{ color: "black" }}
-            display={{ base: "none", sm: "block" }} 
+            display={{ base: "none", sm: "block" }}
           >
             Model Leap AI
           </Box>
         </HStack>
 
-        <HStack
-          as="nav"
-          spacing={6}
-          display={{ base: "none", md: "flex" }}
-          fontWeight="500"
-          fontSize="sm"
-        >
-          <Menu>
-            <MenuButton
-              as={Button}
-              variant="link"
-              fontWeight="normal"
-              rightIcon={<ChevronDownIcon />}
-              _hover={{ textDecoration: "none", color: "black" }}
-            >
-              AI APIs
-            </MenuButton>
-            <MenuList>
-              <MenuItem>API 1</MenuItem>
-              <MenuItem>API 2</MenuItem>
-            </MenuList>
-          </Menu>
-          <Link to="#">
-            <Text
-              mt={1}
-              fontWeight="normal"
-              _hover={{ textDecoration: "none", color: "black" }}
-            >
-              Enterprise
-            </Text>
-          </Link>
-          <Link to="#">
-            <Text
-              mt={1}
-              fontWeight="normal"
-              _hover={{ textDecoration: "none", color: "black" }}
-            >
-              Pricing
-            </Text>
-          </Link>
-
-          <Menu>
-            <MenuButton
-              as={Button}
-              variant="link"
-              fontWeight="normal"
-              rightIcon={<ChevronDownIcon />}
-              _hover={{ textDecoration: "none", color: "black" }}
-            >
-              Developer
-            </MenuButton>
-            <MenuList>
-              <MenuItem>Docs</MenuItem>
-              <MenuItem>Community</MenuItem>
-            </MenuList>
-          </Menu>
-
-          <Menu>
-            <MenuButton
-              as={Button}
-              variant="link"
-              fontWeight="normal"
-              rightIcon={<ChevronDownIcon />}
-              _hover={{ textDecoration: "none", color: "black" }}
-            >
-              Resources
-            </MenuButton>
-            <MenuList>
-              <MenuItem>Blog</MenuItem>
-              <MenuItem>Guides</MenuItem>
-            </MenuList>
-          </Menu>
+        {/* Desktop Navigation */}
+        <HStack as="nav" spacing={6} display={{ base: "none", md: "flex" }} fontWeight="500" fontSize="sm">
+          {NAV_ITEMS.map((navItem) =>
+            navItem.submenu ? (
+              <Menu key={navItem.label}>
+                <MenuButton
+                  as={Button}
+                  variant="link"
+                  fontWeight="normal"
+                  rightIcon={<ChevronDownIcon />}
+                  _hover={{ textDecoration: "none", color: "black" }}
+                >
+                  {navItem.label}
+                </MenuButton>
+                <MenuList>
+                  {navItem.submenu.map((submenuItem, index) => (
+                    <MenuItem key={index}>{submenuItem}</MenuItem>
+                  ))}
+                </MenuList>
+              </Menu>
+            ) : (
+              <Link key={navItem.label} to={navItem.link}>
+                <Text mt={1} fontWeight="normal" _hover={{ textDecoration: "none", color: "black" }}>
+                  {navItem.label}
+                </Text>
+              </Link>
+            )
+          )}
         </HStack>
 
+        {/* Buttons and Hamburger Icon */}
         <HStack spacing={6}>
           <Link to="/app">
             <Button
@@ -150,24 +116,17 @@ const Navbar = () => {
           </Link>
           <IconButton
             size="md"
-            icon={
-              isOpen ? (
-                <CloseIcon color={primaryColorOrange} />
-              ) : (
-                <HamburgerIcon color="white" />
-              )
-            }
+            icon={isOpen ? <CloseIcon color={primaryColorOrange} /> : <HamburgerIcon color="white" />}
             aria-label="Open Menu"
             bg={isOpen ? "transparent" : primaryColorPurple}
             display={{ md: "none" }}
             onClick={toggleMenu}
-            _hover={{
-              bg: isOpen ? "transparent" : primaryColorPurple,
-            }}
+            _hover={{ bg: isOpen ? "transparent" : primaryColorPurple }}
           />
         </HStack>
       </Flex>
 
+      {/* Mobile Navigation */}
       <MotionBox
         initial={false}
         animate={isOpen ? "open" : "closed"}
@@ -178,55 +137,26 @@ const Navbar = () => {
         transition={{ duration: 0.4, ease: "easeInOut" }}
         overflow="hidden"
       >
-        <Box
-          pb={4}
-          display={{ md: "none" }}
-          backdropFilter="blur(10px)"
-          shadow="lg"
-        >
+        <Box pb={4} display={{ md: "none" }} backdropFilter="blur(10px)" shadow="lg">
           <Stack as="nav" spacing={4} align="center">
-            <Menu>
-              <MenuButton
-                as={ChakraLink}
-                _hover={{ textDecoration: "none", color: "gray.500" }}
-              >
-                AI APIs
-              </MenuButton>
-              <MenuList>
-                <MenuItem>API 1</MenuItem>
-                <MenuItem>API 2</MenuItem>
-              </MenuList>
-            </Menu>
-            <Link to="#" _hover={{ textDecoration: "none", color: "gray.500" }}>
-              Enterprise
-            </Link>
-            <Link to="#" _hover={{ textDecoration: "none", color: "gray.500" }}>
-              Pricing
-            </Link>
-            <Menu>
-              <MenuButton
-                as={ChakraLink}
-                _hover={{ textDecoration: "none", color: "gray.500" }}
-              >
-                Developer
-              </MenuButton>
-              <MenuList>
-                <MenuItem>Docs</MenuItem>
-                <MenuItem>Community</MenuItem>
-              </MenuList>
-            </Menu>
-            <Menu>
-              <MenuButton
-                as={ChakraLink}
-                _hover={{ textDecoration: "none", color: "gray.500" }}
-              >
-                Resources
-              </MenuButton>
-              <MenuList>
-                <MenuItem>Blog</MenuItem>
-                <MenuItem>Guides</MenuItem>
-              </MenuList>
-            </Menu>
+            {NAV_ITEMS.map((navItem) =>
+              navItem.submenu ? (
+                <Menu key={navItem.label}>
+                  <MenuButton as={ChakraLink} _hover={{ textDecoration: "none", color: "gray.500" }}>
+                    {navItem.label}
+                  </MenuButton>
+                  <MenuList>
+                    {navItem.submenu.map((submenuItem, index) => (
+                      <MenuItem key={index}>{submenuItem}</MenuItem>
+                    ))}
+                  </MenuList>
+                </Menu>
+              ) : (
+                <Link key={navItem.label} to={navItem.link} _hover={{ textDecoration: "none", color: "gray.500" }}>
+                  {navItem.label}
+                </Link>
+              )
+            )}
             <Link to="/app">
               <Button
                 bg={primaryColorPurple}

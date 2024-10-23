@@ -16,6 +16,7 @@ import {
   Divider,
   Text,
   Spinner,
+  useToast,
 } from "@chakra-ui/react";
 import { ViewIcon, ViewOffIcon } from "@chakra-ui/icons";
 import { FcGoogle } from "react-icons/fc";
@@ -35,7 +36,7 @@ const AuthForm = () => {
   const [isLoading, setIsLoading] = useState(false);
   const inputBg = "gray.100";
   const navigate = useNavigate();
-
+  const toast = useToast()
   const toggleShowPassword = () => setShowPassword(!showPassword);
 
 
@@ -53,6 +54,7 @@ const AuthForm = () => {
   
       if (!response.ok) {
         // If the response is not OK, throw an error to catch
+      
         throw new Error(`Request failed with status ${response.status}`);
       }
   
@@ -133,13 +135,26 @@ const AuthForm = () => {
         console.log("Login successful", data);
         localStorage.setItem("authToken", data.idToken);
         localStorage.setItem("localId", data.localId);
-
+        toast({
+          title: "Login Successful",
+          description: "Welcome back!",
+          status: "success",
+          duration: 3000,
+          isClosable: true,
+        });
         // console.log('auth',userData);
         //  setUserContext(userData);
         // navigate("/app");
         window.location.href='/app'
       } else {
         console.log("Login failed", data);
+        toast({
+          title: "Login Failed",
+          description: "Invalid Credentials",
+          status: "error",
+          duration: 3000,
+          isClosable: true,
+        });
       }
     } catch (e) {
       console.log(e);

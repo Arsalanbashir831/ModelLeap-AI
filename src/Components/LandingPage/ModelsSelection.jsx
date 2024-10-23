@@ -6,66 +6,84 @@ import ModelCard from './ModelCard';
 import { primaryColorOrange, primaryColorPurple } from '../../colorCodes';
 
 const modelsData = [
+  // Language Generation Models
   {
-    name: 'Llama 3.2 3B Instruct Turbo',
-    brand: 'Meta',
-    type: 'CHAT',
-    context: '131K',
-    image: 'https://cdn.prod.website-files.com/65b8f36fa600366bc7cf9a67/6683c6bb875f1845806550e9_Group%201799369455d.svg',
+    name: 'Gemini 1.5 Flash',
+    brand: 'Google',
+    type: 'language',
+    context: '1M',
+    image: 'https://cdn.prod.website-files.com/65b8f36fa600366bc7cf9a67/6683bac27ab6738da91466dd_Group%201000007783.svg',
+  },
+  {
+    name: 'Gemini 1.5 Pro',
+    brand: 'Google',
+    type: 'language',
+    context: '2M',
+    image: 'https://cdn.prod.website-files.com/65b8f36fa600366bc7cf9a67/6683bac27ab6738da91466dd_Group%201000007783.svg',
   },
   {
     name: 'GPT-4o-2024-08-06',
     brand: 'OpenAI',
-    type: 'CHAT',
+    type: 'language',
     context: '128K',
     image: 'https://cdn.prod.website-files.com/65b8f36fa600366bc7cf9a67/6683bac3f9bd6412dc6d3f5b_Group%201000007781.svg',
   },
   {
-    name: 'Gemini 1.5 Flash',
-    brand: 'Google',
-    type: 'CHAT',
-    context: '1M',
-    image: 'https://cdn.prod.website-files.com/65b8f36fa600366bc7cf9a67/6683bac27ab6738da91466dd_Group%201000007783.svg',
+    name: 'Claude 2.0',
+    brand: 'Anthropic',
+    type: 'language',
+    context: '100K',
+    image: 'https://cdn.anthropic.com/claude-logo.svg',
   },
   {
-    name: 'Gemini 1.5 Pro',
-    brand: 'Google',
-    type: 'CHAT',
-    context: '2M',
-    image: 'https://cdn.prod.website-files.com/65b8f36fa600366bc7cf9a67/6683bac27ab6738da91466dd_Group%201000007783.svg',
-  },{
-    name: 'Gemini 1.5 Flash',
-    brand: 'Google',
-    type: 'CHAT',
-    context: '1M',
-    image: 'https://cdn.prod.website-files.com/65b8f36fa600366bc7cf9a67/6683bac27ab6738da91466dd_Group%201000007783.svg',
-  },
-  {
-    name: 'Gemini 1.5 Pro',
-    brand: 'Google',
-    type: 'CHAT',
-    context: '2M',
-    image: 'https://cdn.prod.website-files.com/65b8f36fa600366bc7cf9a67/6683bac27ab6738da91466dd_Group%201000007783.svg',
+    name: 'Llama 3.2 3B Instruct Turbo',
+    brand: 'Meta',
+    type: 'language',
+    context: '131K',
+    image: 'https://cdn.prod.website-files.com/65b8f36fa600366bc7cf9a67/6683c6bb875f1845806550e9_Group%201799369455d.svg',
   },
 
+  // Image Generation Models
+  {
+    name: 'Flux v2',
+    brand: 'Stability AI',
+    type: 'Image Generation',
+    context: '10M',
+    image: 'https://user-images.githubusercontent.com/848607/196954523-efba3345-4670-4be2-b76a-b49f33390071.png',
+  },
+  {
+    name: 'SDXL 1.0',
+    brand: 'Stability AI',
+    type: 'Image Generation',
+    context: '2M',
+    image: 'https://user-images.githubusercontent.com/848607/196954523-efba3345-4670-4be2-b76a-b49f33390071.png',
+  },
+  {
+    name: 'DALL·E 3',
+    brand: 'OpenAI',
+    type: 'Image Generation',
+    context: '5M',
+    image: 'https://cdn.prod.website-files.com/65b8f36fa600366bc7cf9a67/6683bac3f9bd6412dc6d3f5b_Group%201000007781.svg',
+  },
+  {
+    name: 'MidJourney 5.2',
+    brand: 'MidJourney',
+    type: 'Image Generation',
+    context: '10M',
+    image: 'https://user-images.githubusercontent.com/848607/196954523-efba3345-4670-4be2-b76a-b49f33390071.png',
+  }
 ];
 
 const categories = [
-  'Chat',
-  'Code',
+ 
   'Image Generation',
-  'Music Generation',
-  'Video',
-  'Voice',
-  'Embedding',
   'Language',
-  'Genomic Models',
-  '3D Generation',
+  
 ];
 
 const ModelsSection = () => {
   const [searchTerm, setSearchTerm] = useState('');
-  const [selectedCategory, setSelectedCategory] = useState('Chat');
+  const [selectedCategory, setSelectedCategory] = useState('language');
 
   const handleSearch = (e) => {
     setSearchTerm(e.target.value);
@@ -111,14 +129,14 @@ const ModelsSection = () => {
         ))}
       </SimpleGrid>
 
-      <Flex justifyContent="center" mt={8}>
+      {/* <Flex justifyContent="center" mt={8}>
         <Button mr={4} borderRadius="full" variant="outline" bg={primaryColorPurple} color={'white'} _hover={{ bg: primaryColorOrange }}>
           Load More
         </Button>
         <Button borderRadius="full" bg={'white'} color="black" boxShadow={'lg'} _hover={{bg: primaryColorOrange, color: "white"}} >
           Explore All
         </Button>
-      </Flex>
+      </Flex> */}
     </Box>
     <Divider/>
  

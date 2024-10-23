@@ -35,12 +35,12 @@ const Hero = () => {
           variants={textVariant}
         >
           <Text
-            fontSize={{ base: "4xl", md: "6xl", lg: "7xl" }}
+            fontSize={{ base: "2xl", md: "6xl", lg: "5xl" }}
             fontWeight="bold"
             lineHeight="shorter"
             color={"black"}
           >
-            One API <br /> 200+ AI Models <br /> Uptime 99%
+           Create your Custom ChatBots <br /> Using Different AI Models
           </Text>
         </motion.div>
 
@@ -65,7 +65,7 @@ const Hero = () => {
           variants={buttonVariant}
         >
           <Stack direction={{ base: "column", md: "row" }} spacing={4}>
-            <Button
+            <Button onClick={()=>{window.location.href='/auth'}}
               bg={primaryColorPurple}
               size="lg"
               borderRadius={"full"}
@@ -75,9 +75,9 @@ const Hero = () => {
               py={8}
               _hover={{ bg: primaryColorOrange, color: "white", boxShadow: "lg" }}
             >
-              Get API Key
+              Get Started
             </Button>
-            <Button
+            {/* <Button
               // border={"1px solid gray"}
               borderRadius={"full"}
               colorScheme="gray"
@@ -89,7 +89,7 @@ const Hero = () => {
               _hover={{ bg: primaryColorOrange, color: "white", border: "none", boxShadow: "lg" }}
             >
               Contact Sales
-            </Button>
+            </Button> */}
           </Stack>
         </motion.div>
       </VStack>

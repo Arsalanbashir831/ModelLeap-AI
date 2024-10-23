@@ -42,7 +42,9 @@ const ModelSelection = ({
         if (response.ok) {
           setModelsData(data); // Use the API response to set the models
         } else {
-          throw new Error("Failed to load models.");
+          // throw new Error("Failed to load models.");
+          console.log('model load fail');
+          
         }
       } catch (error) {
         toast({

@@ -4,7 +4,14 @@ import { FaCog, FaCopy } from 'react-icons/fa';
 import { primaryColorOrange, primaryColorPurple } from '../../../colorCodes';
 
 const SimpleIntegrationCard = () => {
-  const codeString = `client = OpenAI(\n  api_key="YOUR_API_KEY",\n  base_url="https://model-leap-ai-vercel.vercel.app/",\n)\n\nresponse = client.chat.completions.create(\n  model="mistral/Mistral-7B-Instruct",\n  messages=[\n    {role: "system", content: "AI assistant"},\n    {role: "user", content: "Why is the sky blue?"}\n  ],\n)\nprint(f"Assistant: {message}")`;
+  const codeString = `<iframe src="http://localhost:5000/api/bot/{botId}/chat/{chatId}/widget?apiKey={apikey}&modelName={modelName}"
+    width={width}
+    height={height}
+    style="border:none; overflow:hidden"
+    scrolling="no"
+    frameborder="0"
+    allowfullscreen="true">
+  </iframe>`;
 
   const { hasCopied, onCopy } = useClipboard(codeString);
 
