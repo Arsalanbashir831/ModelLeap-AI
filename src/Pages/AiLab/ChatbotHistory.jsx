@@ -158,16 +158,10 @@ const navigate = useNavigate()
 
   return (
     <>
-       <Button margin={5}
-          bg={primaryColorOrange}
-          color={"white"}
-          onClick={() => navigate("/app/ailab")}
-        >
-          {" "}
-          Back
-        </Button>
-   
-    <Flex bg={theme.background} color={theme.textColor} height="100vh" px={5}>
+    <Box bg={theme.background}>
+    <Header title={"Bot Chat History"} isTitle={true} isGoBack={true} />
+  
+    <Flex bg={theme.background} color={theme.textColor}  px={5}>
     {/* Sidebar for chat list */}
    
     <Box
@@ -247,6 +241,7 @@ const navigate = useNavigate()
         />
       )}
   </Flex>
+  </Box>
   </>
    
    

@@ -64,9 +64,10 @@ console.log(chatHistory);
         boxShadow="lg"
         bg={theme.AiChatbg}
         color={theme.textColor}
+      
       >
         <Thead
-          bg={useColorModeValue("gray.200", "gray.700")}
+          bg={theme.background}
           boxShadow="sm"
           borderBottom={`2px solid ${theme.iconColor}`}
         >
@@ -85,11 +86,11 @@ console.log(chatHistory);
             </Th>
           </Tr>
         </Thead>
-        <Tbody>
+        <Tbody  >
           {currentItems?.map((message, index) => (
             <Tr
               key={message.id || index}
-              _hover={{ bg: useColorModeValue("gray.100", "gray.600") }}
+              _hover={{ bg:'none' }}
               transition="background-color 0.3s ease"
             >
             <Td maxWidth="200px" isTruncated>
@@ -139,7 +140,7 @@ console.log(chatHistory);
       {/* Modal for Preview */}
       <Modal isOpen={isOpen} onClose={onClose} size="xl">
         <ModalOverlay />
-        <ModalContent bg={theme.AiChatbg}>
+        <ModalContent bg={theme.background}>
           <ModalHeader color={theme.textColor}>Preview</ModalHeader>
           <ModalCloseButton />
           <ModalBody>

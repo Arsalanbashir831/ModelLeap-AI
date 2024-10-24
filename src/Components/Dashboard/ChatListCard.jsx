@@ -17,12 +17,13 @@ import ShareModal from "./ShareModal";
 import DeleteConfirmationModal from "./DeleteModal";
 import { BASE_URL } from "../../Constants";
 import { useNavigate } from "react-router-dom";
+import { useTheme } from "../../Themes/ThemeContext";
 
 const ChatListCard = ({ id, botName, systemContext, createdAt, modelName, kwargs, apiKey, refresh, setRefresh }) => {
   const { hasCopied, onCopy } = useClipboard(botName);
   const toast = useToast();
   const navigate = useNavigate();
-
+const {theme}=useTheme()
   // Modal controls
   const { isOpen: isEditOpen, onOpen: onEditOpen, onClose: onEditClose } = useDisclosure();
   const { isOpen: isShareOpen, onOpen: onShareOpen, onClose: onShareClose } = useDisclosure();
@@ -120,7 +121,7 @@ const ChatListCard = ({ id, botName, systemContext, createdAt, modelName, kwargs
     <Flex
       direction="column"
       justify="space-between"
-      bg="linear-gradient(145deg, #f0f1f6, #e2e3ec)" // Adds a subtle gradient background
+    bg={theme.AiChatbg} // Adds a subtle gradient background
       borderRadius="2xl"
       px={6}
       py={5}
@@ -133,7 +134,7 @@ const ChatListCard = ({ id, botName, systemContext, createdAt, modelName, kwargs
         boxShadow: "xl",
         transform: "scale(1.03)", // Slight hover effect to give more emphasis
       }}
-      border="1px solid"
+     
       borderColor="gray.200"
     >
       <Flex justify="space-between" alignItems="center">
@@ -147,7 +148,7 @@ const ChatListCard = ({ id, botName, systemContext, createdAt, modelName, kwargs
             mr={4}
           />
           <Box>
-            <Text fontSize="2xl" fontWeight="bold" color="gray.800">
+            <Text fontSize="2xl" fontWeight="bold" color={theme.textColor}>
               {botName}
             </Text>
             <Badge colorScheme="purple" mt={2} fontSize="sm" maxW="250px" isTruncated>
@@ -157,7 +158,7 @@ const ChatListCard = ({ id, botName, systemContext, createdAt, modelName, kwargs
         </Flex>
         {/* Created Date */}
         <Box textAlign="right">
-          <Text fontSize="sm" color="gray.500">
+          <Text fontSize="sm" color={theme.textColor}>
             Created: {formatDate(createdAt)}
           </Text>
         </Box>

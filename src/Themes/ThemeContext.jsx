@@ -31,12 +31,14 @@ const lightTheme = {
 UserchatBubbleColor:'white',
 aiChatBubbleColor:'#73048b',
 historySelectedButton:'#73048b',
-historySelectedTextColor:'white'
+historySelectedTextColor:'white',
+chatTextColor:'black',
 };
 
 const darkTheme = {
   historySelectedButton:'#ff914d',
   historySelectedTextColor:'white',
+  chatTextColor:'white',
   backgroundAilab : "linear-gradient(215deg,hsl(293deg 34% 24%) 0%,hsl(287deg 33% 24%) 6%,hsl(281deg 32% 24%) 12%,hsl(275deg 31% 24%) 20%,hsl(269deg 30% 24%) 28%,hsl(263deg 30% 24%) 36%,hsl(257deg 29% 24%) 45%,hsl(251deg 28% 24%) 54%,hsl(245deg 27% 24%) 64%,hsl(239deg 26% 23%) 73%,hsl(234deg 28% 22%) 82%,hsl(230deg 30% 22%) 91%,hsl(226deg 32% 21%) 100%)", 
   background: "linear-gradient(215deg,hsl(293deg 34% 24%) 0%,hsl(287deg 33% 24%) 6%,hsl(281deg 32% 24%) 12%,hsl(275deg 31% 24%) 20%,hsl(269deg 30% 24%) 28%,hsl(263deg 30% 24%) 36%,hsl(257deg 29% 24%) 45%,hsl(251deg 28% 24%) 54%,hsl(245deg 27% 24%) 64%,hsl(239deg 26% 23%) 73%,hsl(234deg 28% 22%) 82%,hsl(230deg 30% 22%) 91%,hsl(226deg 32% 21%) 100%)",
   textColor: "#E2E8F0",

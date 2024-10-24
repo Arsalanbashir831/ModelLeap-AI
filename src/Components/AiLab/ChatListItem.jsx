@@ -21,16 +21,17 @@ const ChatListItem = ({ chat, selectedChat, handleChatSelection, handleShare }) 
 
   return (
     <ListItem key={chat.chatId}>
-      <Flex
+      <Flex 
         onClick={() => handleChatSelection(chat)}
         alignItems="center"
         px={4}
         py={3}
         borderRadius="lg"
+        
         bg={
           selectedChat?.chatId === chat.chatId
-            ? theme.historySelectedButton
-            : useColorModeValue("gray.50", "gray.800")
+            ? theme.background
+            : 'transparent'
         }
         boxShadow="md"
         _hover={{
@@ -53,7 +54,7 @@ const ChatListItem = ({ chat, selectedChat, handleChatSelection, handleShare }) 
             <Text
               fontWeight="bold"
               fontSize="md"
-              color={selectedChat?.chatId === chat.chatId ? theme.historySelectedTextColor : theme.textColor}
+              color={selectedChat?.chatId === chat.chatId ? theme.textColor : theme.textColor}
               noOfLines={1}
             >
               {chat.name}
@@ -66,7 +67,7 @@ const ChatListItem = ({ chat, selectedChat, handleChatSelection, handleShare }) 
               <IconButton
                 icon={<FaShare />}
                 size="sm"
-                colorScheme={selectedChat?.chatId === chat.chatId ? "whiteAlpha" : "blue"}
+                colorScheme={selectedChat?.chatId === chat.chatId ? "black" : "blue"}
                 variant="ghost"
                 _hover={{
                   color: theme.iconColor,
