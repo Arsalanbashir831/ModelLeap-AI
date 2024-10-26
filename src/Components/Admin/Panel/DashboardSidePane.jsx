@@ -38,7 +38,7 @@ const DashboardSidePane = ({ isOpen, onToggle }) => {
 
   // Define menu items in a dynamic array
   const menuItems = [
-    { label: "Statistics", icon: FaChartBar, path: "/stats" },
+    { label: "Statistics", icon: FaChartBar, path: "/admin/dashboard" },
     { label: "Users", icon: FaUserFriends, path: "/admin/dashboard/users" },
     { label: "Approval Requests", icon: FaCheckCircle, path: "/admin/dashboard/approvals" },
   ];

@@ -16,6 +16,8 @@ import {
 import { useTable } from 'react-table';
 import { FaCcMastercard, FaCheckCircle, FaTimesCircle, FaHistory } from 'react-icons/fa';
 import { FlagIcon } from 'react-flag-kit';
+import Header from "../../../Components/Dashboard/Header"
+import { useTheme } from '../../../Themes/ThemeContext';
 
 const UserTableWithActions = () => {
   const data = React.useMemo(
@@ -31,7 +33,7 @@ const UserTableWithActions = () => {
         usage: 20,
         usageDate: 'Jun 11, 2023 - Jul 10, 2023',
         paymentMethod: 'Mastercard',
-        lastLogin: '10 seconds ago',
+        generations: '10',
       },
       {
         user: {
@@ -44,7 +46,7 @@ const UserTableWithActions = () => {
         usage: 80,
         usageDate: 'Jun 11, 2023 - Jul 10, 2023',
         paymentMethod: 'Visa',
-        lastLogin: '10 seconds ago',
+        generations: '10',
       },
       {
         user: {
@@ -57,7 +59,7 @@ const UserTableWithActions = () => {
         usage: 50,
         usageDate: 'Jun 11, 2023 - Jul 10, 2023',
         paymentMethod: 'Mastercard',
-        lastLogin: '10 seconds ago',
+        generations: '10',
       },
     ],
     []
@@ -72,27 +74,27 @@ const UserTableWithActions = () => {
           <Flex align="center">
             <Avatar src={value.avatar} size="sm" mr={3} />
             <Box>
-              <Text fontWeight="bold">{value.name}</Text>
-              <Text fontSize="sm" color="gray.500">
+              <Text fontWeight="bold" color={theme.textColor}>{value.name}</Text>
+              <Text fontSize="sm" color={theme.textColor}>
                 {value.status} | {value.registered}
               </Text>
             </Box>
           </Flex>
         ),
       },
+      // {
+      //   Header: 'Country',
+      //   accessor: 'country',
+      //   Cell: ({ value }) => (
+      //     <FlagIcon code={value} size={24} style={{ borderRadius: '50%' }} />
+      //   ),
+      // },
       {
-        Header: 'Country',
-        accessor: 'country',
-        Cell: ({ value }) => (
-          <FlagIcon code={value} size={24} style={{ borderRadius: '50%' }} />
-        ),
-      },
-      {
-        Header: 'Usage',
+        Header: 'Token Usage',
         accessor: 'usage',
         Cell: ({ row }) => (
           <Box>
-            <Text fontSize="sm" mb={1}>
+            <Text fontSize="sm" mb={1} color={theme.textColor}>
               {row.original.usage}%
             </Text>
             <Progress
@@ -101,7 +103,7 @@ const UserTableWithActions = () => {
               size="sm"
               borderRadius="md"
             />
-            <Text fontSize="xs" color="gray.500">
+            <Text fontSize="xs" color={theme.textColor}>
               {row.original.usageDate}
             </Text>
           </Box>
@@ -115,11 +117,11 @@ const UserTableWithActions = () => {
     //     ),
     //   },
       {
-        Header: 'Activity',
-        accessor: 'lastLogin',
+        Header: 'No of Image Generated',
+        accessor: 'generations',
         Cell: ({ value }) => (
-          <Text fontSize="sm" color="gray.600">
-            Last login <br />
+          <Text fontSize="sm" color={theme.textColor}>
+             <br />
             {value}
           </Text>
         ),
@@ -157,8 +159,11 @@ const UserTableWithActions = () => {
 
   const { getTableProps, getTableBodyProps, headerGroups, rows, prepareRow } =
     useTable({ columns, data });
-
+const theme = useTheme();
   return (
+    <>
+    
+    <Header title={"Approval Table"} isTitle={true} />
     <Box overflowX="auto" p={5}>
       <Table variant="simple" {...getTableProps()}>
         <Thead bg="gray.100">
@@ -169,7 +174,7 @@ const UserTableWithActions = () => {
                   {...column.getHeaderProps()}
                   fontSize="sm"
                   fontWeight="bold"
-                  color="gray.600"
+                  color={theme.textColor}
                 >
                   {column.render('Header')}
                 </Th>
@@ -191,6 +196,7 @@ const UserTableWithActions = () => {
         </Tbody>
       </Table>
     </Box>
+    </>
   );
 };
 

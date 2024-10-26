@@ -11,10 +11,13 @@ import {
   Progress,
   Text,
   Flex,
+  theme,
 } from '@chakra-ui/react';
 import { useTable } from 'react-table';
 import { FaCcMastercard } from 'react-icons/fa';
 import { FlagIcon } from 'react-flag-kit';
+import Header from '../../../Components/Dashboard/Header'
+import { useTheme } from '../../../Themes/ThemeContext'
 
 const UserTable = () => {
   const data = React.useMemo(
@@ -31,7 +34,7 @@ const UserTable = () => {
         usage: 20,
         usageDate: 'Jun 11, 2023 - Jul 10, 2023',
         paymentMethod: 'Mastercard',
-        lastLogin: '10 seconds ago',
+        generations: '10',
       },
       {
         user: {
@@ -45,7 +48,7 @@ const UserTable = () => {
         usage: 80,
         usageDate: 'Jun 11, 2023 - Jul 10, 2023',
         paymentMethod: 'Visa',
-        lastLogin: '10 seconds ago',
+        generations: '10',
       },
       {
         user: {
@@ -59,7 +62,7 @@ const UserTable = () => {
         usage: 50,
         usageDate: 'Jun 11, 2023 - Jul 10, 2023',
         paymentMethod: 'Mastercard',
-        lastLogin: '10 seconds ago',
+        generations: '10',
       },
     ],
     []
@@ -74,27 +77,27 @@ const UserTable = () => {
           <Flex align="center">
             <Avatar src={value.avatar} size="sm" mr={3} />
             <Box>
-              <Text fontWeight="bold">{value.name}</Text>
-              <Text fontSize="sm" color="gray.500">
+              <Text fontWeight="bold" color={theme.textColor}>{value.name}</Text>
+              <Text fontSize="sm" color={theme.textColor}>
                 {value.status} | {value.registered}
               </Text>
             </Box>
           </Flex>
         ),
       },
-      {
-        Header: 'Country',
-        accessor: 'country',
-        Cell: ({ value }) => (
-          <FlagIcon code={value} size={24} style={{ borderRadius: '50%' }} />
-        ),
-      },
+      // {
+      //   Header: 'Country',
+      //   accessor: 'country',
+      //   Cell: ({ value }) => (
+      //     <FlagIcon code={value} size={24} style={{ borderRadius: '50%' }} />
+      //   ),
+      // },
       {
         Header: 'Usage',
         accessor: 'usage',
         Cell: ({ row }) => (
           <Box>
-            <Text fontSize="sm" mb={1}>
+            <Text fontSize="sm" mb={1} color={theme.textColor}>
               {row.original.usage}%
             </Text>
             <Progress
@@ -103,10 +106,20 @@ const UserTable = () => {
               size="sm"
               borderRadius="md"
             />
-            <Text fontSize="xs" color="gray.500">
+            <Text fontSize="xs" color={theme.textColor}>
               {row.original.usageDate}
             </Text>
           </Box>
+        ),
+      },
+      {
+        Header: 'No of Image Generated',
+        accessor: 'generations',
+        Cell: ({ value }) => (
+          <Text fontSize="sm" color={theme.textColor}>
+             <br />
+            {value}
+          </Text>
         ),
       },
       {
@@ -116,16 +129,7 @@ const UserTable = () => {
           <FaCcMastercard size={24} color="black" title={value} />
         ),
       },
-      {
-        Header: 'Activity',
-        accessor: 'lastLogin',
-        Cell: ({ value }) => (
-          <Text fontSize="sm" color="gray.600">
-            Last login <br />
-            {value}
-          </Text>
-        ),
-      },
+      
     ],
     []
   );
@@ -133,7 +137,11 @@ const UserTable = () => {
   const { getTableProps, getTableBodyProps, headerGroups, rows, prepareRow } =
     useTable({ columns, data });
 
+
+    const theme = useTheme();
   return (
+    <>
+    <Header title="Users" isTitle={true} />
     <Box overflowX="auto" p={5}>
       <Table variant="simple" {...getTableProps()}>
         <Thead bg="gray.100">
@@ -144,7 +152,7 @@ const UserTable = () => {
                   {...column.getHeaderProps()}
                   fontSize="sm"
                   fontWeight="bold"
-                  color="gray.600"
+                  color={theme.textColor}
                 >
                   {column.render('Header')}
                 </Th>
@@ -166,6 +174,7 @@ const UserTable = () => {
         </Tbody>
       </Table>
     </Box>
+    </>
   );
 };
 
