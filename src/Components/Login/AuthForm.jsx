@@ -17,6 +17,7 @@ import {
   Text,
   Spinner,
   useToast,
+  HStack,
 } from "@chakra-ui/react";
 import { ViewIcon, ViewOffIcon } from "@chakra-ui/icons";
 import { FcGoogle } from "react-icons/fc";
@@ -36,48 +37,46 @@ const AuthForm = () => {
   const [isLoading, setIsLoading] = useState(false);
   const inputBg = "gray.100";
   const navigate = useNavigate();
-  const toast = useToast()
+  const toast = useToast();
   const toggleShowPassword = () => setShowPassword(!showPassword);
-
 
   const handleGoogleAuthentication = async (token) => {
     try {
       const response = await fetch(`${BASE_URL}/auth/google-auth`, {
-        method: 'POST',
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json', // Set the content type
+          "Content-Type": "application/json", // Set the content type
         },
         body: JSON.stringify({
           googleIdToken: token, // Pass the token as required
         }),
       });
-  
+
       if (!response.ok) {
         // If the response is not OK, throw an error to catch
-      
+
         throw new Error(`Request failed with status ${response.status}`);
       }
-  
+
       const data = await response.json(); // Parse the response if needed
-  
+
       // Navigate to the app if the request is successful
-       window.location.href='/app'
-     
+      window.location.href = "/app";
     } catch (error) {
-      console.error('Error during Google authentication:', error);
+      console.error("Error during Google authentication:", error);
     }
   };
-  
+
   const handleGoogle = async (e) => {
     const provider = new GoogleAuthProvider();
     const result = await signInWithPopup(auth, provider);
-     console.log(result);
+    console.log(result);
     const token = result._tokenResponse.idToken;
-    const localId = result._tokenResponse.localId
+    const localId = result._tokenResponse.localId;
     localStorage.setItem("authToken", token);
-    localStorage.setItem("localId",   localId);
+    localStorage.setItem("localId", localId);
     // navigate("/app");
-    await handleGoogleAuthentication(token)
+    await handleGoogleAuthentication(token);
   };
   const handleSignup = async () => {
     setIsLoading(true);
@@ -105,7 +104,7 @@ const AuthForm = () => {
         console.log("Signup successful", data);
         localStorage.setItem("authToken", data.idToken);
         localStorage.setItem("localId", data.localId);
-      window.location.href='/app'
+        window.location.href = "/app";
       } else {
         console.log("Signup failed", data);
       }
@@ -145,7 +144,7 @@ const AuthForm = () => {
         // console.log('auth',userData);
         //  setUserContext(userData);
         // navigate("/app");
-        window.location.href='/app'
+        window.location.href = "/app";
       } else {
         console.log("Login failed", data);
         toast({
@@ -278,9 +277,14 @@ const AuthForm = () => {
               </Button>
 
               <Text color="gray.600" cursor="pointer" fontSize="sm">
-                <Link w="full" to={"/"}>
-                  Explore us?
-                </Link>
+                <HStack gap={3}>
+                  <Link w="full" to={"/"}>
+                    Explore us?
+                  </Link>
+                  <Link w="full" to={"/admin/auth"}>
+                    Admin?
+                  </Link>
+                </HStack>
               </Text>
             </VStack>
           </TabPanel>
