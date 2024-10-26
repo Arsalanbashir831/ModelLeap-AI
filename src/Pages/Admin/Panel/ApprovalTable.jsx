@@ -16,10 +16,12 @@ import {
 import { useTable } from 'react-table';
 import { FaCcMastercard, FaCheckCircle, FaTimesCircle, FaHistory } from 'react-icons/fa';
 import { FlagIcon } from 'react-flag-kit';
-import Header from "../../../Components/Dashboard/Header"
+import Header from "../../../Components/Dashboard/Header";
 import { useTheme } from '../../../Themes/ThemeContext';
 
 const UserTableWithActions = () => {
+  const { theme } = useTheme();
+
   const data = React.useMemo(
     () => [
       {
@@ -37,29 +39,29 @@ const UserTableWithActions = () => {
       },
       {
         user: {
-          name: 'Yiorgos Avraamu',
-          avatar: 'https://bit.ly/dan-abramov',
-          status: 'New',
+          name: 'Avram Tarasios',
+          avatar: 'https://bit.ly/ryan-florence',
+          status: 'Recurring',
           registered: 'Registered: Jan 10, 2023',
         },
-        country: 'US',
+        country: 'BR',
         usage: 80,
         usageDate: 'Jun 11, 2023 - Jul 10, 2023',
         paymentMethod: 'Visa',
-        generations: '10',
+        generations: '15',
       },
       {
         user: {
-          name: 'Yiorgos Avraamu',
-          avatar: 'https://bit.ly/dan-abramov',
+          name: 'John Doe',
+          avatar: 'https://bit.ly/prosper-baba',
           status: 'New',
           registered: 'Registered: Jan 10, 2023',
         },
-        country: 'US',
+        country: 'IN',
         usage: 50,
         usageDate: 'Jun 11, 2023 - Jul 10, 2023',
         paymentMethod: 'Mastercard',
-        generations: '10',
+        generations: '8',
       },
     ],
     []
@@ -74,7 +76,9 @@ const UserTableWithActions = () => {
           <Flex align="center">
             <Avatar src={value.avatar} size="sm" mr={3} />
             <Box>
-              <Text fontWeight="bold" color={theme.textColor}>{value.name}</Text>
+              <Text fontWeight="bold" color={theme.textColor}>
+                {value.name}
+              </Text>
               <Text fontSize="sm" color={theme.textColor}>
                 {value.status} | {value.registered}
               </Text>
@@ -82,13 +86,6 @@ const UserTableWithActions = () => {
           </Flex>
         ),
       },
-      // {
-      //   Header: 'Country',
-      //   accessor: 'country',
-      //   Cell: ({ value }) => (
-      //     <FlagIcon code={value} size={24} style={{ borderRadius: '50%' }} />
-      //   ),
-      // },
       {
         Header: 'Token Usage',
         accessor: 'usage',
@@ -99,9 +96,10 @@ const UserTableWithActions = () => {
             </Text>
             <Progress
               value={row.original.usage}
-              colorScheme="green"
+              colorScheme={row.original.usage > 50 ? "green" : "red"}
               size="sm"
               borderRadius="md"
+              backgroundColor={theme.AiChatBoxInnerBoxbg}
             />
             <Text fontSize="xs" color={theme.textColor}>
               {row.original.usageDate}
@@ -109,19 +107,11 @@ const UserTableWithActions = () => {
           </Box>
         ),
       },
-    //   {
-    //     Header: 'Payment Method',
-    //     accessor: 'paymentMethod',
-    //     Cell: ({ value }) => (
-    //       <FaCcMastercard size={24} color="black" title={value} />
-    //     ),
-    //   },
       {
-        Header: 'No of Image Generated',
+        Header: 'No of Images Generated',
         accessor: 'generations',
         Cell: ({ value }) => (
           <Text fontSize="sm" color={theme.textColor}>
-             <br />
             {value}
           </Text>
         ),
@@ -148,54 +138,76 @@ const UserTableWithActions = () => {
         Header: 'History',
         accessor: 'history',
         Cell: () => (
-          <Button colorScheme="blue" size="sm" variant="outline" leftIcon={<FaHistory />}>
+          <Button
+            colorScheme="blue"
+            size="sm"
+            variant="outline"
+            leftIcon={<FaHistory />}
+          >
             History
           </Button>
         ),
       },
     ],
-    []
+    [theme]
   );
 
   const { getTableProps, getTableBodyProps, headerGroups, rows, prepareRow } =
     useTable({ columns, data });
-const theme = useTheme();
+
   return (
     <>
-    
-    <Header title={"Approval Table"} isTitle={true} />
-    <Box overflowX="auto" p={5}>
-      <Table variant="simple" {...getTableProps()}>
-        <Thead bg="gray.100">
-          {headerGroups.map((headerGroup) => (
-            <Tr {...headerGroup.getHeaderGroupProps()}>
-              {headerGroup.headers.map((column) => (
-                <Th
-                  {...column.getHeaderProps()}
-                  fontSize="sm"
-                  fontWeight="bold"
-                  color={theme.textColor}
-                >
-                  {column.render('Header')}
-                </Th>
-              ))}
-            </Tr>
-          ))}
-        </Thead>
-        <Tbody {...getTableBodyProps()}>
-          {rows.map((row) => {
-            prepareRow(row);
-            return (
-              <Tr {...row.getRowProps()}>
-                {row.cells.map((cell) => (
-                  <Td {...cell.getCellProps()}>{cell.render('Cell')}</Td>
+      <Header title="Approval Table" isTitle={true} />
+      <Box
+        overflowX="auto"
+        p={5}
+        bg={theme.backgroundAilab}
+        borderRadius="lg"
+        boxShadow="lg"
+      >
+        <Table
+          variant="simple"
+          {...getTableProps()}
+          bg={theme.integrationBoxBg}
+          borderColor={theme.integrationBoxBorder}
+        >
+          <Thead bg={theme.backgroundAilab}>
+            {headerGroups.map((headerGroup) => (
+              <Tr {...headerGroup.getHeaderGroupProps()}>
+                {headerGroup.headers.map((column) => (
+                  <Th
+                    {...column.getHeaderProps()}
+                    fontSize="sm"
+                    fontWeight="bold"
+                    color={theme.textColor}
+                    borderColor={theme.sideBarDividerColor}
+                  >
+                    {column.render('Header')}
+                  </Th>
                 ))}
               </Tr>
-            );
-          })}
-        </Tbody>
-      </Table>
-    </Box>
+            ))}
+          </Thead>
+          <Tbody {...getTableBodyProps()}>
+            {rows.map((row) => {
+              prepareRow(row);
+              return (
+                <Tr {...row.getRowProps()} borderColor={theme.sideBarDividerColor}>
+                  {row.cells.map((cell) => (
+                    <Td
+                      {...cell.getCellProps()}
+                      color={theme.textColor}
+                      borderColor={theme.sideBarDividerColor}
+                    >
+                      {cell.render('Cell')}
+                    </Td>
+                  ))}
+                </Tr>
+              );
+            })}
+          </Tbody>
+        </Table>
+      </Box>
     </>
   );
 };
