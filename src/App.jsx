@@ -19,12 +19,16 @@ import Usage from "./Pages/Usage/Usage";
 import ChatbotHistory from "./Pages/AiLab/ChatbotHistory";
 // import Pricing from './Pages/Pricing/Pricing'
 import Contact from "./Pages/ContactUs/Contact";
+import AdminAuth from "./Pages/Admin/Auth/AdminAuth";
+import AdminDashboardLayout from "./AdminDashboardLayout";
+import UserTable from "./Pages/Admin/Panel/Users";
+import UserTableWithActions from "./Pages/Admin/Panel/ApprovalTable";
 
 const router = createBrowserRouter([
   { path: "/", element: <Landing /> },
-  { path: "/auth", element:  <Auth /> },
+  { path: "/auth", element: <Auth /> },
   // { path: "/pricing", element:  <Pricing/> },
-  { path: "/contact", element:  <Contact/> },
+  { path: "/contact", element: <Contact /> },
   {
     path: "/app",
     element: (
@@ -45,15 +49,20 @@ const router = createBrowserRouter([
   },
   { path: "/app/ailab/chat/:botId", element: <AiLabChat /> },
   { path: "/app/ailab/history/:botId", element: <ChatbotHistory /> },
+  { path: "/admin/auth", element: <AdminAuth /> },
+  { path: "/admin/dashboard", element: <AdminDashboardLayout />, children: [
+    { path: "/admin/dashboard/users", element: <UserTable /> },
+    { path: "/admin/dashboard/approvals", element: <UserTableWithActions /> },
+  ] },
   { path: "*", element: <NotFound /> },
 ]);
 
 const App = () => {
- const {userData}=useUserData()
- useEffect(()=>{},[userData])
+  const { userData } = useUserData();
+  useEffect(() => {}, [userData]);
   return (
     <>
-      <RouterProvider router={router}  />
+      <RouterProvider router={router} />
       {/* Only run validation when the Router is available */}
       {/* {useAuthValidation()}  */}
     </>
