@@ -13,7 +13,6 @@ import {
   Flex,
 } from "@chakra-ui/react";
 import { useTable } from "react-table";
-import { FaCcVisa, FaCcMastercard } from "react-icons/fa";
 import { FlagIcon } from "react-flag-kit";
 import Header from "../../../Components/Dashboard/Header";
 import { useTheme } from "../../../Themes/ThemeContext";
@@ -33,7 +32,7 @@ const UserTable = () => {
         country: "US",
         usage: 20,
         usageDate: "Jun 11, 2023 - Jul 10, 2023",
-        paymentMethod: "Mastercard",
+        subscriptionType: "Free",
         generations: "10",
       },
       {
@@ -46,7 +45,7 @@ const UserTable = () => {
         country: "BR",
         usage: 80,
         usageDate: "Jun 11, 2023 - Jul 10, 2023",
-        paymentMethod: "Visa",
+        subscriptionType: "Premium",
         generations: "15",
       },
       {
@@ -59,7 +58,7 @@ const UserTable = () => {
         country: "IN",
         usage: 50,
         usageDate: "Jun 11, 2023 - Jul 10, 2023",
-        paymentMethod: "Mastercard",
+        subscriptionType: "Standard",
         generations: "8",
       },
     ],
@@ -78,7 +77,7 @@ const UserTable = () => {
               <Text fontWeight="bold" color={theme.textColor}>
                 {value.name}
               </Text>
-              <Text fontSize="sm" color={theme.textColor}>
+              <Text fontSize="sm" color="gray.500">
                 {value.status} | {value.registered}
               </Text>
             </Box>
@@ -107,14 +106,14 @@ const UserTable = () => {
               borderRadius="md"
               backgroundColor={theme.AiChatBoxInnerBoxbg}
             />
-            <Text fontSize="xs" color={theme.textColor}>
+            <Text fontSize="xs" color="gray.500">
               {row.original.usageDate}
             </Text>
           </Box>
         ),
       },
       {
-        Header: "No of Image Generated",
+        Header: "No of Images Generated",
         accessor: "generations",
         Cell: ({ value }) => (
           <Text fontSize="sm" color={theme.textColor}>
@@ -123,14 +122,23 @@ const UserTable = () => {
         ),
       },
       {
-        Header: "Payment Method",
-        accessor: "paymentMethod",
-        Cell: ({ value }) =>
-          value === "Visa" ? (
-            <FaCcVisa size={24} color={theme.iconColor} title={value} />
-          ) : (
-            <FaCcMastercard size={24} color={theme.iconColor} title={value} />
-          ),
+        Header: "Subscription Type",
+        accessor: "subscriptionType",
+        Cell: ({ value }) => (
+          <Text
+            fontSize="sm"
+            fontWeight="bold"
+            color={
+              value === "Premium"
+                ? "blue.500"
+                : value === "Standard"
+                ? "orange.500"
+                : "gray.500"
+            }
+          >
+            {value}
+          </Text>
+        ),
       },
     ],
     [theme]
@@ -145,7 +153,7 @@ const UserTable = () => {
       <Box
         overflowX="auto"
         p={5}
-        bg={theme.backgroundAilab}
+       
         borderRadius="lg"
         boxShadow="lg"
       >
@@ -155,7 +163,7 @@ const UserTable = () => {
           bg={theme.integrationBoxBg}
           borderColor={theme.integrationBoxBorder}
         >
-          <Thead bg="gray.100">
+          <Thead>
             {headerGroups.map((headerGroup) => (
               <Tr {...headerGroup.getHeaderGroupProps()}>
                 {headerGroup.headers.map((column) => (
@@ -165,6 +173,7 @@ const UserTable = () => {
                     fontWeight="bold"
                     color={theme.textColor}
                     borderColor={theme.sideBarDividerColor}
+                    p={4}
                   >
                     {column.render("Header")}
                   </Th>
@@ -182,6 +191,7 @@ const UserTable = () => {
                       {...cell.getCellProps()}
                       color={theme.textColor}
                       borderColor={theme.sideBarDividerColor}
+                      p={4}
                     >
                       {cell.render("Cell")}
                     </Td>

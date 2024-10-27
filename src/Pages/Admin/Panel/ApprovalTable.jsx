@@ -86,36 +86,8 @@ const UserTableWithActions = () => {
           </Flex>
         ),
       },
-      {
-        Header: 'Token Usage',
-        accessor: 'usage',
-        Cell: ({ row }) => (
-          <Box>
-            <Text fontSize="sm" mb={1} color={theme.textColor}>
-              {row.original.usage}%
-            </Text>
-            <Progress
-              value={row.original.usage}
-              colorScheme={row.original.usage > 50 ? "green" : "red"}
-              size="sm"
-              borderRadius="md"
-              backgroundColor={theme.AiChatBoxInnerBoxbg}
-            />
-            <Text fontSize="xs" color={theme.textColor}>
-              {row.original.usageDate}
-            </Text>
-          </Box>
-        ),
-      },
-      {
-        Header: 'No of Images Generated',
-        accessor: 'generations',
-        Cell: ({ value }) => (
-          <Text fontSize="sm" color={theme.textColor}>
-            {value}
-          </Text>
-        ),
-      },
+    
+    
       {
         Header: 'Approval',
         accessor: 'approve',
@@ -161,17 +133,17 @@ const UserTableWithActions = () => {
       <Box
         overflowX="auto"
         p={5}
-        bg={theme.backgroundAilab}
+       
         borderRadius="lg"
         boxShadow="lg"
       >
         <Table
           variant="simple"
           {...getTableProps()}
-          bg={theme.integrationBoxBg}
+     
           borderColor={theme.integrationBoxBorder}
         >
-          <Thead bg={theme.backgroundAilab}>
+          <Thead>
             {headerGroups.map((headerGroup) => (
               <Tr {...headerGroup.getHeaderGroupProps()}>
                 {headerGroup.headers.map((column) => (

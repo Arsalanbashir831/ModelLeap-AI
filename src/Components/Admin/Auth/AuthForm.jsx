@@ -3,6 +3,7 @@ import {
   Box,
   Button,
   FormControl,
+  FormLabel,
   Input,
   VStack,
   InputGroup,
@@ -22,33 +23,44 @@ const AdminAuthForm = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const inputBg = "gray.50";
   const navigate = useNavigate();
   const toast = useToast();
 
   const toggleShowPassword = () => setShowPassword(!showPassword);
 
   const handleLogin = async () => {
-    navigate("/admin/dashboard");
+    setIsLoading(true);
+    // Simulate async login process
+    setTimeout(() => {
+      navigate("/admin/dashboard/users");
+      setIsLoading(false);
+      toast({
+        title: "Login Successful",
+        status: "success",
+        duration: 2000,
+        isClosable: true,
+      });
+    }, 1000);
   };
 
   return (
     <Box
-      p={{ base: 6, md: 8, lg: 10 }}
-      m="auto"
+      p={{ base: 4, sm: 6, md: 8 }}
+      mx="auto"
       display="flex"
       flexDirection="column"
       alignItems="center"
       justifyContent="center"
-      maxW={{ base: "95%", md: "450px", lg: "500px" }}
+      maxW={{ base: "90%", sm: "400px", md: "450px", lg: "500px" }}
       w="full"
       minH={{ base: "60vh", md: "70vh" }}
-    //   border="1px solid"
       borderColor="gray.200"
       borderRadius="lg"
-      boxShadow="lg"
+      boxShadow="2xl"
       bg="white"
       my={{ base: 8, md: 12 }}
+      _hover={{ boxShadow: "lg" }}
+      transition="box-shadow 0.2s ease-in-out"
     >
       <Box mb={6} display="flex" justifyContent="center">
         <img
@@ -58,37 +70,56 @@ const AdminAuthForm = () => {
         />
       </Box>
 
-      <Text fontSize={{ base: "lg", md: "xl" }} fontWeight="bold" color="gray.700" mb={2}>
+      <Text
+        fontSize={{ base: "lg", sm: "xl", md: "2xl" }}
+        fontWeight="bold"
+        color="black"
+        mb={2}
+        textAlign="center"
+      >
         Admin Login
       </Text>
       <Divider mb={6} />
 
       <VStack spacing={5} w="full" px={{ base: 4, md: 6 }}>
         <FormControl id="email" isRequired>
+          <FormLabel fontWeight="bold" color="gray.700" fontSize={{ base: "sm", sm: "md" }}>
+            Email
+          </FormLabel>
           <Input
             type="email"
-            bg={inputBg}
+            color="black"
+            bg="gray.100"
             borderColor="gray.300"
             focusBorderColor={primaryColorPurple}
-            placeholder="Email"
             borderRadius="full"
             size="lg"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
+            _hover={{ bg: "gray.200" }}
+            boxShadow="sm"
+            p={5}
           />
         </FormControl>
+
         <FormControl id="password" isRequired>
+          <FormLabel fontWeight="bold" color="gray.700" fontSize={{ base: "sm", sm: "md" }}>
+            Password
+          </FormLabel>
           <InputGroup>
             <Input
               type={showPassword ? "text" : "password"}
-              bg={inputBg}
+              color="black"
+              bg="gray.100"
               borderColor="gray.300"
               focusBorderColor={primaryColorPurple}
-              placeholder="Password"
               borderRadius="full"
               size="lg"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
+              _hover={{ bg: "gray.200" }}
+              boxShadow="sm"
+              p={5}
             />
             <InputRightElement>
               <IconButton
@@ -96,6 +127,8 @@ const AdminAuthForm = () => {
                 onClick={toggleShowPassword}
                 variant="ghost"
                 aria-label="Toggle Password Visibility"
+                color="gray.600"
+                _hover={{ color: primaryColorPurple }}
               />
             </InputRightElement>
           </InputGroup>
@@ -107,18 +140,21 @@ const AdminAuthForm = () => {
           w="full"
           borderRadius="full"
           size="lg"
-          py={{ base: 6, md: 7 }}
-          fontSize={{ base: "md", md: "lg" }}
+          py={{ base: 5, md: 6 }}
+          fontSize={{ base: "md", sm: "lg" }}
           _hover={{ bg: primaryColorOrange }}
           onClick={handleLogin}
           isDisabled={isLoading}
-          boxShadow="sm"
+          boxShadow="md"
+          transition="background-color 0.3s ease"
         >
-          {isLoading ? <Spinner /> : "Sign In"}
+          {isLoading ? <Spinner size="md" color="white" /> : "Sign In"}
         </Button>
 
-        <Text color="gray.600" fontSize={{ base: "sm", md: "md" }}>
-          <Link to={"/"}>Return to Homepage</Link>
+        <Text color="gray.700" fontSize={{ base: "sm", md: "md" }} mt={4} textAlign="center">
+          <Link to={"/"} style={{ textDecoration: "underline" }}>
+            Return to Homepage
+          </Link>
         </Text>
       </VStack>
     </Box>
