@@ -22,27 +22,55 @@ import { BASE_URL } from '../../Constants';
 import { useRecoilValue } from 'recoil';
 import modelState from '../../atoms/modelState';
 
-const CreateBotModel = ({ isOpen, onClose , refresh , setRefresh }) => {
+const CreateBotModel = ({ isOpen, onClose, refresh, setRefresh }) => {
   const [botName, setBotName] = useState('');
   const [systemContext, setSystemContext] = useState('');
-  const [modelType, setModelType] = useState('chat'); 
-  const [loading, setLoading] = useState(false); 
-  const toast = useToast(); 
-const selectedModel = useRecoilValue(modelState)
+  const [modelType, setModelType] = useState('chat');
+  const [avatar, setAvatar] = useState(null); // New state for avatar
+  const [loading, setLoading] = useState(false);
+  const toast = useToast();
+  const selectedModel = useRecoilValue(modelState);
+
+  const addAvatar = async (avatar, botId) => {
+    try {
+      const token = localStorage.getItem('authToken');
+      const formData = new FormData();
+      formData.append("avatarFile", avatar);
+
+      const response = await fetch(`${BASE_URL}/api/bot/add-avatar/${botId}`, {
+        method: "POST",
+        body: formData,
+        headers: {
+          'Authorization': `Bearer ${token}`
+        },
+      });
+      if (!response.ok) {
+        throw new Error(`Failed to upload avatar: ${response.statusText}`);
+      }
+      const data = await response.json();
+      console.log("Avatar upload success:", data);
+      return data;
+    } catch (error) {
+      console.error("Error uploading avatar:", error);
+      throw error;
+    }
+  };
+
   const handleSubmit = async () => {
-    setLoading(true); 
+    setLoading(true);
     const botData = {
       botName,
-      systemContext, 
-      modelName: selectedModel.value, 
+      systemContext,
+      modelName: selectedModel.value,
     };
-const token = localStorage.getItem('authToken')
+    const token = localStorage.getItem('authToken');
+
     try {
       const response = await fetch(`${BASE_URL}/api/bot`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization':`Bearer ${token}`
+          'Authorization': `Bearer ${token}`,
         },
         body: JSON.stringify(botData),
       });
@@ -54,6 +82,11 @@ const token = localStorage.getItem('authToken')
       const data = await response.json();
       console.log('Bot Created:', data);
 
+      // Call addAvatar if an image was selected
+      if (avatar) {
+        await addAvatar(avatar, data.botId);
+      }
+
       toast({
         title: 'Bot Created Successfully!',
         description: `Bot "${botName}" has been created.`,
@@ -61,9 +94,8 @@ const token = localStorage.getItem('authToken')
         duration: 3000,
         isClosable: true,
       });
-       setRefresh(!refresh)
-      
-      onClose(); 
+      setRefresh(!refresh);
+      onClose();
     } catch (error) {
       console.error('Error creating bot:', error);
 
@@ -75,7 +107,7 @@ const token = localStorage.getItem('authToken')
         isClosable: true,
       });
     } finally {
-      setLoading(false); 
+      setLoading(false);
     }
   };
 
@@ -104,7 +136,6 @@ const token = localStorage.getItem('authToken')
             />
           </FormControl>
 
-          {/* Radio buttons for model type selection */}
           <FormControl mb={4}>
             <FormLabel>Choose Model Type</FormLabel>
             <RadioGroup onChange={setModelType} value={modelType}>
@@ -113,8 +144,17 @@ const token = localStorage.getItem('authToken')
             </RadioGroup>
           </FormControl>
 
-          {/* Pass selected model type to ModelSelection */}
           <ModelSelection type={modelType} />
+
+          {/* New Avatar Upload Field */}
+          <FormControl mt={4}>
+            <FormLabel>Upload Avatar</FormLabel>
+            <Input
+              type="file"
+              accept="image/*"
+              onChange={(e) => setAvatar(e.target.files[0])}
+            />
+          </FormControl>
         </ModalBody>
 
         <ModalFooter>

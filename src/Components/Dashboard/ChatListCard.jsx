@@ -19,7 +19,7 @@ import { BASE_URL } from "../../Constants";
 import { useNavigate } from "react-router-dom";
 import { useTheme } from "../../Themes/ThemeContext";
 
-const ChatListCard = ({ id, botName, systemContext, createdAt, modelName, kwargs, apiKey, refresh, setRefresh }) => {
+const ChatListCard = ({ id, botName, systemContext, createdAt, modelName, kwargs, apiKey, refresh, setRefresh , avatarFile }) => {
   const { hasCopied, onCopy } = useClipboard(botName);
   const toast = useToast();
   const navigate = useNavigate();
@@ -34,6 +34,8 @@ const {theme}=useTheme()
     systemContext,
     modelName,
     kwargs,
+    avatarFile, 
+    id
   });
 
   // Function to delete the bot

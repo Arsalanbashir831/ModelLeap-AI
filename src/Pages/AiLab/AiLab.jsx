@@ -85,6 +85,7 @@ const AiLab = () => {
                   botName={chat.botName}
                   systemContext={chat.systemContext}
                   createdAt={chat.createdAt}
+                  avatarFile ={chat.avatarFile}
                 />
               ))
             }
