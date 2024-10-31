@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import {
   Avatar,
   Box,
@@ -13,56 +13,52 @@ import {
   Flex,
 } from "@chakra-ui/react";
 import { useTable } from "react-table";
-import { FlagIcon } from "react-flag-kit";
 import Header from "../../../Components/Dashboard/Header";
 import { useTheme } from "../../../Themes/ThemeContext";
+import { BASE_URL } from "../../../Constants";
 
 const UserTable = () => {
   const { theme } = useTheme();
+  const [userData, setUserData] = useState([]);
+  const [loading, setLoading] = useState(false);
 
+  useEffect(() => {
+    fetchUserData();
+  }, []);
+
+  const fetchUserData = async () => {
+    const token = localStorage.getItem("adminToken");
+    setLoading(true);
+    try {
+      const response = await fetch(`${BASE_URL}/auth/get-users`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      const data = await response.json();
+      setUserData(data);
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Transform fetched userData to match the structure expected by the table
   const data = React.useMemo(
-    () => [
-      {
+    () =>
+      userData.map((user) => ({
         user: {
-          name: "Yiorgos Avraamu",
-          avatar: "https://bit.ly/dan-abramov",
-          status: "New",
-          registered: "Registered: Jan 10, 2023",
+          name: user.email, // Display email as name
+          avatar: null, // No URL for avatar, using initials from Chakra Avatar
+          registered: `Token Count: ${user.tokenCount}`,
         },
-        country: "US",
-        usage: 20,
-        usageDate: "Jun 11, 2023 - Jul 10, 2023",
-        subscriptionType: "Free",
-        generations: "10",
-      },
-      {
-        user: {
-          name: "Avram Tarasios",
-          avatar: "https://bit.ly/ryan-florence",
-          status: "Recurring",
-          registered: "Registered: Jan 10, 2023",
-        },
-        country: "BR",
-        usage: 80,
-        usageDate: "Jun 11, 2023 - Jul 10, 2023",
-        subscriptionType: "Premium",
-        generations: "15",
-      },
-      {
-        user: {
-          name: "John Doe",
-          avatar: "https://bit.ly/prosper-baba",
-          status: "New",
-          registered: "Registered: Jan 10, 2023",
-        },
-        country: "IN",
-        usage: 50,
-        usageDate: "Jun 11, 2023 - Jul 10, 2023",
-        subscriptionType: "Standard",
-        generations: "8",
-      },
-    ],
-    []
+        usage: user.tokenCount / 1000, // Example calculation for usage bar
+        usageDate: `Generated Images: ${user.imageGenerationCount}`,
+        subscriptionType: user.subscriptionTier,
+        generations: user.imageGenerationCount,
+      })),
+    [userData]
   );
 
   const columns = React.useMemo(
@@ -72,25 +68,18 @@ const UserTable = () => {
         accessor: "user",
         Cell: ({ value }) => (
           <Flex align="center">
-            <Avatar src={value.avatar} size="sm" mr={3} />
+            <Avatar name={value.name} size="sm" mr={3} />
             <Box>
               <Text fontWeight="bold" color={theme.textColor}>
                 {value.name}
               </Text>
               <Text fontSize="sm" color="gray.500">
-                {value.status} | {value.registered}
+                {value.registered}
               </Text>
             </Box>
           </Flex>
         ),
       },
-      // {
-      //   Header: "Country",
-      //   accessor: "country",
-      //   Cell: ({ value }) => (
-      //     <FlagIcon code={value} size={24} style={{ borderRadius: "50%" }} />
-      //   ),
-      // },
       {
         Header: "Token Usage",
         accessor: "usage",
@@ -129,9 +118,9 @@ const UserTable = () => {
             fontSize="sm"
             fontWeight="bold"
             color={
-              value === "Premium"
+              value === "premium"
                 ? "blue.500"
-                : value === "Standard"
+                : value === "standard"
                 ? "orange.500"
                 : "gray.500"
             }
@@ -150,13 +139,7 @@ const UserTable = () => {
   return (
     <>
       <Header title="Users" isTitle={true} />
-      <Box
-        overflowX="auto"
-        p={5}
-       
-        borderRadius="lg"
-        boxShadow="lg"
-      >
+      <Box overflowX="auto" p={5} borderRadius="lg" boxShadow="lg">
         <Table
           variant="simple"
           {...getTableProps()}

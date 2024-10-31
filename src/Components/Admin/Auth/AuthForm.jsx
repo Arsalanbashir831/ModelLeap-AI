@@ -17,6 +17,7 @@ import {
 import { ViewIcon, ViewOffIcon } from "@chakra-ui/icons";
 import { primaryColorPurple, primaryColorOrange } from "../../../colorCodes";
 import { Link, useNavigate } from "react-router-dom";
+import { BASE_URL } from "../../../Constants";
 
 const AdminAuthForm = () => {
   const [showPassword, setShowPassword] = useState(false);
@@ -29,18 +30,54 @@ const AdminAuthForm = () => {
   const toggleShowPassword = () => setShowPassword(!showPassword);
 
   const handleLogin = async () => {
-    setIsLoading(true);
-    // Simulate async login process
-    setTimeout(() => {
-      navigate("/admin/dashboard/users");
-      setIsLoading(false);
+    // setIsLoading(true);
+    // // Simulate async login process
+    // setTimeout(() => {
+    //   navigate("/admin/dashboard/users");
+    //   setIsLoading(false);
+    //   toast({
+    //     title: "Login Successful",
+    //     status: "success",
+    //     duration: 2000,
+    //     isClosable: true,
+    //   });
+    // }, 1000);
+    try {
+      setIsLoading(true);
+      const response = await fetch(`${BASE_URL}/auth/login`, {
+        method: "POST",
+        headers:{
+          "Content-Type":"application/json"
+        },
+        body: JSON.stringify({
+          email,
+          password,
+        }),
+      });
+      if (response.ok) {
+        const data = await response.json();
+        toast({
+          title: "Login Successful",
+          status: "success",
+          duration: 2000,
+          isClosable: true,
+        });
+        localStorage.setItem("adminToken", data.idToken);
+       navigate("/admin/dashboard/users");
+        console.log(data);
+      }
+    } catch (error) {
+      const data = await response.json();
       toast({
-        title: "Login Successful",
-        status: "success",
+        title: data.message,
+        status: "error",
         duration: 2000,
         isClosable: true,
       });
-    }, 1000);
+    }finally{
+      setIsLoading(false);
+    }
+
   };
 
   return (
@@ -83,7 +120,11 @@ const AdminAuthForm = () => {
 
       <VStack spacing={5} w="full" px={{ base: 4, md: 6 }}>
         <FormControl id="email" isRequired>
-          <FormLabel fontWeight="bold" color="gray.700" fontSize={{ base: "sm", sm: "md" }}>
+          <FormLabel
+            fontWeight="bold"
+            color="gray.700"
+            fontSize={{ base: "sm", sm: "md" }}
+          >
             Email
           </FormLabel>
           <Input
@@ -103,7 +144,11 @@ const AdminAuthForm = () => {
         </FormControl>
 
         <FormControl id="password" isRequired>
-          <FormLabel fontWeight="bold" color="gray.700" fontSize={{ base: "sm", sm: "md" }}>
+          <FormLabel
+            fontWeight="bold"
+            color="gray.700"
+            fontSize={{ base: "sm", sm: "md" }}
+          >
             Password
           </FormLabel>
           <InputGroup>
@@ -151,7 +196,12 @@ const AdminAuthForm = () => {
           {isLoading ? <Spinner size="md" color="white" /> : "Sign In"}
         </Button>
 
-        <Text color="gray.700" fontSize={{ base: "sm", md: "md" }} mt={4} textAlign="center">
+        <Text
+          color="gray.700"
+          fontSize={{ base: "sm", md: "md" }}
+          mt={4}
+          textAlign="center"
+        >
           <Link to={"/"} style={{ textDecoration: "underline" }}>
             Return to Homepage
           </Link>

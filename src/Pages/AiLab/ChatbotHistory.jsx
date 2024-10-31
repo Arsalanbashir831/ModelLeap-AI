@@ -237,7 +237,7 @@ const navigate = useNavigate()
           isOpen={isShareOpen}
           onClose={onShareClose}
           modelName={modelName}
-          botData={{ botId, apiKey, chatId: selectedChatForShare.chatId }} // Pass bot ID, API key, and chatId to ShareModal
+          botData={{ botId, apiKey, chatId: selectedChatForShare.chatId , status:selectedChatForShare.status }} // Pass bot ID, API key, and chatId to ShareModal
         />
       )}
   </Flex>
