@@ -21,6 +21,7 @@ import {
   ModalFooter,
   useDisclosure,
   Image,
+  Spinner,
 } from '@chakra-ui/react';
 import { useTable } from 'react-table';
 import { FaCheckCircle, FaTimesCircle, FaHistory } from 'react-icons/fa';
@@ -34,6 +35,7 @@ const UserTableWithActions = () => {
   const [historyData, setHistoryData] = useState([]);
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [refresh, setRefresh] = useState(false);
+  const [loading , setLoading] = useState(false)
 
   const fetchApprovalRequests = async () => {
     const token = localStorage.getItem('adminToken');
@@ -58,6 +60,7 @@ const UserTableWithActions = () => {
 
   const statusUpdateHandler = async (id, status) => {
     try {
+      setLoading(true)
       const token = localStorage.getItem('adminToken');
       const response = await fetch(`${BASE_URL}/admin/approval-chats/${id}/${status}`, {
         method: 'PATCH',
@@ -70,6 +73,8 @@ const UserTableWithActions = () => {
       }
     } catch (error) {
       console.log(error);
+    }finally{
+      setLoading(false)
     }
   };
 
@@ -203,6 +208,7 @@ const UserTableWithActions = () => {
   return (
     <>
       <Header title="Approval Table" isTitle={true} />
+      {loading ?<> <Spinner size={'xl'}/> </>:<>
       <Box overflowX="auto" p={5} borderRadius="lg" boxShadow="lg">
         <Table
           variant="simple"
@@ -247,7 +253,8 @@ const UserTableWithActions = () => {
           </Tbody>
         </Table>
       </Box>
-
+      </>}
+    
       {/* Modal for History */}
       <Modal isOpen={isOpen} onClose={onClose} size="lg">
         <ModalOverlay />
