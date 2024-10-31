@@ -34,7 +34,7 @@ const UserTableWithActions = () => {
   const [approvalRequests, setApprovalRequests] = useState([]);
   const [historyData, setHistoryData] = useState([]);
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const [refresh, setRefresh] = useState(false);
+ 
   const [loading , setLoading] = useState(false)
 
   const fetchApprovalRequests = async () => {
@@ -56,7 +56,7 @@ const UserTableWithActions = () => {
 
   useEffect(() => {
     fetchApprovalRequests();
-  }, [refresh]);
+  }, []);
 
   const statusUpdateHandler = async (id, status) => {
     try {
@@ -69,7 +69,7 @@ const UserTableWithActions = () => {
         }
       });
       if (response.ok) {
-        setRefresh(!refresh);
+      window.location.reload()
       }
     } catch (error) {
       console.log(error);
