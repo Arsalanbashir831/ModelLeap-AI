@@ -8,34 +8,33 @@ import {
   Text,
   IconButton,
   Tooltip,
-  useColorModeValue,
 } from "@chakra-ui/react";
 import { FaShare } from "react-icons/fa";
 import { useTheme } from "../../Themes/ThemeContext";
 import { primaryColorOrange, primaryColorPurple } from "../../colorCodes";
-
 
 const ChatListItem = ({ chat, selectedChat, handleChatSelection, handleShare }) => {
   // Access the theme from context
   const { theme } = useTheme();
 
   return (
-    <ListItem key={chat.chatId}>
-      <Flex 
+    <ListItem key={chat.chatId} w="100%">
+      <Flex
         onClick={() => handleChatSelection(chat)}
         alignItems="center"
-        px={4}
-        py={3}
+        px={{ base: 2, md: 4 }}
+        py={{ base: 2, md: 3 }}
         borderRadius="lg"
-        
         bg={
           selectedChat?.chatId === chat.chatId
             ? theme.background
-            : 'transparent'
+            : "transparent"
         }
         boxShadow="md"
         _hover={{
-        //   bg: useColorModeValue("gray.100", "gray.700"),
+          bg: selectedChat?.chatId === chat.chatId
+            ? theme.background
+            : "gray.100",
           cursor: "pointer",
           transition: "background-color 0.3s ease",
         }}
@@ -44,8 +43,12 @@ const ChatListItem = ({ chat, selectedChat, handleChatSelection, handleShare }) 
           {/* Avatar */}
           <Avatar
             name={chat.name}
-            bg={selectedChat?.chatId === chat.chatId ? primaryColorOrange : primaryColorPurple}
-            size="md"
+            bg={
+              selectedChat?.chatId === chat.chatId
+                ? primaryColorOrange
+                : primaryColorPurple
+            }
+            size={{ base: "sm", md: "md" }}
             color={theme.textColor}
           />
 
@@ -53,8 +56,8 @@ const ChatListItem = ({ chat, selectedChat, handleChatSelection, handleShare }) 
           <Box flex="1">
             <Text
               fontWeight="bold"
-              fontSize="md"
-              color={selectedChat?.chatId === chat.chatId ? theme.textColor : theme.textColor}
+              fontSize={{ base: "sm", md: "md" }}
+              color={theme.textColor}
               noOfLines={1}
             >
               {chat.name}
@@ -62,12 +65,12 @@ const ChatListItem = ({ chat, selectedChat, handleChatSelection, handleShare }) 
           </Box>
 
           {/* Share Button */}
-          <Stack direction="row" spacing={2}>
+          <Stack direction="row" spacing={1}>
             <Tooltip label="Share Chat" aria-label="Share Chat">
               <IconButton
                 icon={<FaShare />}
-                size="sm"
-                colorScheme={selectedChat?.chatId === chat.chatId ? "black" : "blue"}
+                size={{ base: "xs", md: "sm" }}
+                colorScheme="blue"
                 variant="ghost"
                 _hover={{
                   color: theme.iconColor,

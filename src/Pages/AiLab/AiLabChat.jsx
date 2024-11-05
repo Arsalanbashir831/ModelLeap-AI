@@ -1,45 +1,47 @@
-import React, { useEffect } from "react";
+import React from "react";
 import Header from "../../Components/Dashboard/Header";
 import LabChatBox from "../../Components/Dashboard/LabChatBox";
-import { useParams, Link, useLocation, useNavigate } from "react-router-dom";
-import ChatListCard from "../../Components/Dashboard/ChatListCard";
+import { useParams, useNavigate, useLocation } from "react-router-dom";
 import { Button, Box, Flex } from "@chakra-ui/react";
-import { ArrowBackIcon } from "@chakra-ui/icons";
 import { primaryColorOrange } from "../../colorCodes";
 import { useTheme } from "../../Themes/ThemeContext";
-import Description from "../../Components/Dashboard/Description";
-import HistoryBox from "../../Components/Dashboard/HistoryBox";
-import ChatHeader from "../../Components/common/ChatHeader";
 
 const AiLabChat = () => {
   const { botId } = useParams();
   const { theme } = useTheme();
   const location = useLocation();
   const { apiKey, modelName } = location.state;
-
   const navigate = useNavigate();
-  return (
 
-<Box bg={theme.background} minH="100vh" p={3}>
-      <Flex mb={1}>
+  return (
+    <Box bg={theme.background} minH="100vh" p={{ base: 3, md: 6 }}>
+      {/* Back Button and Header */}
+      <Flex mb={{ base: 4, md: 6 }} align="center" justify="space-between">
         <Button
           bg={primaryColorOrange}
-          color={"white"}
+          color="white"
           onClick={() => navigate("/app/ailab")}
+          size={{ base: "sm", md: "md" }}
+          _hover={{ bg: "orange.500" }}
         >
-          {" "}
           Back
         </Button>
-        <Header isTitle={false}/>
+        <Header isTitle={false} />
       </Flex>
 
-      <Box w="100%" maxW="100%" mx="auto">
-        <Flex width={"100%"} align="center" justify="center" gap={3} mb={0}>
-          <Flex flex="1" justify="center"></Flex>
-        </Flex>
-
-        <Flex gap={5}>
-          <LabChatBox apiKey={apiKey} botId={botId} modelName={modelName} />
+      {/* Main Content Area */}
+      <Box w="100%" maxW="1200px" mx="auto">
+        <Flex
+          direction={{ base: "column", md: "row" }}
+          gap={{ base: 4, md: 6 }}
+          align="flex-start"
+          justify="center"
+          mb={{ base: 4, md: 6 }}
+        >
+          {/* Chat Box */}
+          <Box flex="1" w="100%">
+            <LabChatBox apiKey={apiKey} botId={botId} modelName={modelName} />
+          </Box>
         </Flex>
       </Box>
     </Box>

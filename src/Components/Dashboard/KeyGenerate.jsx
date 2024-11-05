@@ -8,9 +8,8 @@ import {
   Td,
   Text,
   Tr,
-  useClipboard,
-  Link,
   Divider,
+  useClipboard,
 } from "@chakra-ui/react";
 import React, { useEffect, useState } from "react";
 import { FaClipboard, FaRegDotCircle } from "react-icons/fa";
@@ -18,7 +17,6 @@ import { FaPlus } from "react-icons/fa6";
 import { primaryColorOrange, primaryColorPurple } from "../../colorCodes";
 import { useTheme } from "../../Themes/ThemeContext";
 import { BASE_URL } from "../../Constants";
-
 import { useRecoilValue } from "recoil";
 import userState from "../../atoms/userState";
 import { useNavigate } from "react-router-dom";
@@ -28,15 +26,11 @@ const KeyGenerate = () => {
   const [isLoading, setIsLoading] = useState(false);
   const { hasCopied, onCopy } = useClipboard(apiKey);
   const { theme } = useTheme();
-  const userContext= useRecoilValue(userState)
-const navigate = useNavigate()
-// const {userData}=useUserData()
-// console.log(userData?.apiKey);
-  // Function to fetch the API key from the backend
+  const userContext = useRecoilValue(userState);
+  const navigate = useNavigate();
 
-  
   const handleCreateApiKey = async () => {
-    setIsLoading(true); // Start loading state
+    setIsLoading(true);
     const token = localStorage.getItem("authToken");
 
     if (!token) {
@@ -47,7 +41,7 @@ const navigate = useNavigate()
 
     try {
       const response = await fetch(`${BASE_URL}/auth/generate-api-key`, {
-        method: "POST", // Assuming it's a POST request
+        method: "POST",
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
@@ -55,125 +49,115 @@ const navigate = useNavigate()
       });
 
       const data = await response.json();
-      if (response.status===403|| response.status==='403') {
-        navigate('/auth')
+      if (response.status === 403) {
+        navigate("/auth");
       }
       if (response.ok) {
         console.log("API Key generated successfully:", data);
-        localStorage.setItem('apiKey' , data.apiKey)
-        setApiKey(data.apiKey); // Assuming the API key is in data.apiKey
+        localStorage.setItem("apiKey", data.apiKey);
+        setApiKey(data.apiKey);
       } else {
         console.error("Failed to generate API key:", data);
       }
     } catch (error) {
       console.error("Error generating API key:", error);
     } finally {
-      setIsLoading(false); // End loading state
+      setIsLoading(false);
     }
   };
 
-  useEffect(()=>{
-      setApiKey(userContext?.apiKey)
-  },[userContext])
+  useEffect(() => {
+    setApiKey(userContext?.apiKey);
+  }, [userContext]);
 
   return (
-    <>
-      <Box
-        mt={6}
-        p={6}
-        boxShadow="lg"
-        backdropFilter={"saturate(190%) blur(20px)"}
-        border={theme.keyGenerateBorder}
-        borderRadius="md"
-        width="100%"
-        maxW="800px"
-        mx="auto"
+    <Box
+      mt={6}
+      p={{ base: 4, md: 6 }}
+      boxShadow="lg"
+      backdropFilter={"saturate(190%) blur(20px)"}
+      border={theme.keyGenerateBorder}
+      borderRadius="md"
+      width="100%"
+      maxW="800px"
+      mx="auto"
+    >
+      <Flex
+        direction={{ base: "column", md: "row" }}
+        justifyContent="space-between"
+        alignItems="center"
+        mb={4}
       >
-        <Flex justifyContent="space-between" alignItems="center" mb={4}>
-          <Text fontSize="xl" fontWeight="bold" color={theme.textColor}>
-            Your API Keys
-          </Text>
-          <Button
-            bg={primaryColorPurple}
-            textColor={"white"}
-            leftIcon={<FaPlus />}
-            size="md"
-            _hover={{
-              backgroundColor: primaryColorOrange,
-              color: "white",
-            }}
-            onClick={handleCreateApiKey}
-            isLoading={isLoading} // Display a loading spinner when generating the API key
-          >
-            Create API Key
-          </Button>
-        </Flex>
-
-        <Divider my={4} borderColor={theme.integrationBoxDivider} />
-
-        <Box overflowX="auto">
-          <Table variant="unstyled">
-            <Tbody>
-              <Tr>
-                <Td>
-                  <Flex alignItems="center">
-                    <FaRegDotCircle color={primaryColorPurple} />
-                    <Text ml={2} fontSize="md" color={theme.textColor}>
-                      Active
-                    </Text>
-                  </Flex>
-                </Td>
-                <Td fontSize="md" color="gray.500">
-                  MODEL LEAP SECRET KEY 
-                </Td>
-                <Td>
-                  <Flex alignItems="center">
-                    <Text isTruncated maxW="150px" color="blue.600">
-                      {apiKey}
-                    </Text>
-                    <IconButton
-                      aria-label="Copy API Key"
-                      bg={primaryColorPurple}
-                      icon={<FaClipboard color={"white"} />}
-                      size="sm"
-                      ml={2}
-                      _hover={{ bg: primaryColorOrange }}
-                      onClick={onCopy}
-                    />
-                    {hasCopied && (
-                      <Text fontSize="sm" color="green.500" ml={2}>
-                        Copied!
-                      </Text>
-                    )}
-                  </Flex>
-                </Td>
-                {/* <Td textAlign="right">
-                  <Button
-                    size="sm"
-                    bg={primaryColorPurple}
-                    color="white"
-                    _hover={{ bg: primaryColorOrange }}
-                  >
-                    Disable
-                  </Button>
-                </Td> */}
-              </Tr>
-            </Tbody>
-          </Table>
-        </Box>
-
-        <Divider my={4} borderColor={theme.integrationBoxDivider} />
-
-        {/* <Link
-          href="#"
-          color={primaryColorPurple}
-          fontSize="md"
-          textDecoration="underline"
+        <Text fontSize={{ base: "lg", md: "xl" }} fontWeight="bold" color={theme.textColor}>
+          Your API Keys
+        </Text>
+        <Button
+          bg={primaryColorPurple}
+          textColor="white"
+          leftIcon={<FaPlus />}
+          size={{ base: "sm", md: "md" }}
+          _hover={{
+            backgroundColor: primaryColorOrange,
+            color: "white",
+          }}
+          onClick={handleCreateApiKey}
+          isLoading={isLoading}
+          mt={{ base: 3, md: 0 }}
         >
-          Activate Subscription
-        </Link> */}
+          Create API Key
+        </Button>
+      </Flex>
+
+      <Divider my={4} borderColor={theme.integrationBoxDivider} />
+
+      <Box overflowX="auto">
+        <Table variant="unstyled" minWidth="100%">
+          <Tbody>
+            <Tr>
+              <Td>
+                <Flex alignItems="center">
+                  <FaRegDotCircle color={primaryColorPurple} />
+                  <Text ml={2} fontSize="md" color={theme.textColor}>
+                    Active
+                  </Text>
+                </Flex>
+              </Td>
+              <Td fontSize={{ base: "sm", md: "md" }} color="gray.500">
+                MODEL LEAP SECRET KEY
+              </Td>
+              <Td>
+                <Flex alignItems="center">
+                  <Text
+                    isTruncated
+                    maxW={{ base: "100px", md: "200px" }}
+                    color="blue.600"
+                    fontSize={{ base: "sm", md: "md" }}
+                  >
+                    {apiKey}
+                  </Text>
+                  <IconButton
+                    aria-label="Copy API Key"
+                    bg={primaryColorPurple}
+                    icon={<FaClipboard color="white" />}
+                    size="sm"
+                    ml={2}
+                    _hover={{ bg: primaryColorOrange }}
+                    onClick={onCopy}
+                  />
+                  {hasCopied && (
+                    <Text fontSize="sm" color="green.500" ml={2}>
+                      Copied!
+                    </Text>
+                  )}
+                </Flex>
+              </Td>
+            </Tr>
+          </Tbody>
+        </Table>
       </Box>
-    </>
+
+      <Divider my={4} borderColor={theme.integrationBoxDivider} />
+    </Box>
   );
 };
 

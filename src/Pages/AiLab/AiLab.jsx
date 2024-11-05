@@ -21,14 +21,13 @@ const AiLab = () => {
   const [loading, setLoading] = useState(false);
   const [refresh, setRefresh] = useState(false); // Ensure refresh is a state here
   const { isOpen, onOpen, onClose } = useDisclosure();
- 
   const navigate = useNavigate();
 
   // Fetch chats from the API
   useEffect(() => {
     const fetchBots = async () => {
       try {
-        setLoading(true)
+        setLoading(true);
         const token = localStorage.getItem('authToken');
         const response = await fetch(`${BASE_URL}/api/bot/get-all-bots`, {
           headers: {
@@ -43,16 +42,12 @@ const AiLab = () => {
         }
       } catch (error) {
         console.log(error);
-        
-      }finally{
-        setLoading(false)
+      } finally {
+        setLoading(false);
       }
-     
     };
     fetchBots();
   }, [navigate, refresh]); // Use refresh here to trigger a re-fetch
-
- 
 
   return (
     <Box p={[4, 8]} w="100%" maxW="100%" mx="auto">
@@ -61,41 +56,52 @@ const AiLab = () => {
         <Description description="Create, manage, and test your AI tools and chatbots with ease." />
       </Box>
 
-      <Flex mt={5} direction={{ base: "column", md: "row" }} gap={4}>
+      <Flex
+        mt={5}
+        direction={{ base: "column", md: "row" }}
+        gap={4}
+        alignItems={{ base: "center", md: "flex-start" }}
+      >
         <Box w={{ base: "100%", md: "30%" }} mb={{ base: 6, md: 0 }}>
-          <Flex mb={4} justifyContent={{ base: "center", md: "flex-start" }}>
+          <Flex mb={4} justifyContent="center">
             <NewChatButton onClick={onOpen} isLoading={loading} />
           </Flex>
 
           <Box p={3} borderRadius="md">
-            <Grid
-              templateColumns={{ base: "repeat(1, 1fr)", md: "repeat(2, 1fr)", lg: "repeat(2, 1fr)" }} // Adjusts the number of columns based on screen size
-              gap={4}
-            >
-            {loading?<Flex justifyContent={'center'} > <Spinner size={'xl'}/> </Flex>:
-            chats?.map((chat) => (
-                <ChatListCard
-                  key={chat.id} 
-                  refresh={refresh}
-                  setRefresh={setRefresh} 
-                  id={chat.id}
-                  apiKey={chat.apiKey}
-                  kwargs={chat.kwargs}
-                  modelName={chat.modelName}
-                  botName={chat.botName}
-                  systemContext={chat.systemContext}
-                  createdAt={chat.createdAt}
-                  avatarFile ={chat.avatarFile}
-                />
-              ))
-            }
-            
-            </Grid>
+            {loading ? (
+              <Flex justifyContent="center">
+                <Spinner size="xl" />
+              </Flex>
+            ) : (
+              <Grid
+                templateColumns={{
+                  base: "1fr", // Single column on mobile
+                  sm: "repeat(2, 1fr)", // Two columns on small screens
+                  lg: "repeat(2, 1fr)", // Two columns on large screens
+                }}
+                gap={4}
+              >
+                {chats?.map((chat) => (
+                  <ChatListCard
+                    key={chat.id}
+                    refresh={refresh}
+                    setRefresh={setRefresh}
+                    id={chat.id}
+                    apiKey={chat.apiKey}
+                    kwargs={chat.kwargs}
+                    modelName={chat.modelName}
+                    botName={chat.botName}
+                    systemContext={chat.systemContext}
+                    createdAt={chat.createdAt}
+                    avatarFile={chat.avatarFile}
+                  />
+                ))}
+              </Grid>
+            )}
           </Box>
         </Box>
       </Flex>
 
-     
       <CreateBotModel refresh={refresh} setRefresh={setRefresh} isOpen={isOpen} onClose={onClose} />
     </Box>
   );

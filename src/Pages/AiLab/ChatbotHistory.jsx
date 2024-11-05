@@ -8,7 +8,15 @@ import {
   Spinner,
   useDisclosure,
   VStack,
+  IconButton,
+  Drawer,
+  DrawerOverlay,
+  DrawerContent,
+  DrawerHeader,
+  DrawerBody,
+  DrawerCloseButton,
 } from "@chakra-ui/react";
+import { HamburgerIcon } from "@chakra-ui/icons";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { BASE_URL } from "../../Constants";
 import CreateChatModel from "../../Components/Dashboard/CreateChatModel";
@@ -21,7 +29,6 @@ import { HistoryTable } from "../../Components/AiLab/HistoryTable";
 import ChatListItem from "../../Components/AiLab/ChatListItem";
 import { useTheme } from "../../Themes/ThemeContext";
 import Header from "../../Components/Dashboard/Header";
-import { primaryColorOrange } from "../../colorCodes";
 
 const ChatbotHistory = () => {
   const { botId } = useParams();
@@ -37,10 +44,17 @@ const ChatbotHistory = () => {
     onOpen: onShareOpen,
     onClose: onShareClose,
   } = useDisclosure();
+  const {
+    isOpen: isDrawerOpen,
+    onOpen: openDrawer,
+    onClose: closeDrawer,
+  } = useDisclosure();
+
   const [selectedChatForShare, setSelectedChatForShare] = useState(null);
-  const { theme, isDarkMode, toggleTheme } = useTheme();
+  const { theme, isDarkMode } = useTheme();
   const { chats, loading } = useFetchChats(botId, apiKey);
-const navigate = useNavigate()
+  const navigate = useNavigate();
+
   const fetchChatHistory = async (chatId) => {
     try {
       setHistoryLoading(true);
@@ -54,19 +68,17 @@ const navigate = useNavigate()
           },
         }
       );
-      if (response.status === 404 || response.status === "404") {
+      if (response.status === 404) {
         setChatHistory([]);
         return;
       }
       if (response.ok) {
         const data = await response.json();
-        
-        
         const processedMessages = await Promise.all(
           data.messages.map(async (message) => {
             const from = message.role === "user" ? "You" : "AI";
             const time = formatTimestamp(message.timestamp);
-            if (message.generation==='dalle') {
+            if (message.generation === "dalle") {
               return {
                 id: message.id,
                 from,
@@ -77,7 +89,11 @@ const navigate = useNavigate()
             }
             if (isInteger(message.content)) {
               const imageId = message.content;
-              const imageUrl = await generateImage(imageId, apiKey, selectedChat.chatId);
+              const imageUrl = await generateImage(
+                imageId,
+                apiKey,
+                selectedChat.chatId
+              );
               if (imageUrl) {
                 return {
                   id: message.id,
@@ -98,16 +114,7 @@ const navigate = useNavigate()
             }
           })
         );
-        const sortedMessages = processedMessages.sort(
-          (a, b) => new Date(b.time) - new Date(a.time)
-        );
-        setChatHistory(sortedMessages);
-      } else {
-        console.error(
-          "Failed to fetch chat history:",
-          response.status,
-          response.statusText
-        );
+        setChatHistory(processedMessages);
       }
     } catch (error) {
       console.error("Error fetching chat history:", error);
@@ -119,6 +126,7 @@ const navigate = useNavigate()
   const handleChatSelection = (chat) => {
     setSelectedChat(chat);
     fetchChatHistory(chat.chatId);
+    closeDrawer(); // Close drawer on chat selection for mobile
   };
 
   const handleNewChat = async (newChatTitle) => {
@@ -136,100 +144,142 @@ const navigate = useNavigate()
       });
 
       if (response.ok) {
-        const data = await response.json();
         window.location.reload();
-      } else {
-        console.error(
-          "Failed to create chat:",
-          response.status,
-          response.statusText
-        );
       }
     } catch (error) {
       console.error("Error creating new chat:", error);
     }
   };
 
-  // Handle sharing chat
   const handleShare = (chat) => {
     setSelectedChatForShare(chat);
     onShareOpen();
   };
 
   return (
-    <>
-    <Box bg={theme.background}>
-    <Header title={"Bot Chat History"} isTitle={true} isGoBack={true} />
-  
-    <Flex bg={theme.background} color={theme.textColor}  px={5}>
-    {/* Sidebar for chat list */}
-   
-    <Box
-      width="300px"
-      p={4}
-      bg={theme.background}
-      height="100vh"
-      overflowY="auto"
-      boxShadow="lg"
-    >
-      <Button
-        onClick={onOpen}
-        colorScheme={isDarkMode ? "orange" : "blue"}
-        mb={4}
-        bg={theme.historySelectedButton}
-        color={theme.historySelectedTextColor}
+    <Box bg={theme.background} minH="100vh">
+      <Header title="Bot Chat History" isTitle isGoBack />
+
+      <Flex
+        bg={theme.background}
+        color={theme.textColor}
+        px={5}
+        alignItems="start"
       >
-        Add New Chat
-      </Button>
+        {/* Hamburger Menu for Mobile */}
+        <IconButton
+          aria-label="Open chat list"
+          icon={<HamburgerIcon />}
+          display={{ base: "inline-flex", md: "none" }}
+          onClick={openDrawer}
+          mb={4}
+        />
 
-      <Heading size="md" mb={4} color={theme.textColor}>
-        Chats
-      </Heading>
+        {/* Sidebar for chat list (visible only on desktop) */}
+        <Box
+          display={{ base: "none", md: "block" }}
+          width="300px"
+          p={4}
+          bg={theme.background}
+          height="100vh"
+          overflowY="auto"
+          boxShadow="lg"
+        >
+          <Button
+            onClick={onOpen}
+            colorScheme={isDarkMode ? "orange" : "blue"}
+            mb={4}
+            bg={theme.historySelectedButton}
+            color={theme.historySelectedTextColor}
+            width="100%"
+          >
+            Add New Chat
+          </Button>
 
-      {loading ? (
-        <Flex justifyContent="center" height="100vh" alignItems="center">
-          <Spinner />
-        </Flex>
-      ) : (
-        <List spacing={4}>
-          {chats.map((chat) => (
-            <ChatListItem
-              key={chat.chatId}
-              chat={chat}
-              selectedChat={selectedChat}
-              handleChatSelection={handleChatSelection}
-              handleShare={handleShare}
-            />
-          ))}
-        </List>
-      )}
-    </Box>
+          <Heading size="md" mb={4} color={theme.textColor}>
+            Chats
+          </Heading>
 
-    {/* Main content area for chat history */}
-    <Box flex="1" p={4} bg={theme.AiChatbg} color={theme.textColor}>
-      <Heading size="md" mb={4} color={theme.AiChatBoxHeading}>
-        Chat History {selectedChat ? `for ${selectedChat.name}` : ""}
-      </Heading>
+          {loading ? (
+            <Flex justifyContent="center" height="100vh" alignItems="center">
+              <Spinner />
+            </Flex>
+          ) : (
+            <List spacing={4}>
+              {chats.map((chat) => (
+                <ChatListItem
+                  key={chat.chatId}
+                  chat={chat}
+                  selectedChat={selectedChat}
+                  handleChatSelection={handleChatSelection}
+                  handleShare={handleShare}
+                />
+              ))}
+            </List>
+          )}
+        </Box>
 
-      {historyLoading ? (
-        <Flex justifyContent="center" height="100vh" alignItems="center">
-          <Spinner size="xl" />
-        </Flex>
-      ) : (
-        <VStack>
-          <HistoryTable
-            selectedChat={selectedChat}
-            chatHistory={chatHistory}
-          />
-        </VStack>
-      )}
-    </Box>
-       {/* Create Chat Modal */}
-       <CreateChatModel
-        isOpen={isOpen}
-        onClose={onClose}
-        onSave={handleNewChat}
-      />
+        {/* Main content area for chat history */}
+        <Box flex="1" p={4}  color={theme.textColor}>
+          <Heading size="md" mb={4} color={theme.AiChatBoxHeading}>
+            Chat History {selectedChat ? `for ${selectedChat.name}` : ""}
+          </Heading>
+
+          {historyLoading ? (
+            <Flex justifyContent="center" height="100vh" alignItems="center">
+              <Spinner size="xl" />
+            </Flex>
+          ) : (
+            <VStack>
+              <HistoryTable selectedChat={selectedChat} chatHistory={chatHistory} />
+            </VStack>
+          )}
+        </Box>
+      </Flex>
+
+      {/* Drawer for chat list on mobile */}
+      <Drawer  isOpen={isDrawerOpen} placement="left" onClose={closeDrawer}>
+        <DrawerOverlay />
+        <DrawerContent bg={theme.background}>
+          <DrawerCloseButton />
+          <DrawerHeader>
+          <br></br>
+            <Button
+              onClick={onOpen}
+              colorScheme={isDarkMode ? "orange" : "blue"}
+              mb={4}
+              bg={theme.historySelectedButton}
+              color={theme.historySelectedTextColor}
+              width="100%"
+            >
+              Add New Chat
+            </Button>
+          </DrawerHeader>
+
+          <DrawerBody>
+            {loading ? (
+              <Flex justifyContent="center" height="100vh" alignItems="center">
+                <Spinner />
+              </Flex>
+            ) : (
+              <List spacing={4}>
+                {chats.map((chat) => (
+                  <ChatListItem
+                    key={chat.chatId}
+                    chat={chat}
+                    selectedChat={selectedChat}
+                    handleChatSelection={handleChatSelection}
+                    handleShare={handleShare}
+                  />
+                ))}
+              </List>
+            )}
+          </DrawerBody>
+        </DrawerContent>
+      </Drawer>
+
+      {/* Create Chat Modal */}
+      <CreateChatModel isOpen={isOpen} onClose={onClose} onSave={handleNewChat} />
 
       {/* Share Chat Modal */}
       {selectedChatForShare && (
@@ -237,14 +287,15 @@ const navigate = useNavigate()
           isOpen={isShareOpen}
           onClose={onShareClose}
           modelName={modelName}
-          botData={{ botId, apiKey, chatId: selectedChatForShare.chatId , status:selectedChatForShare.status }} // Pass bot ID, API key, and chatId to ShareModal
+          botData={{
+            botId,
+            apiKey,
+            chatId: selectedChatForShare.chatId,
+            status: selectedChatForShare.status,
+          }}
         />
       )}
-  </Flex>
-  </Box>
-  </>
-   
-   
+    </Box>
   );
 };
 

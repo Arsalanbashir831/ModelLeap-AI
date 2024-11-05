@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   Box,
   VStack,
@@ -6,7 +6,7 @@ import {
   IconButton,
   Image,
   Divider,
-  Text,
+  useBreakpointValue,
 } from "@chakra-ui/react";
 import { Link, useLocation } from "react-router-dom";
 import { RiProgress1Fill } from "react-icons/ri";
@@ -14,49 +14,53 @@ import {
   FaKey,
   FaMoneyBill,
   FaCog,
-  FaQuestionCircle,
-  FaBook,
   FaSignOutAlt,
   FaRobot,
   FaChevronLeft,
   FaChevronRight,
   FaFlask,
 } from "react-icons/fa";
-import { primaryColorOrange, primaryColorPurple } from "../../colorCodes";
-import { useTheme } from "../../Themes/ThemeContext";
 import { motion } from "framer-motion";
+import { useTheme } from "../../Themes/ThemeContext";
+import { primaryColorOrange } from "../../colorCodes";
 
 const MotionBox = motion(Box);
 
-const Sidebar = ({ isOpen, onToggle }) => {
+const Sidebar = () => {
   const location = useLocation();
   const { theme } = useTheme();
 
+  // Set sidebar state and determine mobile view
+  const [isOpen, setIsOpen] = useState(false);
+  const isMobile = useBreakpointValue({ base: true, md: false });
+
+  const toggleSidebar = () => setIsOpen(!isOpen);
+
+  // Auto-close sidebar on mobile
+  React.useEffect(() => {
+    if (isMobile) setIsOpen(false);
+  }, [isMobile]);
+
+  // Determine active state for navigation items
   const isActive = (path) => location.pathname === path;
 
-  // Define menu items in a dynamic array
+  // Define sidebar navigation items
   const menuItems = [
     { label: "Playground", icon: FaRobot, path: "/app" },
     { label: "Lab", icon: FaFlask, path: "/app/ailab" },
     { label: "Key Management", icon: FaKey, path: "/app/keymanagement" },
-    { label: "Billings", icon: FaMoneyBill, path: "/app/billing" },
+    { label: "Subscription", icon: FaMoneyBill, path: "/app/billing" },
     { label: "Usage", icon: RiProgress1Fill, path: "/app/usage" },
-    { label: "Settings", icon: FaCog, path: "/app/settings" },
-    // { label: "Support", icon: FaQuestionCircle, path: "/app/helpcenter" },
-    // { label: "Documentation", icon: FaBook, path: "/app/documentation" },
+    // { label: "Settings", icon: FaCog, path: "/app/settings" },
   ];
 
+  // Sidebar variants for opening and closing
   const sidebarVariants = {
-    open: {
-      width: "250px",
-      transition: { type: "spring", stiffness: 100, damping: 20 },
-    },
-    closed: {
-      width: "80px",
-      transition: { type: "spring", stiffness: 100, damping: 20 },
-    },
+    open: { width: "250px" },
+    closed: { width: "80px" },
   };
 
+  // Render navigation items
   const renderMenuItems = () =>
     menuItems.map((item) => (
       <Button
@@ -66,17 +70,15 @@ const Sidebar = ({ isOpen, onToggle }) => {
         key={item.label}
         justifyContent={isOpen ? "flex-start" : "center"}
         leftIcon={<item.icon color={theme.iconColor} />}
+       _hover={{bg:primaryColorOrange , color:'white'}}
         fontWeight="normal"
+        color={  isActive(item.path) ? 'white' :theme.textColor}
+
         bg={
           isActive(item.path)
-            ? "linear-gradient(90deg, hsl(297deg 63% 46%) 0%, hsl(309deg 64% 49%) 0%, hsl(318deg 72% 53%) -1%, hsl(326deg 80% 58%) -1%, hsl(333deg 88% 62%) -1%, hsl(340deg 94% 66%) 0%, hsl(347deg 99% 70%) 0%, hsl(354deg 100% 73%) 1%, hsl(2deg 100% 75%) 4%, hsl(8deg 100% 75%) 8%, hsl(14deg 100% 75%) 17%, hsl(19deg 100% 76%) 49%, hsl(23deg 98% 77%) 100%)"
+            ? primaryColorOrange
             : "transparent"
         }
-        color={theme.textColor}
-        _hover={{
-          bg: "linear-gradient(90deg, hsl(297deg 63% 46%) 0%, hsl(309deg 64% 49%) 0%, hsl(318deg 72% 53%) -1%, hsl(326deg 80% 58%) -1%, hsl(333deg 88% 62%) -1%, hsl(340deg 94% 66%) 0%, hsl(347deg 99% 70%) 0%, hsl(354deg 100% 73%) 1%, hsl(2deg 100% 75%) 4%, hsl(8deg 100% 75%) 8%, hsl(14deg 100% 75%) 17%, hsl(19deg 100% 76%) 49%, hsl(23deg 98% 77%) 100%)",
-          color: "white",
-        }}
       >
         {isOpen && item.label}
       </Button>
@@ -84,70 +86,70 @@ const Sidebar = ({ isOpen, onToggle }) => {
 
   return (
     <MotionBox
+      bg={theme.background}
+      className={`text-white flex flex-col justify-between shadow-lg`}
       variants={sidebarVariants}
-      w={isOpen ? "250px" : "80px"}
-      p="4"
-      animate={isOpen ? "open" : "closed"}
       initial={false}
-      boxShadow="md"
+      animate={isOpen ? "open" : "closed"}
+      transition={{ duration: 0.3 }}
       height="100vh"
-      display="flex"
-      flexDirection="column"
-      justifyContent="space-between"
-      transition="width 0.3s ease"
-      position={"relative"}
+      p="4"
+      position="relative"
     >
-      <Box height={"100vh"} display="flex" flexDirection="column" alignItems={isOpen ? "flex-start" : "center"}>
+      <Box
+        className={`flex flex-col items-${isOpen ? "start" : "center"} gap-4`}
+        mt={isOpen ? 8 : 4}
+        mb={isOpen ? 8 : 4}
+      >
         {isOpen ? (
-          <Image src="/modelLeapsLogo.png" alt="Model Leap Logo" width={"80%"} py={5} />
+          <Image
+            src="/modelLeapsLogo.png"
+            alt="Model Leap Logo"
+            className="w-4/5 py-5"
+            mb={5}
+          />
         ) : (
-          <Image mt={3} src="/model_leap_favicon.png" alt="Model Leap Logo" width={"100%"} mb={5} />
+          <Image
+            src="/model_leap_favicon.png"
+            alt="Model Leap Logo"
+            className="w-12"
+            mb={5}
+          />
         )}
-
-        <VStack gap={1} mt={"2"} spacing="1" align="stretch">
+        <VStack spacing={4} align="stretch">
           {renderMenuItems()}
-          <Divider my="4" borderColor={theme.sideBarDividerColor} />
-          {/* {isOpen && (
-            <Text fontSize="sm" color={theme.textColor} pl={isOpen ? "4" : "0"} textAlign={isOpen ? "left" : "center"}>
-              More
-            </Text>
-          )} */}
-
+          <Divider
+            borderColor={theme.sideBarDividerColor}
+            my="4"
+            className="w-full"
+          />
           <Button
             as={Link}
-            variant="ghost"
             to="/auth"
-            color={theme.textColor}
+            variant="ghost"
             justifyContent={isOpen ? "flex-start" : "center"}
             leftIcon={<FaSignOutAlt color={theme.iconColor} />}
+            _hover={{bg:primaryColorOrange , color:'white'}}
             fontWeight="normal"
-            onClick={() => {
-              localStorage.removeItem("authToken");
-            }}
-            _hover={{
-              bg: "linear-gradient(90deg, hsl(297deg 63% 46%) 0%, hsl(309deg 64% 49%) 0%, hsl(318deg 72% 53%) -1%, hsl(326deg 80% 58%) -1%, hsl(333deg 88% 62%) -1%, hsl(340deg 94% 66%) 0%, hsl(347deg 99% 70%) 0%, hsl(354deg 100% 73%) 1%, hsl(2deg 100% 75%) 4%, hsl(8deg 100% 75%) 8%, hsl(14deg 100% 75%) 17%, hsl(19deg 100% 76%) 49%, hsl(23deg 98% 77%) 100%)",
-              color: "white",
-            }}
+            color={theme.textColor}
+            onClick={() => localStorage.removeItem("authToken")}
           >
             {isOpen && "Sign Out"}
           </Button>
         </VStack>
       </Box>
 
-      <IconButton
-        icon={isOpen ? <FaChevronLeft color={theme.sideBarIconColor} /> : <FaChevronRight color={theme.sideBarIconColor} />}
-        onClick={onToggle}
-        aria-label="Toggle Sidebar"
-        size="sm"
-        _hover={{ bg: primaryColorOrange, color: "white" }}
-        bg={primaryColorPurple}
-        borderRadius={"full"}
-        position="absolute"
-        right="-17px"
-        top="8%"
-        transform="translateY(-50%)"
-        boxShadow="lg"
-      />
+      {/* Sidebar Toggle Button - Hidden on mobile */}
+      {!isMobile && (
+        <IconButton
+          icon={isOpen ? <FaChevronLeft /> : <FaChevronRight />}
+          onClick={toggleSidebar}
+          aria-label="Toggle Sidebar"
+        colorScheme="pink"
+          _hover={{bg:primaryColorOrange}}
+          // className="absolute right-[-17px] top-1/4 bg-purple-600 hover:bg-orange-500 text-white rounded-full shadow-lg"
+        />
+      )}
     </MotionBox>
   );
 };

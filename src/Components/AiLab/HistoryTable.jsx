@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import {
   Box,
-  Button,
   Flex,
   Table,
   Tbody,
@@ -11,7 +10,6 @@ import {
   Tr,
   Image,
   IconButton,
-  useColorModeValue,
   useDisclosure,
   Modal,
   ModalOverlay,
@@ -26,10 +24,9 @@ import { useTheme } from "../../Themes/ThemeContext";
 import { FaEye } from "react-icons/fa";
 
 export const HistoryTable = ({ selectedChat, chatHistory }) => {
-  const { theme } = useTheme(); // Get theme from context
-  const { isOpen, onOpen, onClose } = useDisclosure(); // For modal
-  const [previewContent, setPreviewContent] = useState(""); // State to store content to preview
-console.log(chatHistory);
+  const { theme } = useTheme();
+  const { isOpen, onOpen, onClose } = useDisclosure();
+  const [previewContent, setPreviewContent] = useState("");
 
   // Pagination state
   const [currentPage, setCurrentPage] = useState(1);
@@ -45,8 +42,8 @@ console.log(chatHistory);
 
   // Function to handle preview
   const handlePreview = (content) => {
-    setPreviewContent(content); // Set the content to preview
-    onOpen(); // Open modal
+    setPreviewContent(content);
+    onOpen();
   };
 
   // Handle case where there's no chat history
@@ -56,86 +53,77 @@ console.log(chatHistory);
 
   return (
     <>
-      {/* History Table */}
-      <Table
-        variant="simple"
-        size="md"
-        borderRadius="lg"
-        boxShadow="lg"
-        bg={theme.AiChatbg}
-        color={theme.textColor}
-      
-      >
-        <Thead
-          bg={theme.background}
-          boxShadow="sm"
-          borderBottom={`2px solid ${theme.iconColor}`}
+      {/* Wrap table in a scrollable container */}
+      <Box overflowX="auto" borderRadius="lg" boxShadow="lg" mb={4} width="300px">
+        <Table
+          variant="simple"
+          size="md"
+          bg={theme.AiChatbg}
+          color={theme.textColor}
+          minWidth="600px"
         >
-          <Tr>
-            <Th color={theme.textColor} fontSize="md">
-              Message
-            </Th>
-            <Th color={theme.textColor} fontSize="md">
-              Sender
-            </Th>
-            <Th color={theme.textColor} fontSize="md">
-              Timestamp
-            </Th>
-            <Th color={theme.textColor} fontSize="md">
-              Preview
-            </Th>
-          </Tr>
-        </Thead>
-        <Tbody  >
-          {currentItems?.map((message, index) => (
-            <Tr
-              key={message.id || index}
-              _hover={{ bg:'none' }}
-              transition="background-color 0.3s ease"
-            >
-            <Td maxWidth="200px" isTruncated>
-  {message?.content ? (
-    message?.content?.startsWith("https://") ? (
-      <Image
-        src={message.content}
-        alt="Generated Image"
-        maxWidth="150px"
-        borderRadius="md"
-        border={`2px solid ${theme.iconColor}`}
-      />
-    ) : (
-      message.content
-    )
-  ) : (
-    "No content available"
-  )}
-</Td>
-
-              <Td fontWeight="bold" color={theme.textColor}>
-                {message.from === "You" ? "User" : "AI"}
-              </Td>
-              <Td color={theme.textColor}>{message.time}</Td>
-              <Td>
-                {message.content.startsWith("https://") ? (
-                  <IconButton
-                    colorScheme="orange"
-                    icon={<FaEye />}
-                    size="sm"
-                    onClick={() => handlePreview(message.content)}
-                  />
-                ) : (
-                  <IconButton
-                    colorScheme="orange"
-                    icon={<FaEye />}
-                    size="sm"
-                    onClick={() => handlePreview(message.content)}
-                  />
-                )}
-              </Td>
+          <Thead
+            bg={theme.background}
+            boxShadow="sm"
+            borderBottom={`2px solid ${theme.iconColor}`}
+          >
+            <Tr>
+              <Th color={theme.textColor} fontSize="md">
+                Message
+              </Th>
+              <Th color={theme.textColor} fontSize="md">
+                Sender
+              </Th>
+              <Th color={theme.textColor} fontSize="md">
+                Timestamp
+              </Th>
+              <Th color={theme.textColor} fontSize="md">
+                Preview
+              </Th>
             </Tr>
-          ))}
-        </Tbody>
-      </Table>
+          </Thead>
+          <Tbody>
+            {currentItems?.map((message, index) => (
+              <Tr
+                key={message.id || index}
+                _hover={{ bg: "none" }}
+                transition="background-color 0.3s ease"
+              >
+                <Td maxWidth="200px" isTruncated>
+                  {message?.content ? (
+                    message?.content?.startsWith("https://") ? (
+                      <Image
+                        src={message.content}
+                        alt="Generated Image"
+                        maxWidth="150px"
+                        borderRadius="md"
+                        border={`2px solid ${theme.iconColor}`}
+                      />
+                    ) : (
+                      message.content
+                    )
+                  ) : (
+                    "No content available"
+                  )}
+                </Td>
+
+                <Td fontWeight="bold" color={theme.textColor}>
+                  {message.from === "You" ? "User" : "AI"}
+                </Td>
+                <Td color={theme.textColor}>{message.time}</Td>
+                <Td>
+                  <IconButton
+                    colorScheme="orange"
+                    icon={<FaEye />}
+                    size="sm"
+                    onClick={() => handlePreview(message.content)}
+                  />
+                </Td>
+              </Tr>
+            ))}
+          </Tbody>
+        </Table>
+      </Box>
 
       {/* Modal for Preview */}
       <Modal isOpen={isOpen} onClose={onClose} size="xl">
@@ -161,23 +149,27 @@ console.log(chatHistory);
       </Modal>
 
       {/* Pagination Controls */}
-      <Flex justifyContent="space-between" alignItems="center" mt={4}>
+      <Flex justifyContent="center" alignItems="center" mt={4}>
         <IconButton
           aria-label="Previous Page"
           icon={<ChevronLeftIcon />}
           isDisabled={currentPage === 1}
           onClick={() => paginate(currentPage - 1)}
-          colorScheme={theme.historySelectedButton}
+          colorScheme="orange"
           variant="outline"
+          mx={2}
         />
-        <Box color={theme.textColor}>Page {currentPage}</Box>
+        <Box color={theme.textColor} mx={2}>
+          Page {currentPage}
+        </Box>
         <IconButton
           aria-label="Next Page"
           icon={<ChevronRightIcon />}
           isDisabled={indexOfLastItem >= chatHistory.length}
           onClick={() => paginate(currentPage + 1)}
-          colorScheme={theme.historySelectedButton}
+          colorScheme="orange"
           variant="outline"
+          mx={2}
         />
       </Flex>
     </>
