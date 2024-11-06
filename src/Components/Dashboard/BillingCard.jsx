@@ -23,6 +23,8 @@ const BillingCard = ({ title, price, features, selected, onClick }) => {
       borderRadius="lg"
       p={{ base: 4, sm: 5, md: 6 }}
       maxW={{ base: '100%', sm: '80%', md: '300px' }} // Responsive max-width
+      minH="400px" // Set a consistent minimum height for the card
+      maxH="450px" // Limit the maximum height for better consistency
       textAlign="center"
       boxShadow={selected ? 'lg' : 'md'}
       position="relative"
@@ -57,7 +59,8 @@ const BillingCard = ({ title, price, features, selected, onClick }) => {
             size="md"
             mb={2}
             color={theme.billingCardText}
-            fontSize={{ base: 'lg', sm: 'xl', md: 'md' }} // Responsive font size
+            fontSize={{ base: 'lg', sm: 'xl', md: 'md' }}
+            noOfLines={1} // Limit title to one line for consistency
           >
             {title}
           </Heading>
@@ -66,22 +69,26 @@ const BillingCard = ({ title, price, features, selected, onClick }) => {
             size="2xl"
             mb={4}
             color={theme.textColor}
-            fontSize={{ base: '2xl', sm: '3xl', md: '2xl' }} // Adjusted size for screen
+            fontSize={{ base: '2xl', sm: '3xl', md: '2xl' }}
           >
             {price}
           </Heading>
         </Box>
 
         <VStack
-          spacing={5}
+          spacing={3}
           alignItems="start"
           mb={6}
-          fontSize={{ base: 'sm', sm: 'md', md: 'md' }} // Responsive font sizes for features
+          maxH="150px" // Restrict feature list height to maintain consistent height
+          overflowY="auto" // Enable scrolling if the feature list is too long
+          fontSize={{ base: 'sm', sm: 'md', md: 'md' }}
         >
           {features.map((feature, index) => (
             <Flex key={index} align="center">
               <Icon as={FaCheckCircle} color="green.400" mr={2} />
-              <Text color={theme.billingCardText}>{feature}</Text>
+              <Text color={theme.billingCardText} noOfLines={1} maxWidth="250px">
+                {feature}
+              </Text>
             </Flex>
           ))}
         </VStack>
@@ -91,7 +98,7 @@ const BillingCard = ({ title, price, features, selected, onClick }) => {
         <Button
           onClick={onClick}
           bg={primaryColorPurple}
-          size={{ base: 'sm', md: 'lg' }} // Responsive button sizes
+          size={{ base: 'sm', md: 'lg' }}
           color="white"
           _hover={{ bg: primaryColorOrange }}
           mt="auto"
