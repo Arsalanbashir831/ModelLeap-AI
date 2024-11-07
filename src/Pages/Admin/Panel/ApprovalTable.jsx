@@ -106,6 +106,7 @@ const UserTableWithActions = () => {
           status: request.status,
           registered: new Date(request.createdAt._seconds * 1000).toLocaleDateString(),
         },
+        context: request.systemContext,
         statusBadge: request.status,
         approvalAction: request.chatId,
         declineAction: request.chatId,
@@ -130,6 +131,17 @@ const UserTableWithActions = () => {
                 Status: {value.status} | Created: {value.registered}
               </Text>
             </Box>
+          </Flex>
+        ),
+      },
+      {
+        Header: 'Context',
+        accessor: 'context',
+        Cell: ({ value }) => (
+          <Flex align="center">
+              <Text fontWeight="medium" color={theme.textColor}>
+                {value}
+              </Text>
           </Flex>
         ),
       },

@@ -78,12 +78,12 @@ const AiChatBox = () => {
         const isImageModel = selectedModel.value.startsWith("imagegen:");
         setIsLoading(true); // Start loading
 
-        const response = await fetch(`${BASE_URL}/api/chat/`, {
+        const response = await fetch(`${BASE_URL}/api/chat/message`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
             Authorization: `Bearer ${token}`,
-            "x-api-key": apiKey,
+            // "x-api-key": apiKey,
           },
           body: JSON.stringify({
             modelName: selectedModel.value,
@@ -102,12 +102,12 @@ const AiChatBox = () => {
           let imageStatus = "processing";
           while (imageStatus === "processing") {
             await new Promise((resolve) => setTimeout(resolve, 3000)); // Poll every 3 seconds
-            const imageResponse = await fetch(`${BASE_URL}/api/get_images`, {
+            const imageResponse = await fetch(`${BASE_URL}/api/chat/get_images`, {
               method: "POST",
               headers: {
                 "Content-Type": "application/json",
                 Authorization: `Bearer ${token}`,
-                "x-api-key": apiKey,
+                // "x-api-key": apiKey,
               },
               body: JSON.stringify({
                 request_id: imageId.toString(),

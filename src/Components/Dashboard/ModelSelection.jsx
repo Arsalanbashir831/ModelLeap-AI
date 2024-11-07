@@ -40,7 +40,8 @@ const ModelSelection = ({
         const data = await response.json();
 
         if (response.ok) {
-          setModelsData(data); // Use the API response to set the models
+          const filteredData = data.filter((model) => model.options && model.options.length > 0);
+          setModelsData(filteredData); // Use the filtered data
         } else {
           // throw new Error("Failed to load models.");
           console.log('model load fail');
@@ -72,9 +73,9 @@ const ModelSelection = ({
     if(type==='chat'){
       setSelectedModel({
         
-          "value": "openai:gpt-4-turbo",
-          "label": "GPT 4 Turbo",
-          "isPro": true,
+          "value": "openai:gpt-3.5-turbo",
+          "label": "GPT 3 Turbo",
+          "isPro": false,
           "description": "The previous set of high-intelligence models"
       
       })

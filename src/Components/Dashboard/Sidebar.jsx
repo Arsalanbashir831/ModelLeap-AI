@@ -47,7 +47,7 @@ const Sidebar = () => {
   const menuItems = [
     { label: "Playground", icon: FaRobot, path: "/app" },
     { label: "Lab", icon: FaFlask, path: "/app/ailab" },
-    { label: "Key Management", icon: FaKey, path: "/app/keymanagement" },
+    // { label: "Key Management", icon: FaKey, path: "/app/keymanagement" },
     { label: "Subscription", icon: FaMoneyBill, path: "/app/billing" },
     { label: "Usage", icon: RiProgress1Fill, path: "/app/usage" },
   ];
