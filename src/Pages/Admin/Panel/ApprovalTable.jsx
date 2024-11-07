@@ -22,6 +22,8 @@ import {
   useDisclosure,
   Image,
   Spinner,
+  Input,
+  Textarea,
 } from '@chakra-ui/react';
 import { useTable } from 'react-table';
 import { FaCheckCircle, FaTimesCircle, FaHistory } from 'react-icons/fa';
@@ -33,9 +35,11 @@ const UserTableWithActions = () => {
   const { theme } = useTheme();
   const [approvalRequests, setApprovalRequests] = useState([]);
   const [historyData, setHistoryData] = useState([]);
+  const [disapproveReason, setDisapproveReason] = useState(''); // Track disapproval reason
+  const [selectedChatId, setSelectedChatId] = useState(null); // Track the selected chat ID for disapproval
   const { isOpen, onOpen, onClose } = useDisclosure();
- 
-  const [loading , setLoading] = useState(false)
+  const { isOpen: isDisapproveOpen, onOpen: onDisapproveOpen, onClose: onDisapproveClose } = useDisclosure(); // Disapprove modal
+  const [loading , setLoading] = useState(false);
 
   const fetchApprovalRequests = async () => {
     const token = localStorage.getItem('adminToken');
@@ -58,24 +62,37 @@ const UserTableWithActions = () => {
     fetchApprovalRequests();
   }, []);
 
-  const statusUpdateHandler = async (id, status) => {
+  const statusUpdateHandler = async (id, status, reason = null) => {
     try {
-      setLoading(true)
+      setLoading(true);
       const token = localStorage.getItem('adminToken');
       const response = await fetch(`${BASE_URL}/admin/approval-chats/${id}/${status}`, {
         method: 'PATCH',
         headers: {
           'Authorization': `Bearer ${token}`,
-        }
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ disapproveReason:reason }), 
       });
       if (response.ok) {
-      window.location.reload()
+        window.location.reload();
       }
     } catch (error) {
       console.log(error);
-    }finally{
-      setLoading(false)
+    } finally {
+      setLoading(false);
     }
+  };
+
+  const handleDisapproveClick = (id) => {
+    setSelectedChatId(id); // Set the selected chat ID
+    onDisapproveOpen(); // Open the disapprove modal
+  };
+
+  const handleConfirmDisapprove = () => {
+    statusUpdateHandler(selectedChatId, 'disapprove', disapproveReason); // Call with reason
+    setDisapproveReason(''); // Clear reason input
+    onDisapproveClose(); // Close disapprove modal
   };
 
   const handleHistory = async (data) => {
@@ -189,7 +206,7 @@ const UserTableWithActions = () => {
             colorScheme="red"
             size="sm"
             leftIcon={<FaTimesCircle />}
-            onClick={() => statusUpdateHandler(value, 'disapprove')}
+            onClick={() => handleDisapproveClick(value)}
           >
             Decline
           </Button>
@@ -220,53 +237,53 @@ const UserTableWithActions = () => {
   return (
     <>
       <Header title="Approval Table" isTitle={true} />
-      {loading ?<> <Spinner size={'xl'}/> </>:<>
-      <Box overflowX="auto" p={5} borderRadius="lg" boxShadow="lg">
-        <Table
-          variant="simple"
-          {...getTableProps()}
-          bg={theme.integrationBoxBg}
-          borderColor={theme.integrationBoxBorder}
-        >
-          <Thead>
-            {headerGroups.map((headerGroup) => (
-              <Tr {...headerGroup.getHeaderGroupProps()}>
-                {headerGroup.headers.map((column) => (
-                  <Th
-                    {...column.getHeaderProps()}
-                    fontSize="sm"
-                    fontWeight="bold"
-                    color={theme.textColor}
-                    borderColor={theme.sideBarDividerColor}
-                  >
-                    {column.render('Header')}
-                  </Th>
-                ))}
-              </Tr>
-            ))}
-          </Thead>
-          <Tbody {...getTableBodyProps()}>
-            {rows.map((row) => {
-              prepareRow(row);
-              return (
-                <Tr {...row.getRowProps()} borderColor={theme.sideBarDividerColor}>
-                  {row.cells.map((cell) => (
-                    <Td
-                      {...cell.getCellProps()}
+      {loading ? <Spinner size="xl" /> : <>
+        <Box overflowX="auto" p={5} borderRadius="lg" boxShadow="lg">
+          <Table
+            variant="simple"
+            {...getTableProps()}
+            bg={theme.integrationBoxBg}
+            borderColor={theme.integrationBoxBorder}
+          >
+            <Thead>
+              {headerGroups.map((headerGroup) => (
+                <Tr {...headerGroup.getHeaderGroupProps()}>
+                  {headerGroup.headers.map((column) => (
+                    <Th
+                      {...column.getHeaderProps()}
+                      fontSize="sm"
+                      fontWeight="bold"
                       color={theme.textColor}
                       borderColor={theme.sideBarDividerColor}
                     >
-                      {cell.render('Cell')}
-                    </Td>
+                      {column.render('Header')}
+                    </Th>
                   ))}
                 </Tr>
-              );
-            })}
-          </Tbody>
-        </Table>
-      </Box>
+              ))}
+            </Thead>
+            <Tbody {...getTableBodyProps()}>
+              {rows.map((row) => {
+                prepareRow(row);
+                return (
+                  <Tr {...row.getRowProps()} borderColor={theme.sideBarDividerColor}>
+                    {row.cells.map((cell) => (
+                      <Td
+                        {...cell.getCellProps()}
+                        color={theme.textColor}
+                        borderColor={theme.sideBarDividerColor}
+                      >
+                        {cell.render('Cell')}
+                      </Td>
+                    ))}
+                  </Tr>
+                );
+              })}
+            </Tbody>
+          </Table>
+        </Box>
       </>}
-    
+
       {/* Modal for History */}
       <Modal isOpen={isOpen} onClose={onClose} size="lg">
         <ModalOverlay />
@@ -280,10 +297,11 @@ const UserTableWithActions = () => {
                   <Text fontWeight="bold" color={entry.role === 'user' ? 'blue.500' : 'green.500'}>
                     {entry.role === 'user' ? 'User' : 'Assistant'}
                   </Text>
-                  {entry.content.startsWith('https://') ? <>
+                  {entry.content.startsWith('https://') ? (
                     <Image src={entry.content} alt="Generated Image" maxWidth="150px" borderRadius="md" border={`2px solid ${theme.iconColor}`} />
-                  </>:<><Text>{entry.content}</Text></>}
-                  
+                  ) : (
+                    <Text>{entry.content}</Text>
+                  )}
                   <Text fontSize="xs" color="gray.500">
                     {new Date(entry.timestamp._seconds * 1000).toLocaleString()}
                   </Text>
@@ -296,6 +314,36 @@ const UserTableWithActions = () => {
           <ModalFooter>
             <Button colorScheme="blue" onClick={onClose}>
               Close
+            </Button>
+          </ModalFooter>
+        </ModalContent>
+      </Modal>
+
+      {/* Modal for Disapproval Reason */}
+      <Modal isOpen={isDisapproveOpen} onClose={onDisapproveClose} size="md">
+        <ModalOverlay />
+        <ModalContent>
+          <ModalHeader>Disapprove Chat</ModalHeader>
+          <ModalCloseButton />
+          <ModalBody>
+            <Text mb={3}>Please provide a reason for disapproving this chat:</Text>
+            <Textarea
+              value={disapproveReason}
+              onChange={(e) => setDisapproveReason(e.target.value)}
+              placeholder="Enter reason for disapproval"
+            />
+          </ModalBody>
+          <ModalFooter>
+            <Button variant="ghost" onClick={onDisapproveClose}>
+              Cancel
+            </Button>
+            <Button
+              colorScheme="red"
+              ml={3}
+              onClick={handleConfirmDisapprove}
+              isDisabled={!disapproveReason.trim()}
+            >
+              Disapprove
             </Button>
           </ModalFooter>
         </ModalContent>
