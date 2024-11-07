@@ -129,32 +129,7 @@ const LabChatBox = ({ botId, apiKey, modelName }) => {
           setMessages(updatedMessages);
         }
 
-        // if (isDalle) {
-        //   const response = await fetch(
-        //     `${BASE_URL}/api/bot/${botId}/chat/${chatId}/image`,
-        //     {
-        //       method: "POST",
-        //       headers: {
-        //         Authorization: `Bearer ${token}`,
-        //         "x-api-key": apiKey,
-        //         "Content-Type": "application/json",
-        //       },
-        //       body: JSON.stringify({ message: inputValue }),
-        //     }
-        //   );
-        //   if (response.ok) {
-        //     const data = await response.json();
-        //     updatedMessages[updatedMessages.length - 1] = {
-        //       ...updatedMessages[updatedMessages.length - 1],
-        //       content: data.response[0].url,
-        //       status: "complete",
-        //     };
-        //     setMessages([...updatedMessages]);
-        //     setIsLoading(false); // Stop loading
-        //     scrollToBottom();
-        //   }
-        // } else {
-          // Send the message to either the image or text generation endpoint
+      
           const response = await fetch(
             isImageModel || isDalle
               ? `${BASE_URL}/api/bot/${botId}/chat/${chatId}/image`

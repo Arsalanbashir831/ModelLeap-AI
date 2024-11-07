@@ -158,8 +158,8 @@ const CreateBotModel = ({ isOpen, onClose, refresh, setRefresh }) => {
         </ModalBody>
 
         <ModalFooter>
-          <Button colorScheme="teal" onClick={handleSubmit} isLoading={loading}>
-            Create Bot
+          <Button colorScheme="purple" onClick={handleSubmit} isLoading={loading}>
+            Create
           </Button>
         </ModalFooter>
       </ModalContent>

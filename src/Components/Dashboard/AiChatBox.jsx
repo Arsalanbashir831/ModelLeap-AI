@@ -27,7 +27,6 @@ import ReactMarkdown from "react-markdown"; // Markup library for handling text 
 const AiChatBox = () => {
   const [messages, setMessages] = useState([]);
   const [inputValue, setInputValue] = useState("");
-  const [chatId, setChatId] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [showScrollButton, setShowScrollButton] = useState(false);
   const messagesEndRef = useRef(null);
@@ -59,16 +58,17 @@ const AiChatBox = () => {
     }
   };
 
-  const handleSend = async () => {
+  const handleSendMessage = async () => {
     const token = localStorage.getItem("authToken");
-    const apiKey = localStorage.getItem("apiKey");
 
     if (inputValue.trim()) {
       let updatedMessages = [];
+      // Create the user message
       const userMessage = {
-        type: "user",
-        text: inputValue,
+        from: "You",
+        content: inputValue,
         time: new Date().toLocaleTimeString(),
+        type: "text",
       };
       updatedMessages = [...messages, userMessage];
       setMessages(updatedMessages);
@@ -76,6 +76,7 @@ const AiChatBox = () => {
 
       try {
         const isImageModel = selectedModel.value.startsWith("imagegen:");
+        const isDalle = selectedModel.value.startsWith("dalle:");
         setIsLoading(true); // Start loading
 
         const response = await fetch(`${BASE_URL}/api/chat/message`, {
@@ -83,7 +84,6 @@ const AiChatBox = () => {
           headers: {
             "Content-Type": "application/json",
             Authorization: `Bearer ${token}`,
-            // "x-api-key": apiKey,
           },
           body: JSON.stringify({
             modelName: selectedModel.value,
@@ -91,61 +91,92 @@ const AiChatBox = () => {
           }),
         });
 
-        if (!response.ok) throw new Error("Failed to process message.");
+        if (!response.ok) {
+        const data = await response.json();
+          throw new Error(data.error);
+        }
         if (response.status === "403" || response.status === 403) {
           navigate("/auth");
         }
-        if (isImageModel) {
-          // Handle image generation
-          const data = await response.json();
-          const imageId = data.response;
-          let imageStatus = "processing";
-          while (imageStatus === "processing") {
-            await new Promise((resolve) => setTimeout(resolve, 3000)); // Poll every 3 seconds
-            const imageResponse = await fetch(`${BASE_URL}/api/chat/get_images`, {
-              method: "POST",
-              headers: {
-                "Content-Type": "application/json",
-                Authorization: `Bearer ${token}`,
-                // "x-api-key": apiKey,
-              },
-              body: JSON.stringify({
-                request_id: imageId.toString(),
-              }),
-            });
-            if (imageResponse.status==='403'|| imageResponse.status===403) {
-              navigate('/auth')
-            }
 
-            const imageData = await imageResponse.json();
-            imageStatus = imageData.status;
-
-            if (imageStatus === "success") {
-              const imageUrl = imageData.output[0];
-              updatedMessages.push({
-                type: "ai",
-                contentType: "image",
-                text: imageUrl,
-                time: new Date().toLocaleTimeString(),
-              });
-              setMessages([...updatedMessages]);
-            }
-          }
-        } else {
-          const data = await response.json();
+        if (isImageModel || isDalle) {
+        
           let aiMessage = {
-            type: "ai",
-            text: data.response,
+            from: "AI",
+            content: "Generating image...",
             time: new Date().toLocaleTimeString(),
+            type: "image",
+            status: "loading",
           };
           updatedMessages = [...updatedMessages, aiMessage];
           setMessages(updatedMessages);
-        }
 
-        setIsLoading(false); // Stop loading
-        scrollToBottom();
+          const data = await response.json();
+
+          if (isDalle) {
+            const imageUrl = data.response;
+            if (imageUrl) {
+              updatedMessages[updatedMessages.length - 1] = {
+                ...updatedMessages[updatedMessages.length - 1],
+                content: imageUrl,
+                status: "complete",
+              };
+              setMessages([...updatedMessages]);
+              setIsLoading(false);
+              scrollToBottom();
+            }
+          } else if (isImageModel) {
+            const imageId = data.response;
+            let imageStatus = "processing";
+            while (imageStatus === "processing") {
+              await new Promise((resolve) => setTimeout(resolve, 3000)); // Poll every 3 seconds
+              const imageResponse = await fetch(`${BASE_URL}/api/chat/get_images`, {
+                method: "POST",
+                headers: {
+                  "Content-Type": "application/json",
+                  Authorization: `Bearer ${token}`,
+                },
+                body: JSON.stringify({
+                  request_id: imageId.toString(),
+                }),
+              });
+              if (imageResponse.status === "403" || imageResponse.status === 403) {
+                navigate("/auth");
+              }
+
+              const imageData = await imageResponse.json();
+              imageStatus = imageData.status;
+
+              if (imageStatus === "success") {
+                const imageUrl = imageData.output[0];
+                updatedMessages[updatedMessages.length - 1] = {
+                  ...updatedMessages[updatedMessages.length - 1],
+                  content: imageUrl,
+                  status: "complete",
+                };
+                setMessages([...updatedMessages]);
+                setIsLoading(false);
+                scrollToBottom();
+              }
+            }
+          }
+        } else {
+          // Handle text response
+          const data = await response.json();
+          let aiMessage = {
+            from: "AI",
+            content: data.response,
+            time: new Date().toLocaleTimeString(),
+            type: "text",
+          };
+          updatedMessages = [...updatedMessages, aiMessage];
+          setMessages(updatedMessages);
+          setIsLoading(false); // Stop loading
+          scrollToBottom();
+        }
       } catch (error) {
         setIsLoading(false); // Stop loading in case of error
+    
         toast({
           title: "Error",
           description: error.message || "Something went wrong",
@@ -160,24 +191,24 @@ const AiChatBox = () => {
   const handleKeyPress = (e) => {
     if (e.key === "Enter" && !e.shiftKey) {
       e.preventDefault();
-      handleSend();
+      handleSendMessage();
     }
   };
 
   const renderMessage = (message, index) => (
     <Flex
       key={index}
-      direction={message.type === "user" ? "row-reverse" : "row"}
+      direction={message.from === "You" ? "row-reverse" : "row"}
       align="flex-start"
       justify="flex-start"
       my={2}
     >
       <Avatar
-        name={message.type === "user" ? "You" : "AI"}
-        bg={message.type === "user" ? "yellow.400" : "black"}
+        name={message.from}
+        bg={message.from === "You" ? "yellow.400" : "black"}
         size="sm"
-        mr={message.type === "user" ? 0 : 4}
-        ml={message.type === "user" ? 4 : 0}
+        mr={message.from === "You" ? 0 : 4}
+        ml={message.from === "You" ? 4 : 0}
       />
       <Box
         color="white"
@@ -187,14 +218,14 @@ const AiChatBox = () => {
         maxW="75%"
         position="relative"
         background={
-          message.type === "user"
+          message.from === "You"
             ? theme.UserchatBubbleColor
             : theme.aiChatBubbleColor
         }
       >
-        {message.contentType === "image" ? (
+        {message.type === "image" && message.status === "complete" ? (
           <Image
-            src={message.text}
+            src={message.content}
             alt="Generated Image"
             borderRadius="md"
             maxH="300px"
@@ -206,12 +237,12 @@ const AiChatBox = () => {
               <Flex align="center" justify="center" minH="100px">
                 <Spinner size="md" color="white" />
                 <Text ml={3} color="white">
-                  AI is thinking...
+                  {message.content}
                 </Text>
               </Flex>
             ) : (
-              <Text color={message.type === "user" ? theme.textColor : "white"}>
-                {message.text}
+              <Text color={message.from === "You" ? theme.textColor : "white"}>
+                {message.content}
               </Text>
             )}
           </>
@@ -219,7 +250,7 @@ const AiChatBox = () => {
         <Flex
           mt={2}
           align="center"
-          justify={message.type === "user" ? "flex-start" : "flex-end"}
+          justify={message.from === "You" ? "flex-start" : "flex-end"}
           color="gray.400"
         >
           <BsClock />
@@ -235,7 +266,7 @@ const AiChatBox = () => {
             _hover={{ color: "white", bg: "transparent" }}
             aria-label="Copy to clipboard"
             onClick={() => {
-              navigator.clipboard.writeText(message.text);
+              navigator.clipboard.writeText(message.content);
               toast({
                 title: "Copied to clipboard!",
                 status: "success",
@@ -312,19 +343,8 @@ const AiChatBox = () => {
               lineHeight="tall"
               maxW="600px"
             >
-              Ask questions, generate images, or run AI-driven queries using our
-              models.
+              Get started with AI by generating your playground API key.
             </Text>
-            <Button
-              onClick={() => navigate("/app/keymanagement")}
-              bg={primaryColorOrange}
-              color="white"
-              marginTop={4}
-              marginBottom={4}
-              _hover={{ bg: primaryColorPurple }}
-            >
-              Generate API KEY
-            </Button>
           </Flex>
         ) : (
           <>
@@ -367,7 +387,7 @@ const AiChatBox = () => {
         <IconButton
           aria-label="Send"
           icon={<FaPaperPlane />}
-          onClick={handleSend}
+          onClick={handleSendMessage}
           bg={primaryColorOrange}
           color="white"
           _hover={{ bg: primaryColorPurple }}
