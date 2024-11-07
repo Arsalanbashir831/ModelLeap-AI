@@ -45,6 +45,7 @@ const router = createBrowserRouter([
       { path: "/app/helpcenter", element: <Support /> },
       { path: "/app/documentation", element: <Integration /> },
       { path: "/app/ailab", element: <AiLab /> },
+      { path: "/app/contactus", element: <Contact /> },
     ],
   },
   { path: "/app/ailab/chat/:botId", element: <AiLabChat /> },

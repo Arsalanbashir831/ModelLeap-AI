@@ -21,7 +21,7 @@ import {
   FaRobot,
   FaChevronLeft,
   FaChevronRight,
-  FaFlask,
+  FaFlask, FaMailBulk
 } from "react-icons/fa";
 import { motion } from "framer-motion";
 import { useTheme } from "../../Themes/ThemeContext";
@@ -47,9 +47,10 @@ const Sidebar = () => {
   const menuItems = [
     { label: "Playground", icon: FaRobot, path: "/app" },
     { label: "Lab", icon: FaFlask, path: "/app/ailab" },
-    // { label: "Key Management", icon: FaKey, path: "/app/keymanagement" },
+    
     { label: "Subscription", icon: FaMoneyBill, path: "/app/billing" },
     { label: "Usage", icon: RiProgress1Fill, path: "/app/usage" },
+    { label: "Contact Us", icon: FaMailBulk, path: "/app/contactus" },
   ];
 
   // Render navigation items
