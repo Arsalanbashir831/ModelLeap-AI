@@ -29,6 +29,7 @@ import { HistoryTable } from "../../Components/AiLab/HistoryTable";
 import ChatListItem from "../../Components/AiLab/ChatListItem";
 import { useTheme } from "../../Themes/ThemeContext";
 import Header from "../../Components/Dashboard/Header";
+import { primaryColorOrange } from "../../colorCodes";
 
 const ChatbotHistory = () => {
   const { botId } = useParams();
@@ -173,6 +174,7 @@ const ChatbotHistory = () => {
           display={{ base: "inline-flex", md: "none" }}
           onClick={openDrawer}
           mb={4}
+          bg={primaryColorOrange}
         />
 
         {/* Sidebar for chat list (visible only on desktop) */}
@@ -241,7 +243,7 @@ const ChatbotHistory = () => {
       <Drawer  isOpen={isDrawerOpen} placement="left" onClose={closeDrawer}>
         <DrawerOverlay />
         <DrawerContent bg={theme.background}>
-          <DrawerCloseButton />
+          <DrawerCloseButton color={theme.textColor} />
           <DrawerHeader>
           <br></br>
             <Button

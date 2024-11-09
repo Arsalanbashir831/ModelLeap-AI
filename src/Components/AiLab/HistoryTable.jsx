@@ -54,13 +54,13 @@ export const HistoryTable = ({ selectedChat, chatHistory }) => {
   return (
     <>
       {/* Wrap table in a scrollable container */}
-      <Box overflowX="auto" borderRadius="lg" boxShadow="lg" mb={4} width="300px">
+      <Box overflowX="auto" borderRadius="lg" boxShadow="lg" mb={4}   width={{ base: "300px", md: "100%" }} >
         <Table
           variant="simple"
           size="md"
           bg={theme.AiChatbg}
           color={theme.textColor}
-          minWidth="600px"
+          minWidth={{ base: "300px", md: "100%" }} 
         >
           <Thead
             bg={theme.background}
