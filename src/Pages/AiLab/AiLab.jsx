@@ -62,8 +62,8 @@ const AiLab = () => {
         gap={4}
         alignItems={{ base: "center", md: "flex-start" }}
       >
-        <Box w={{ base: "100%", md: "30%" }} mb={{ base: 6, md: 0 }}>
-          <Flex mb={4} justifyContent="center">
+        <Box w={{ base: "100%", md: "100%" }} mb={{ base: 6, md: 0 }}>
+          <Flex mb={4} justifyContent="flex-start">
             <NewChatButton onClick={onOpen} isLoading={loading} />
           </Flex>
 
@@ -76,8 +76,8 @@ const AiLab = () => {
               <Grid
                 templateColumns={{
                   base: "1fr", // Single column on mobile
-                  sm: "repeat(2, 1fr)", // Two columns on small screens
-                  lg: "repeat(2, 1fr)", // Two columns on large screens
+  sm: "repeat(2, 1fr)", // Two columns on small screens
+  lg: "repeat(3, 1fr)", // Three columns on large screens
                 }}
                 gap={4}
               >

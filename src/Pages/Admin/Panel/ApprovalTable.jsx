@@ -108,10 +108,15 @@ const UserTableWithActions = () => {
       if (response.ok) {
         const data = await response.json();
         setHistoryData(data.messages); // Set the history data
-        onOpen(); // Open the modal
+     
+      }else{
+        setHistoryData([]); 
       }
     } catch (error) {
       console.log(error);
+      setHistoryData([]);
+    } finally{
+      onOpen(); // Open the modal
     }
   };
 

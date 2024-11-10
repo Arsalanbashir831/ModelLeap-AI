@@ -11,7 +11,7 @@ import {
   useDisclosure,
   Avatar,
 } from "@chakra-ui/react";
-import { FaEdit, FaRobot, FaShareAlt, FaTable, FaTrash } from "react-icons/fa";
+import { FaEdit, FaRobot, FaTable, FaTrash } from "react-icons/fa";
 import EditBotModal from "./EditBotModalBox";
 import ShareModal from "./ShareModal";
 import DeleteConfirmationModal from "./DeleteModal";
@@ -25,7 +25,6 @@ const ChatListCard = ({
   systemContext,
   createdAt,
   modelName,
-  kwargs,
   apiKey,
   refresh,
   setRefresh,
@@ -57,12 +56,10 @@ const ChatListCard = ({
     botName,
     systemContext,
     modelName,
-    kwargs,
     avatarFile,
     id,
   });
 
-  // Function to delete the bot
   const handleDeleteBot = async () => {
     try {
       const token = localStorage.getItem("authToken");
@@ -88,8 +85,7 @@ const ChatListCard = ({
     } catch (error) {
       toast({
         title: "Error",
-        description:
-          error.message || "Something went wrong while deleting the bot.",
+        description: error.message || "Something went wrong while deleting the bot.",
         status: "error",
         duration: 3000,
         isClosable: true,
@@ -97,52 +93,9 @@ const ChatListCard = ({
     }
   };
 
-  const handleSave = async (updatedDetails) => {
-    try {
-      const token = localStorage.getItem("authToken");
-      const response = await fetch(`${BASE_URL}/api/bot/${id}`, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify(updatedDetails),
-      });
-
-      if (response.ok) {
-        setBotDetails(updatedDetails);
-        toast({
-          title: "Bot updated successfully.",
-          status: "success",
-          duration: 3000,
-          isClosable: true,
-        });
-        setRefresh(!refresh);
-      } else {
-        throw new Error("Failed to update bot.");
-      }
-    } catch (error) {
-      toast({
-        title: "Error",
-        description:
-          error.message || "Something went wrong while updating the bot.",
-        status: "error",
-        duration: 3000,
-        isClosable: true,
-      });
-    }
-  };
-
-  // Format creation date
   const formatDate = (timestamp) => {
     const date = new Date(timestamp._seconds * 1000);
     return date.toLocaleDateString();
-  };
-
-  // Bot data for sharing
-  const botData = {
-    botId: id,
-    apiKey: apiKey,
   };
 
   return (
@@ -150,10 +103,9 @@ const ChatListCard = ({
       direction="column"
       bg={theme.AiChatbg}
       borderRadius="lg"
-      px={{ base: 4, md: 6 }}
-      py={6}
+      p={4}
       w="100%"
-      maxW="400px"
+      maxW="100%"
       mx="auto"
       my={4}
       boxShadow="lg"
@@ -162,64 +114,38 @@ const ChatListCard = ({
         boxShadow: "xl",
         transform: "scale(1.02)",
       }}
+      overflow="hidden"
     >
       <Flex
-        direction={{ base: "column", md: "row" }}
-        justify="space-between"
+        direction="column"
         align="center"
+        justify="center"
         mb={4}
+        textAlign="center"
       >
-        {/* Bot Icon and Details */}
-        <Flex align="center" mb={{ base: 4, md: 0 }}>
-          <Avatar
-            size="lg"
-            bg="purple.500"
-            name={botName}
-            color="white"
-            src={avatarFile}
-            mr={4}
-          />
-          <Box>
-            <Text
-              fontSize={{ base: "xl", md: "2xl" }}
-              fontWeight="bold"
-              color={theme.textColor}
-              isTruncated
-              maxW="250px"
-            >
-              {botName}
-            </Text>
-            <Badge
-              colorScheme="purple"
-              mt={2}
-              fontSize="sm"
-              maxW="250px"
-              isTruncated
-            >
-              {systemContext}
-            </Badge>
-          </Box>
-        </Flex>
-
-        {/* Created Date */}
-        <Box textAlign={{ base: "left", md: "right" }}>
-          <Text fontSize="sm" color={theme.textColor}>
-            Created: {formatDate(createdAt)}
-          </Text>
-        </Box>
+        {/* Bot Avatar and Details */}
+        <Avatar size="lg" bg="purple.500" name={botName} color="white" src={avatarFile} mb={3} />
+        <Text fontSize="lg" fontWeight="bold" color={theme.textColor} isTruncated maxW="80%">
+          {botName}
+        </Text>
+        <Badge color={'purple.800'} px={2} borderRadius={'md'} bg={'purple.100'} mt={1} fontSize="xs" isTruncated maxW="80%">
+          {systemContext}
+        </Badge>
       </Flex>
 
+      {/* Created Date */}
+      <Box textAlign="center" mb={3}>
+        <Text fontSize="sm" color="gray.500">
+          Created: {formatDate(createdAt)}
+        </Text>
+      </Box>
+
       {/* Action Buttons */}
-      <Flex
-        mt={4}
-        justify={{ base: "center", md: "flex-end" }}
-        wrap="wrap"
-        gap={3}
-      >
+      <Flex justify="flex-end" gap={3} mt={2} wrap="wrap">
         <Tooltip label="Test Bot" placement="top">
           <IconButton
             icon={<FaRobot />}
-            size="md"
+            size="sm"
             bg="green.100"
             color="green.500"
             _hover={{ bg: "green.200", color: "green.600" }}
@@ -233,7 +159,7 @@ const ChatListCard = ({
         <Tooltip label="Bot Chat History" placement="top">
           <IconButton
             icon={<FaTable />}
-            size="md"
+            size="sm"
             bg="blue.100"
             color="blue.500"
             _hover={{ bg: "blue.200", color: "blue.600" }}
@@ -247,7 +173,7 @@ const ChatListCard = ({
         <Tooltip label="Edit Bot" placement="top">
           <IconButton
             icon={<FaEdit />}
-            size="md"
+            size="sm"
             bg="gray.100"
             color="gray.600"
             _hover={{ bg: "gray.200", color: "gray.700" }}
@@ -257,7 +183,7 @@ const ChatListCard = ({
         <Tooltip label="Delete Bot" placement="top">
           <IconButton
             icon={<FaTrash />}
-            size="md"
+            size="sm"
             bg="red.100"
             color="red.500"
             _hover={{ bg: "red.200", color: "red.600" }}
@@ -272,12 +198,12 @@ const ChatListCard = ({
           isOpen={isEditOpen}
           onClose={onEditClose}
           botDetails={botDetails}
-          onSave={handleSave}
+          onSave={setBotDetails}
         />
       )}
 
       {isShareOpen && (
-        <ShareModal isOpen={isShareOpen} onClose={onShareClose} botData={botData} />
+        <ShareModal isOpen={isShareOpen} onClose={onShareClose} botData={{ botId: id, apiKey }} />
       )}
 
       {isDeleteOpen && (
