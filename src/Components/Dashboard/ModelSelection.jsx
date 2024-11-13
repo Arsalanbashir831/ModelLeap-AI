@@ -41,7 +41,7 @@ const ModelSelection = ({ type }) => {
           const filteredData = data.filter((model) => model.options && model.options.length > 0);
           setModelsData(filteredData);
         } else {
-          console.log("model load fail");
+         window.location.href = "/auth";
         }
       } catch (error) {
         toast({

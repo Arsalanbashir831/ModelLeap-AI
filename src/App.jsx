@@ -25,7 +25,14 @@ import UserTable from "./Pages/Admin/Panel/Users";
 import UserTableWithActions from "./Pages/Admin/Panel/ApprovalTable";
 
 const router = createBrowserRouter([
-  { path: "/", element: <Landing /> },
+  { path: "/", element:(<>
+
+<ProtectedRoute>
+<DashboardLayout>
+</DashboardLayout>
+</ProtectedRoute>
+    
+  </>) , children:[{path:'/',element:<AI/>}] },
   { path: "/auth", element: <Auth /> },
   // { path: "/pricing", element:  <Pricing/> },
   { path: "/contact", element: <Contact /> },

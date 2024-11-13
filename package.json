@@ -1,6 +1,6 @@
 {
   "name": "modelleapai",
-  "homepage": "https://app.modelleap.com/",
+  "homepage": "https://app.modelleap.com/app/",
   "private": true,
   "version": "0.0.0",
   "type": "module",
