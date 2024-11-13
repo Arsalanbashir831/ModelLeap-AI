@@ -23,15 +23,15 @@ const BillingCard = ({ title, price, features, selected, onClick }) => {
       borderRadius="lg"
       p={{ base: 4, sm: 5, md: 6 }}
       maxW={{ base: '100%', sm: '80%', md: '300px' }} // Responsive max-width
-      minH="400px" // Set a consistent minimum height for the card
-      maxH="450px" // Limit the maximum height for better consistency
+      minH="450px" // Increase minimum height
+      maxH="550px" // Increase maximum height
       textAlign="center"
       boxShadow={selected ? 'lg' : 'md'}
       position="relative"
       display="flex"
       flexDirection="column"
       justifyContent="space-between"
-      mx={{ base: 'auto', md: 0 }} // Center align for mobile, normal layout for desktop
+      mx={{ base: 'auto', md: 0 }}
       backdropFilter="saturate(180%) blur(20px)"
     >
       {selected && (
@@ -45,7 +45,7 @@ const BillingCard = ({ title, price, features, selected, onClick }) => {
           borderRadius="full"
           px={4}
           py={1}
-          fontSize={{ base: 'xs', sm: 'sm', md: 'md' }} // Responsive font sizes
+          fontSize={{ base: 'xs', sm: 'sm', md: 'md' }}
           fontWeight="bold"
         >
           Current plan
@@ -60,7 +60,6 @@ const BillingCard = ({ title, price, features, selected, onClick }) => {
             mb={2}
             color={theme.billingCardText}
             fontSize={{ base: 'lg', sm: 'xl', md: 'md' }}
-            noOfLines={1} // Limit title to one line for consistency
           >
             {title}
           </Heading>
@@ -79,14 +78,12 @@ const BillingCard = ({ title, price, features, selected, onClick }) => {
           spacing={3}
           alignItems="start"
           mb={6}
-          maxH="150px" // Restrict feature list height to maintain consistent height
-          overflowY="auto" // Enable scrolling if the feature list is too long
           fontSize={{ base: 'sm', sm: 'md', md: 'md' }}
         >
           {features.map((feature, index) => (
             <Flex key={index} align="center">
               <Icon as={FaCheckCircle} color="green.400" mr={2} />
-              <Text color={theme.billingCardText} noOfLines={1} maxWidth="250px">
+              <Text color={theme.billingCardText}>
                 {feature}
               </Text>
             </Flex>
@@ -104,9 +101,9 @@ const BillingCard = ({ title, price, features, selected, onClick }) => {
           mt="auto"
           width="100%"
           rightIcon={<Icon as={FaCheckCircle} />}
-          isDisabled={selected}
+          
         >
-          {selected ? 'Current Plan' : 'Upgrade'}
+          {selected ? 'Cancel' : 'Upgrade'}
         </Button>
       </Flex>
     </Box>

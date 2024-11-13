@@ -51,6 +51,8 @@ const UserTableWithActions = () => {
       });
       if (response.ok) {
         const data = await response.json();
+        
+        
         setApprovalRequests(data.pendingChats);
       }
     } catch (error) {
@@ -124,7 +126,7 @@ const UserTableWithActions = () => {
     () =>
       approvalRequests.map((request) => ({
         user: {
-          name: request.name,
+          name: request.email,
           status: request.status,
           registered: new Date(request.createdAt._seconds * 1000).toLocaleDateString(),
         },
@@ -140,7 +142,7 @@ const UserTableWithActions = () => {
   const columns = React.useMemo(
     () => [
       {
-        Header: 'Chats',
+        Header: 'User',
         accessor: 'user',
         Cell: ({ value }) => (
           <Flex align="center">

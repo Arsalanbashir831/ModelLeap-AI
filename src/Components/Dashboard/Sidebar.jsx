@@ -28,6 +28,8 @@ import { useTheme } from "../../Themes/ThemeContext";
 import { primaryColorOrange } from "../../colorCodes";
 import { CgMenuBoxed } from "react-icons/cg";
 import { ImMenu } from "react-icons/im";
+import { signOut } from "firebase/auth";
+import { auth } from "../../firebase";
 const MotionBox = motion(Box);
 
 const Sidebar = () => {
@@ -106,7 +108,11 @@ const Sidebar = () => {
           _hover={{ bg: primaryColorOrange, color: "white" }}
           fontWeight="normal"
           color={theme.textColor}
-          onClick={() => localStorage.removeItem("authToken")}
+        onClick={() => {
+          signOut(auth)
+          localStorage.removeItem("authToken")
+          
+          }}
         >
           {isOpen && "Sign Out"}
         </Button>

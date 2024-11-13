@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Box, Flex, Button, ButtonGroup, useBreakpointValue } from "@chakra-ui/react";
+import { Box, Flex, Button, ButtonGroup, useBreakpointValue , useToast } from "@chakra-ui/react";
 import Header from "../../Components/Dashboard/Header";
 import BillingCard from "../../Components/Dashboard/BillingCard";
 import { BASE_URL } from "../../Constants";
@@ -16,9 +16,14 @@ const Plans = () => {
   const userContext = useRecoilValue(userState);
   const isMobile = useBreakpointValue({ base: true, md: false });
    const {theme}=useTheme()
+
+   const toast = useToast();
+
+
   useEffect(() => {
     setSelectedPlan(userContext?.subscriptionTier);
   }, [userContext]);
+
 
   const fetchPlans = async () => {
     try {
@@ -68,6 +73,62 @@ const Plans = () => {
     }
   };
 
+
+  const cancelPlanHandling = async () => {
+    try {
+      const localId = localStorage.getItem("localId");
+      const response = await fetch(`${BASE_URL}/payments/cancel-subscription`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          userId: localId,
+        }),
+      });
+  
+      if (response.ok) {
+        // setSelectedPlan("free"); 
+        // fetchPlans();
+        toast({
+          title: "Subscription Canceled",
+          description: "Your subscription has been canceled successfully. It will automatically sets to free subscription until your usage is completed for premium or after few days",
+          status: "success",
+          duration: 5000,
+          isClosable: true,
+        });
+      } else {
+        toast({
+          title: "Cancellation Failed",
+          description: "Failed to cancel the subscription. Please try again.",
+          status: "error",
+          duration: 5000,
+          isClosable: true,
+        });
+      }
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "An error occurred while canceling your subscription.",
+        status: "error",
+        duration: 5000,
+        isClosable: true,
+      });
+      console.log(error);
+    }
+  };
+  
+
+  const handlePlanSelection = (plan) => {
+    
+    if (selectedPlan?.toLowerCase() === plan.toLowerCase()) {
+      cancelPlanHandling(); // Call cancel function if the selected plan is already active
+    } 
+    else {
+      selectPlanHandling(plan); 
+    }
+  };
+
   return (
     <Box p={{ base: 4, md: 8 }} maxW="1200px" mx="auto">
       <Box mt={5}>
@@ -112,7 +173,7 @@ const Plans = () => {
                 price={plan.price}
                 features={plan.features}
                 selected={selectedPlan?.toLowerCase() === plan.value?.toLowerCase()}
-                onClick={() => selectPlanHandling(plan.value)}
+                onClick={() => handlePlanSelection(plan)}
               />
             </Box>
           ))}
@@ -133,7 +194,7 @@ const Plans = () => {
                 price={plan.price}
                 features={plan.features}
                 selected={selectedPlan?.toLowerCase() === plan.value?.toLowerCase()}
-                onClick={() => selectPlanHandling(plan.value)}
+                onClick={() => handlePlanSelection(plan.value)}
               />
             </Box>
           ))}

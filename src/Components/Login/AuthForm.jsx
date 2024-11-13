@@ -18,13 +18,20 @@ import {
   Spinner,
   useToast,
   HStack,
+  Modal,
+  ModalOverlay,
+  ModalContent,
+  ModalHeader,
+  ModalCloseButton,
+  ModalBody,
+  ModalFooter,
 } from "@chakra-ui/react";
 import { ViewIcon, ViewOffIcon } from "@chakra-ui/icons";
 import { FcGoogle } from "react-icons/fc";
 import { primaryColorPurple, primaryColorOrange } from "../../colorCodes";
 import { Link, useNavigate } from "react-router-dom";
 import { BASE_URL } from "../../Constants";
-import { GoogleAuthProvider, signInWithPopup } from "firebase/auth";
+import { GoogleAuthProvider, signInWithPopup , sendPasswordResetEmail} from "firebase/auth";
 import { auth } from "../../firebase";
 
 const AuthForm = () => {
@@ -35,6 +42,8 @@ const AuthForm = () => {
   const [username, setUsername] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [isForgotPasswordOpen, setIsForgotPasswordOpen] = useState(false);
+
   const inputBg = "gray.100";
   const navigate = useNavigate();
   const toast = useToast();
@@ -162,6 +171,30 @@ const AuthForm = () => {
     }
   };
 
+
+
+  const handleForgotPassword = async () => {
+    try {
+      await sendPasswordResetEmail(auth, email);
+      toast({
+        title: "Password Reset Email Sent",
+        description: "Check your email to reset your password.",
+        status: "success",
+        duration: 3000,
+        isClosable: true,
+      });
+      setIsForgotPasswordOpen(false); // Close modal after sending email
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: error.message,
+        status: "error",
+        duration: 3000,
+        isClosable: true,
+      });
+    }
+  };
+
   return (
     <Box
       p={{ base: 10, md: 12 }}
@@ -261,6 +294,16 @@ const AuthForm = () => {
                     />
                   </InputRightElement>
                 </InputGroup>
+                <Text
+                cursor="pointer"
+                color="blue.500"
+                fontWeight="semibold"
+                textAlign="right"
+                my={2}
+                onClick={() => setIsForgotPasswordOpen(true)}
+              >
+                Forgot Password?
+              </Text>
               </FormControl>
 
               <Button
@@ -380,6 +423,37 @@ const AuthForm = () => {
           </TabPanel>
         </TabPanels>
       </Tabs>
+
+      <Modal isOpen={isForgotPasswordOpen} onClose={() => setIsForgotPasswordOpen(false)}>
+        <ModalOverlay />
+        <ModalContent>
+          <ModalHeader>Reset Password</ModalHeader>
+          <ModalCloseButton />
+          <ModalBody>
+            <FormControl id="reset-email" isRequired>
+              <Input
+                type="email"
+                bg={inputBg}
+                borderColor="gray.300"
+                focusBorderColor={primaryColorPurple}
+                placeholder="Enter your email"
+                borderRadius="full"
+                size="md"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+              />
+            </FormControl>
+          </ModalBody>
+          <ModalFooter>
+            <Button colorScheme="blue" mr={3} onClick={handleForgotPassword}>
+              Send Reset Email
+            </Button>
+            <Button variant="ghost" onClick={() => setIsForgotPasswordOpen(false)}>
+              Cancel
+            </Button>
+          </ModalFooter>
+        </ModalContent>
+      </Modal>
     </Box>
   );
 };
