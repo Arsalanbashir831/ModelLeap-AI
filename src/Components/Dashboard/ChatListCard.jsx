@@ -93,6 +93,42 @@ const ChatListCard = ({
     }
   };
 
+
+  const handleSave = async (updatedDetails) => {
+    try {
+      const token = localStorage.getItem("authToken");
+      const response = await fetch(`${BASE_URL}/api/bot/${id}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(updatedDetails),
+      });
+
+      if (response.ok) {
+        setBotDetails(updatedDetails);
+        toast({
+          title: "Bot updated successfully.",
+          status: "success",
+          duration: 3000,
+          isClosable: true,
+        });
+        setRefresh(!refresh);
+      } else {
+        throw new Error("Failed to update bot.");
+      }
+    } catch (error) {
+      toast({
+        title: "Error",
+        description:
+          error.message || "Something went wrong while updating the bot.",
+        status: "error",
+        duration: 3000,
+        isClosable: true,
+      });
+    }
+  };
   const formatDate = (timestamp) => {
     const date = new Date(timestamp._seconds * 1000);
     return date.toLocaleDateString();
@@ -198,7 +234,7 @@ const ChatListCard = ({
           isOpen={isEditOpen}
           onClose={onEditClose}
           botDetails={botDetails}
-          onSave={setBotDetails}
+          onSave={handleSave}
         />
       )}
 
