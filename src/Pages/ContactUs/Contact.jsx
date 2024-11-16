@@ -111,12 +111,12 @@ const Contact = () => {
           maxW="1000px"
         >
           <Heading as="h1" mb={6} fontSize="3xl" textAlign="center" color="gray.700">
-            Contact Us
+           Help Support
           </Heading>
           <form onSubmit={handleSubmit}>
             <VStack spacing={4}>
               <FormControl id="name" isRequired>
-                <FormLabel>Your Name</FormLabel>
+             
                 <Input
                   type="text"
                   value={formData.name}
@@ -129,7 +129,7 @@ const Contact = () => {
               </FormControl>
 
               <FormControl id="email" isRequired>
-                <FormLabel>Email Address</FormLabel>
+             
                 <Input
                   type="email"
                   value={formData.email}
@@ -143,7 +143,7 @@ const Contact = () => {
               </FormControl>
 
               <FormControl id="message" isRequired>
-                <FormLabel>Your Message</FormLabel>
+             
                 <Textarea
                   value={formData.message}
                   onChange={handleInputChange}

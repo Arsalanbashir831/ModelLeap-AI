@@ -18,7 +18,7 @@ const AI = () => {
   return (
     <>
       <Box mt={[4, 8]} p={[2, 3]} width="100%">
-        <Header title={"Playground"} />
+        <Header isTitle={true} title={"Playground"} />
         <Description description={"Use different AI models to chat or create content."} />
         <Box ml={[1, 3]}>
           <MenuTabs onTabChange={handleTabChange} />

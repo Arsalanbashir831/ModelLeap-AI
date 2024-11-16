@@ -21,7 +21,7 @@ import {
 } from "@chakra-ui/react";
 import { BASE_URL } from "../../Constants";
 
-const EditBotModal = ({ isOpen, onClose, botDetails, onSave }) => {
+const EditBotModal = ({ isOpen, onClose, botDetails, onSave , loading , setLoading }) => {
   const [formData, setFormData] = useState({
     botName: botDetails.botName || "",
     systemContext: botDetails.systemContext || "",
@@ -116,7 +116,7 @@ const EditBotModal = ({ isOpen, onClose, botDetails, onSave }) => {
       }
 
       onSave(formData); // Pass updated form data to the onSave function
-      onClose(); // Close modal after saving
+      // onClose(); // Close modal after saving
     } catch (error) {
       console.error("Error updating avatar:", error);
       toast({
@@ -227,7 +227,7 @@ const EditBotModal = ({ isOpen, onClose, botDetails, onSave }) => {
         </ModalBody>
 
         <ModalFooter>
-          <Button colorScheme="blue" mr={3} onClick={handleSave}>
+          <Button isLoading={loading} colorScheme="blue" mr={3} onClick={handleSave}>
             Save
           </Button>
           <Button onClick={onClose}>Cancel</Button>

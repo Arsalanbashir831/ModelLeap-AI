@@ -228,7 +228,7 @@ const AuthForm = () => {
         borderColor="gray.300"
         _hover={{ bg: primaryColorOrange, color: "white" }}
       >
-        Sign In with Google
+      Continue with Google
       </Button>
       <Divider my={4} />
 
@@ -294,16 +294,7 @@ const AuthForm = () => {
                     />
                   </InputRightElement>
                 </InputGroup>
-                <Text
-                cursor="pointer"
-                color="blue.500"
-                fontWeight="semibold"
-                textAlign="right"
-                my={2}
-                onClick={() => setIsForgotPasswordOpen(true)}
-              >
-                Forgot Password?
-              </Text>
+              
               </FormControl>
 
               <Button
@@ -318,11 +309,21 @@ const AuthForm = () => {
               >
                 {isLoading ? <Spinner /> : "Sign In"}
               </Button>
+              <Text
+                cursor="pointer"
+                color="blue.500"
+                fontWeight="semibold"
+                textAlign="right"
+                my={2}
+                onClick={() => setIsForgotPasswordOpen(true)}
+              >
+                Forget Password?
+              </Text>
 
               <Text color="gray.600" cursor="pointer" fontSize="sm">
                 <HStack gap={3}>
-                  <Link w="full" to={"/"}>
-                    Explore us?
+                  <Link w="full" onClick={()=>window.location.href='https://modelleap.com/'}>
+                  Explore Model Leap ? 
                   </Link>
                   <Link w="full" to={"/admin/auth"}>
                     Admin?

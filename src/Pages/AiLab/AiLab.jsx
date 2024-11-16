@@ -51,7 +51,7 @@ const AiLab = () => {
 
   return (
     <Box p={[4, 8]} w="100%" maxW="100%" mx="auto" my={10}>
-      <Header title={"AI Lab"} isTitle={true} />
+      <Header title={"Lab"} isTitle={true} />
       <Box mb={2}>
         <Description description="Create, manage, and test your AI tools and chatbots with ease." />
       </Box>

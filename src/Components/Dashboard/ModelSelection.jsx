@@ -40,8 +40,8 @@ const ModelSelection = ({
         const data = await response.json();
 
         if (response.ok) {
-          const filteredData = data.filter((model) => model.options && model.options.length > 0);
-          setModelsData(filteredData); // Use the filtered data
+      
+          setModelsData(data); // Use the filtered data
         } else {
           // throw new Error("Failed to load models.");
           console.log('model load fail');

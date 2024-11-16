@@ -159,7 +159,7 @@ const ChatbotHistory = () => {
 
   return (
     <Box bg={theme.background} minH="100vh">
-      <Header title="Bot Chat History" isTitle isGoBack />
+      <Header title="Chat History" isTitle isGoBack />
 
       <Flex
         bg={theme.background}
@@ -195,7 +195,7 @@ const ChatbotHistory = () => {
             color={theme.historySelectedTextColor}
             width="100%"
           >
-            Add New Chat
+            Create Chat
           </Button>
 
           <Heading size="md" mb={4} color={theme.textColor}>

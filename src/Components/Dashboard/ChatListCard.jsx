@@ -34,6 +34,7 @@ const ChatListCard = ({
   const toast = useToast();
   const navigate = useNavigate();
   const { theme } = useTheme();
+  const [loading , setLoading] = useState(false)
 
   // Modal controls
   const {
@@ -96,6 +97,7 @@ const ChatListCard = ({
 
   const handleSave = async (updatedDetails) => {
     try {
+      setLoading(true)
       const token = localStorage.getItem("authToken");
       const response = await fetch(`${BASE_URL}/api/bot/${id}`, {
         method: "PUT",
@@ -127,6 +129,9 @@ const ChatListCard = ({
         duration: 3000,
         isClosable: true,
       });
+    } finally{
+      setLoading(false)
+      onEditClose();
     }
   };
   const formatDate = (timestamp) => {
@@ -178,7 +183,7 @@ const ChatListCard = ({
 
       {/* Action Buttons */}
       <Flex justify="flex-end" gap={3} mt={2} wrap="wrap">
-        <Tooltip label="Test Bot" placement="top">
+        <Tooltip label="Test" placement="top">
           <IconButton
             icon={<FaRobot />}
             size="sm"
@@ -192,7 +197,7 @@ const ChatListCard = ({
             }
           />
         </Tooltip>
-        <Tooltip label="Bot Chat History" placement="top">
+        <Tooltip label=" History" placement="top">
           <IconButton
             icon={<FaTable />}
             size="sm"
@@ -206,7 +211,7 @@ const ChatListCard = ({
             }
           />
         </Tooltip>
-        <Tooltip label="Edit Bot" placement="top">
+        <Tooltip label="Edit" placement="top">
           <IconButton
             icon={<FaEdit />}
             size="sm"
@@ -216,7 +221,7 @@ const ChatListCard = ({
             onClick={onEditOpen}
           />
         </Tooltip>
-        <Tooltip label="Delete Bot" placement="top">
+        <Tooltip label="Delete" placement="top">
           <IconButton
             icon={<FaTrash />}
             size="sm"
@@ -235,6 +240,8 @@ const ChatListCard = ({
           onClose={onEditClose}
           botDetails={botDetails}
           onSave={handleSave}
+          loading ={loading}
+          setLoading={setLoading}
         />
       )}
 

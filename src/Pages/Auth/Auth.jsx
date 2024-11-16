@@ -6,9 +6,8 @@ import { motion } from 'framer-motion';
 const MotionText = motion(Text);
 
 const words = [ //words
-  "Access", "Top", "AI", "Models", "via", "Single", "API", "Solution", 
-  "Chat,", "Text-to-Image,",  "Generation,", 
-  "OCR", "and", "Vision", "models"
+  "Get", "Access", "to", "Top", "AI", "Models", "via", "Single", 
+  "API,", "Solution."
 ];
 
 const textContainerVariants = {
@@ -33,21 +32,15 @@ const wordVariants = {
 const gradientText = {
   backgroundImage: `linear-gradient(
     105deg,
-    hsl(0deg 65% 50%) 0%,
-    hsl(315deg 60% 55%) 10%,
-    hsl(330deg 70% 60%) 20%,
-    hsl(340deg 75% 65%) 30%,
-    hsl(350deg 80% 70%) 40%,
-    hsl(360deg 85% 75%) 50%,
-    hsl(10deg 90% 80%) 60%,
-    hsl(20deg 92% 85%) 70%,
-    hsl(30deg 94% 90%) 80%,
-    hsl(40deg 96% 93%) 90%,
-    hsl(50deg 98% 95%) 100%
+    hsl(0deg 0% 100%) 0%,          /* White */
+    hsl(330deg 80% 90%) 33%,       /* Light Pink */
+    hsl(270deg 70% 80%) 66%,       /* Light Purple */
+    hsl(270deg 50% 60%) 100%       /* Purple */
   )`,
   backgroundClip: 'text',
   textFillColor: 'transparent',
 };
+
 
 const AuthPage = () => {
   return (
@@ -61,7 +54,7 @@ const AuthPage = () => {
       <Box
         flex="1"
         display={{ base: 'none', md: 'block' }}
-        bgImage="url('/sign-in-sidebar.png')" 
+        bgImage="url('/chatbot.png')" 
         bgPosition="center"
         bgSize="cover"
         bgRepeat="no-repeat"
@@ -120,9 +113,9 @@ const AuthPage = () => {
         bg="white"
         height="100%"
       >
-        <Box width={{ base: '100%', md: '80%', lg: '70%' }} mx="auto">
+      
           <AuthForm />
-        </Box>
+     
       </Flex>
     </Flex>
   );

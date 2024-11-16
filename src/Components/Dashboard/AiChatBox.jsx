@@ -77,6 +77,20 @@ const AiChatBox = () => {
       try {
         const isImageModel = selectedModel.value.startsWith("imagegen:");
         const isDalle = selectedModel.value.startsWith("dalle:");
+        let aiMessage = {};
+        if(isDalle || isImageModel){
+           aiMessage = {
+            from: "AI",
+            content: "Generating image...",
+            time: new Date().toLocaleTimeString(),
+            type: "image",
+            status: "loading",
+          };
+          updatedMessages = [...updatedMessages, aiMessage];
+        }
+       
+        setMessages(updatedMessages);
+
         setIsLoading(true); // Start loading
 
         const response = await fetch(`${BASE_URL}/api/chat/message`, {
@@ -101,16 +115,7 @@ const AiChatBox = () => {
 
         if (isImageModel || isDalle) {
         
-          let aiMessage = {
-            from: "AI",
-            content: "Generating image...",
-            time: new Date().toLocaleTimeString(),
-            type: "image",
-            status: "loading",
-          };
-          updatedMessages = [...updatedMessages, aiMessage];
-          setMessages(updatedMessages);
-
+        
           const data = await response.json();
 
           if (isDalle) {

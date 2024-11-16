@@ -91,8 +91,9 @@ const BillingCard = ({ title, price, features, selected, onClick }) => {
         </VStack>
 
         <Spacer />
+{price != 'Free' &&(<>
 
-        <Button
+  <Button
           onClick={onClick}
           bg={primaryColorPurple}
           size={{ base: 'sm', md: 'lg' }}
@@ -105,6 +106,9 @@ const BillingCard = ({ title, price, features, selected, onClick }) => {
         >
           {selected ? 'Cancel' : 'Upgrade'}
         </Button>
+
+</>)}
+       
       </Flex>
     </Box>
   );

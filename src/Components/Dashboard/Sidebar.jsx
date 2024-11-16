@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import {
   Box,
   VStack,
@@ -11,6 +11,12 @@ import {
   DrawerOverlay,
   DrawerContent,
   DrawerCloseButton,
+  AlertDialog,
+  AlertDialogBody,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogContent,
+  AlertDialogOverlay,
 } from "@chakra-ui/react";
 import { Link, useLocation } from "react-router-dom";
 import { RiProgress1Fill } from "react-icons/ri";
@@ -21,7 +27,8 @@ import {
   FaRobot,
   FaChevronLeft,
   FaChevronRight,
-  FaFlask, FaMailBulk
+  FaFlask,
+  FaMailBulk,
 } from "react-icons/fa";
 import { motion } from "framer-motion";
 import { useTheme } from "../../Themes/ThemeContext";
@@ -30,6 +37,7 @@ import { CgMenuBoxed } from "react-icons/cg";
 import { ImMenu } from "react-icons/im";
 import { signOut } from "firebase/auth";
 import { auth } from "../../firebase";
+
 const MotionBox = motion(Box);
 
 const Sidebar = () => {
@@ -42,6 +50,19 @@ const Sidebar = () => {
 
   const toggleSidebar = () => setIsOpen(!isOpen);
 
+  // Confirmation dialog state
+  const [isAlertOpen, setIsAlertOpen] = useState(false);
+  const cancelRef = useRef();
+
+  const onCloseAlert = () => setIsAlertOpen(false);
+
+  const handleSignOut = () => {
+    setIsAlertOpen(false); // Close the alert
+    signOut(auth); // Sign out from Firebase
+    localStorage.removeItem("authToken"); // Clear local storage
+    window.location.href = "/auth"; // Redirect to the login page
+  };
+
   // Determine active state for navigation items
   const isActive = (path) => location.pathname === path;
 
@@ -49,7 +70,6 @@ const Sidebar = () => {
   const menuItems = [
     { label: "Playground", icon: FaRobot, path: "/app" },
     { label: "Lab", icon: FaFlask, path: "/app/ailab" },
-    
     { label: "Subscription", icon: FaMoneyBill, path: "/app/billing" },
     { label: "Usage", icon: RiProgress1Fill, path: "/app/usage" },
     { label: "Contact Us", icon: FaMailBulk, path: "/app/contactus" },
@@ -100,19 +120,13 @@ const Sidebar = () => {
         {renderMenuItems()}
         <Divider borderColor={theme.sideBarDividerColor} my="4" className="w-full" />
         <Button
-          as={Link}
-          to="/auth"
           variant="ghost"
           justifyContent={isOpen ? "flex-start" : "center"}
           leftIcon={<FaSignOutAlt color={theme.iconColor} />}
           _hover={{ bg: primaryColorOrange, color: "white" }}
           fontWeight="normal"
           color={theme.textColor}
-        onClick={() => {
-          signOut(auth)
-          localStorage.removeItem("authToken")
-          
-          }}
+          onClick={() => setIsAlertOpen(true)} // Open alert dialog
         >
           {isOpen && "Sign Out"}
         </Button>
@@ -122,6 +136,32 @@ const Sidebar = () => {
 
   return (
     <>
+      {/* AlertDialog for sign-out confirmation */}
+      <AlertDialog
+        isOpen={isAlertOpen}
+        leastDestructiveRef={cancelRef}
+        onClose={onCloseAlert}
+      >
+        <AlertDialogOverlay>
+          <AlertDialogContent>
+            <AlertDialogHeader fontSize="lg" fontWeight="bold">
+              Confirm Sign Out
+            </AlertDialogHeader>
+            <AlertDialogBody>
+              Are you sure you want to sign out? You will need to log in again to access your account.
+            </AlertDialogBody>
+            <AlertDialogFooter>
+              <Button ref={cancelRef} onClick={onCloseAlert}>
+                Cancel
+              </Button>
+              <Button colorScheme="red" onClick={handleSignOut} ml={3}>
+                Sign Out
+              </Button>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialogOverlay>
+      </AlertDialog>
+
       {isMobile ? (
         // Drawer for mobile view
         <Drawer isOpen={isOpen} placement="left" onClose={toggleSidebar}>
@@ -151,7 +191,7 @@ const Sidebar = () => {
             icon={isOpen ? <FaChevronLeft /> : <FaChevronRight />}
             onClick={toggleSidebar}
             aria-label="Toggle Sidebar"
-        bg={primaryColorOrange}
+            bg={primaryColorOrange}
             _hover={{ bg: primaryColorOrange }}
           />
         </MotionBox>
@@ -160,14 +200,14 @@ const Sidebar = () => {
       {/* Toggle Button for Drawer on mobile */}
       {isMobile && (
         <IconButton
-          icon={isOpen ?<ImMenu />: <ImMenu />}
+          icon={isOpen ? <ImMenu /> : <ImMenu />}
           onClick={toggleSidebar}
           aria-label="Toggle Sidebar Drawer"
           position="fixed"
           top="20px"
           left="20px"
           zIndex="overlay"
-         bg={primaryColorOrange}
+          bg={primaryColorOrange}
           _hover={{ bg: primaryColorOrange }}
         />
       )}
