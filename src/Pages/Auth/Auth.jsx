@@ -50,6 +50,7 @@ const AuthPage = () => {
       width="100vw"
       bg="gray.100"
       position="relative"
+     
     >
       <Box
         flex="1"
@@ -60,6 +61,8 @@ const AuthPage = () => {
         bgRepeat="no-repeat"
         height="100vh"
         position="relative"
+
+
       >
 
         <Box

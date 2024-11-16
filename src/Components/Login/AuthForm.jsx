@@ -197,16 +197,16 @@ const AuthForm = () => {
 
   return (
     <Box
-      p={{ base: 10, md: 12 }}
+      p={0}
       display="flex"
       flexDirection="column"
       justifyContent="center"
-      maxW="600px"
-      w={"100%"}
-      border="1px solid"
+    
+      w={"70%"}
       borderColor="gray.200"
       borderRadius="lg"
       boxShadow="sm"
+     
     >
       <Box mb={6} display="flex" justifyContent="center">
         <img
