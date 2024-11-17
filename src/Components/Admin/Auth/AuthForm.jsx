@@ -202,9 +202,7 @@ const AdminAuthForm = () => {
           mt={4}
           textAlign="center"
         >
-          <Link to={"/"} style={{ textDecoration: "underline" }}>
-            Return to Homepage
-          </Link>
+          
         </Text>
       </VStack>
     </Box>

@@ -59,7 +59,7 @@ const AdminAuth = () => {
       bg="gray.100"
       position="relative"
     >
-      <Box
+      {/* <Box
         flex="1"
         display={{ base: 'none', md: 'block' }}
         bgImage="url('https://img.freepik.com/free-photo/software-developers-data-center-running-system-diagnostic-tests-pc_482257-105399.jpg?t=st=1729925400~exp=1729929000~hmac=1d84a1853617dcbef4301d61cf3302ff7242ef0a47205d2402e78a4220e6029b&w=740')" 
@@ -112,7 +112,7 @@ const AdminAuth = () => {
             ))}
           </MotionText>
         </Box>
-      </Box>
+      </Box> */}
 
       <Flex
         flex="1"

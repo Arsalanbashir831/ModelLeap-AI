@@ -55,7 +55,7 @@ const AuthPage = () => {
       <Box
         flex="1"
         display={{ base: 'none', md: 'block' }}
-        bgImage="url('/chatbot.png')" 
+        bgImage="url('/AuthModelLeap.jpg')" 
         bgPosition="center"
         bgSize="cover"
         bgRepeat="no-repeat"

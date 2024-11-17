@@ -19,13 +19,21 @@ import { useTable } from "react-table";
 import Header from "../../../Components/Dashboard/Header";
 import { useTheme } from "../../../Themes/ThemeContext";
 import { BASE_URL } from "../../../Constants";
-
 const UserTable = () => {
   const { theme } = useTheme();
   const toast = useToast();
   const [userData, setUserData] = useState([]);
   const [loading, setLoading] = useState(false);
   const [selectedPlan, setSelectedPlan] = useState(""); // State for selected subscription filter
+
+  // Limits for token usage based on subscription type
+  const TOKEN_LIMITS = {
+    free: 25000,
+    proMonthly: 1_000_000,
+    proYearly: 1_000_000,
+    premiumMonthly: 1_000_000_000_000_000,
+    premiumYearly: 1_000_000_000_000_000,
+  };
 
   useEffect(() => {
     fetchUserData();
@@ -41,19 +49,25 @@ const UserTable = () => {
         },
       });
       const data = await response.json();
-
-      // Filter users based on the selected subscription plan
-      const filteredData = selectedPlan
-        ? data.filter((user) => user.subscriptionTier === selectedPlan)
-        : data;
-
-      setUserData(filteredData);
+  
+      if (response.ok) {
+        // Exclude the user with email "admin@admin.com"
+        const filteredData = data.filter((user) => user.email !== "admin@admin.com");
+  
+        // Further filter based on selectedPlan if applicable
+        const finalData = selectedPlan
+          ? filteredData.filter((user) => user.subscriptionTier === selectedPlan)
+          : filteredData;
+  
+        setUserData(finalData);
+      }
     } catch (error) {
       console.log(error);
     } finally {
       setLoading(false);
     }
   };
+  
 
   const handleDelete = async (uid) => {
     const token = localStorage.getItem("adminToken");
@@ -64,11 +78,9 @@ const UserTable = () => {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
         },
-
       });
 
       if (response.ok) {
-      
         setUserData((prevData) => prevData.filter((user) => user.uid !== uid));
         toast({
           title: "User deleted successfully",
@@ -100,18 +112,23 @@ const UserTable = () => {
 
   const data = React.useMemo(
     () =>
-      userData.map((user) => ({
-        user: {
-          name: user.email,
-          avatar: null,
-          registered: `Token Count: ${user.tokenCount}`,
-        },
-        usage: user.tokenCount / 1000,
-        usageDate: `Generated Images: ${user.imageGenerationCount}`,
-        subscriptionType: user.subscriptionTier,
-        generations: user.imageGenerationCount,
-        uid: user.id, // Add the UID here for the delete button
-      })),
+      userData.map((user) => {
+        const totalTokens = TOKEN_LIMITS[user.subscriptionTier] || 1; // Default to 1 to avoid division by zero
+        const usagePercentage = (user.tokenCount / totalTokens) * 100;
+
+        return {
+          user: {
+            name: user.email,
+            avatar: null,
+            registered: `Token Count: ${user.tokenCount}`,
+          },
+          usage: usagePercentage,
+          usageDate: `Generated Images: ${user.imageGenerationCount}`,
+          subscriptionType: user.subscriptionTier,
+          generations: user.imageGenerationCount,
+          uid: user.id, // Add the UID here for the delete button
+        };
+      }),
     [userData]
   );
 
@@ -140,7 +157,7 @@ const UserTable = () => {
         Cell: ({ row }) => (
           <Box>
             <Text fontSize="sm" mb={1} color={theme.textColor}>
-              {row.original.usage}%
+              {row.original.usage.toFixed(2)}%
             </Text>
             <Progress
               value={row.original.usage}
@@ -218,7 +235,7 @@ const UserTable = () => {
           color={theme.textColor}
           borderColor={theme.integrationBoxBorder}
         >
-          <option value="Free">Free</option>
+          <option value="free">Free</option>
           <option value="proMonthly">Pro Monthly</option>
           <option value="proYearly">Pro Yearly</option>
           <option value="premiumMonthly">Premium Monthly</option>

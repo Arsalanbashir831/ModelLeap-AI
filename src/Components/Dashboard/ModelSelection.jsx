@@ -17,6 +17,7 @@ import { BASE_URL } from "../../Constants";
 import { useRecoilState } from "recoil";
 import modelState from "../../atoms/modelState";
 import modelStateParameter from "../../atoms/modelParameterState";
+import { useNavigate } from "react-router-dom";
 
 const ModelSelection = ({
   type, // either "chat" or "image"
@@ -26,7 +27,7 @@ const ModelSelection = ({
   const [modelsData, setModelsData] = useState([]);
   const [selectedModel, setSelectedModel] = useRecoilState(modelState); 
   const [selectedModelParams, setSelectedModelParams] = useRecoilState(modelStateParameter); 
-
+const navigation = useNavigate()
   // Fetch models based on the type (chat or image)
   useEffect(() => {
     const fetchModels = async () => {
@@ -44,6 +45,7 @@ const ModelSelection = ({
           setModelsData(data); // Use the filtered data
         } else {
           // throw new Error("Failed to load models.");
+          navigation('/auth')
           console.log('model load fail');
           
         }
