@@ -91,7 +91,7 @@ const BillingCard = ({ title, price, features, selected, onClick }) => {
         </VStack>
 
         <Spacer />
-{price != 'Free' &&(<>
+{title != 'Free-Tier' &&(<>
 
   <Button
           onClick={onClick}
