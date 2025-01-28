@@ -130,6 +130,7 @@ const UserTableWithActions = () => {
           status: request.status,
           registered: new Date(request.createdAt._seconds * 1000).toLocaleDateString(),
         },
+        approvalId: request.chatId,
         context: request.systemContext,
         statusBadge: request.status,
         approvalAction: request.chatId,
@@ -141,6 +142,21 @@ const UserTableWithActions = () => {
 
   const columns = React.useMemo(
     () => [
+      {
+        Header: 'Approval Id',
+        accessor: 'approvalId',
+        Cell: ({ value }) => (
+          <Flex align="center">
+          
+            <Box>
+              <Text fontWeight="semibold" fontSize={'sm'} color={theme.textColor}>
+                {value}
+              </Text>
+             
+            </Box>
+          </Flex>
+        ),
+      },
       {
         Header: 'User',
         accessor: 'user',

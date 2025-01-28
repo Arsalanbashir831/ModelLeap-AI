@@ -321,12 +321,12 @@ const AuthForm = () => {
               </Text>
 
               <Text color="gray.600" cursor="pointer" fontSize="sm">
-                <HStack gap={3}>
+                <HStack gap={1}>
                   <Link w="full" onClick={()=>window.location.href='https://modelleap.com/'}>
-                  Explore Model Leap ? 
+                  Explore Model Leap | 
                   </Link>
                   <Link w="full" to={"/admin/auth"}>
-                    Admin?
+                    Admin
                   </Link>
                 </HStack>
               </Text>

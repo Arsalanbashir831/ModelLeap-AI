@@ -6,10 +6,10 @@ import { motion } from 'framer-motion';
 const MotionText = motion(Text);
 
 const words = [ //words
-  "Get", "Access", "to", "Top", "AI", "Models", "via", "Single", 
-  "API,", "Solution."
-];
+  "Cut the Cables! Access AI Models to Create Text, Images, & Bots with APIs & Widgets.", 
 
+];
+//      
 const textContainerVariants = {
   hidden: { opacity: 0 },
   visible: {

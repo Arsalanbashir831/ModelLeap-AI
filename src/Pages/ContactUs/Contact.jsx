@@ -111,7 +111,7 @@ const Contact = () => {
           maxW="1000px"
         >
           <Heading as="h1" mb={6} fontSize="3xl" textAlign="center" color="gray.700">
-           Help Support
+          Support
           </Heading>
           <form onSubmit={handleSubmit}>
             <VStack spacing={4}>
@@ -139,7 +139,7 @@ const Contact = () => {
                   _hover={{ borderColor: "gray.300" }}
                   size="lg"
                 />
-                <FormHelperText>We'll never share your email.</FormHelperText>
+                {/* <FormHelperText>We'll never share your email.</FormHelperText> */}
               </FormControl>
 
               <FormControl id="message" isRequired>

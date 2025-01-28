@@ -7,6 +7,7 @@ import {
   Text,
   useDisclosure,
   Spinner,
+  Tooltip,
 } from "@chakra-ui/react";
 import Header from "../../Components/Dashboard/Header";
 import NewChatButton from "../../Components/Dashboard/NewChatButton";
@@ -50,7 +51,7 @@ const AiLab = () => {
   }, [navigate, refresh]); // Use refresh here to trigger a re-fetch
 
   return (
-    <Box p={[4, 8]} w="100%" maxW="100%" mx="auto" my={10}>
+    <Box mt={[4, 8]} p={[2, 3]} w="100%" maxW="100%" mx="auto" >
       <Header title={"Lab"} isTitle={true} />
       <Box mb={2}>
         <Description description="Create, manage, and test your AI tools and chatbots with ease." />
@@ -63,9 +64,11 @@ const AiLab = () => {
         alignItems={{ base: "center", md: "flex-start" }}
       >
         <Box w={{ base: "100%", md: "100%" }} mb={{ base: 6, md: 0 }}>
-          <Flex mb={4} justifyContent="flex-start">
+          <Tooltip label="Design and deploy your own intelligent bot." placement="top">
+          <Flex width={'fit-content'} mb={4} p={[2, 3]} justifyContent="flex-start">
             <NewChatButton onClick={onOpen} isLoading={loading} />
           </Flex>
+          </Tooltip>
 
           <Box p={3} borderRadius="md">
             {loading ? (

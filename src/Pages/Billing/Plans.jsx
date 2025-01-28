@@ -30,6 +30,8 @@ const Plans = () => {
       const response = await fetch(`${BASE_URL}/payments/get_plans`);
       if (response.ok) {
         const data = await response.json();
+        console.log(data.plans);
+        
         setPlans(data.plans);
       }
     } catch (error) {
@@ -131,10 +133,10 @@ const Plans = () => {
 
   return (
     <Box p={{ base: 4, md: 8 }} maxW="1200px" mx="auto">
-      <Box mt={5}>
+      <Box mt={0}>
         <Header  />
-        <Heading textAlign="center" mt={5} color={theme.textColor}>Unlock the Full Potential of Model Leap</Heading>
-        <Text textAlign="center" mt={2} color={theme.textColor}>Ready to elevate your AI experience? Choose the plan that fits your needs and gain access to advanced models, publishable smart bots, and powerful tools. Whether you're scaling your projects or running a business, Model Leap has the perfect plan to help you succeed. Upgrade today and take your creativity to the next level!
+        <Heading textAlign="center" mt={0} color={theme.textColor}>Unlock the Full Potential of Model Leap</Heading>
+        <Text textAlign="center" mt={2} color={theme.textColor}>Ready to elevate your AI experience? Choose the plan that fits your needs and gain access to advanced models, publishable smart bots, and powerful tools. Whether you're scaling your projects or running a business, Model Leap has the perfect plan to help you succeed. 
 
 
 </Text>
@@ -172,11 +174,13 @@ const Plans = () => {
           flexDirection="column"
         >
           {filteredPlans?.map((plan) => (
+            
             <Box key={plan.value} minW="250px" mx="auto">
               <BillingCard
                 title={plan.name}
                 price={plan.price}
                 features={plan.features}
+                data= {plan.description}
                 selected={selectedPlan?.toLowerCase() === plan.value?.toLowerCase()}
                 onClick={() => handlePlanSelection(plan)}
               />
@@ -198,6 +202,7 @@ const Plans = () => {
                 title={plan.name}
                 price={plan.price}
                 features={plan.features}
+                description= {plan.description}
                 selected={selectedPlan?.toLowerCase() === plan.value?.toLowerCase()}
                 onClick={() => handlePlanSelection(plan.value)}
               />

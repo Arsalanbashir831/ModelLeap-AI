@@ -8,13 +8,18 @@ import {
   Icon,
   Flex,
   Spacer,
+  useBreakpointValue,
 } from '@chakra-ui/react';
 import { FaCheckCircle } from 'react-icons/fa';
 import { primaryColorOrange, primaryColorPurple } from '../../colorCodes';
 import { useTheme } from '../../Themes/ThemeContext';
 
-const BillingCard = ({ title, price, features, selected, onClick }) => {
+const BillingCard = ({ title, price, features, selected, onClick, description }) => {
   const { theme } = useTheme();
+console.log( 'plan',description);
+
+  // Use useBreakpointValue to show the description only on mobile
+  const showDescription = useBreakpointValue({ base: true, md: false });
 
   return (
     <Box
@@ -63,6 +68,11 @@ const BillingCard = ({ title, price, features, selected, onClick }) => {
           >
             {title}
           </Heading>
+
+          {/* Show description only on mobile */}
+         
+           
+
           <Heading
             as="h1"
             size="2xl"
@@ -72,6 +82,16 @@ const BillingCard = ({ title, price, features, selected, onClick }) => {
           >
             {price}
           </Heading>
+          <Text
+              // as="h6"
+              // size="sm"
+              // fontWeight={'semibold'}
+              // mb={2}
+              color={theme.billingCardText}
+            >
+              {description}
+            </Text>
+       
         </Box>
 
         <VStack
@@ -83,32 +103,27 @@ const BillingCard = ({ title, price, features, selected, onClick }) => {
           {features.map((feature, index) => (
             <Flex key={index} align="center">
               <Icon as={FaCheckCircle} color="green.400" mr={2} />
-              <Text color={theme.billingCardText}>
-                {feature}
-              </Text>
+              <Text  color={theme.billingCardText}>{feature}</Text>
             </Flex>
           ))}
         </VStack>
 
         <Spacer />
-{title != 'Free-Tier' &&(<>
 
-  <Button
-          onClick={onClick}
-          bg={primaryColorPurple}
-          size={{ base: 'sm', md: 'lg' }}
-          color="white"
-          _hover={{ bg: primaryColorOrange }}
-          mt="auto"
-          width="100%"
-          rightIcon={<Icon as={FaCheckCircle} />}
-          
-        >
-          {selected ? 'Cancel' : 'Upgrade'}
-        </Button>
-
-</>)}
-       
+        {title !== 'Free-Tier' && (
+          <Button
+            onClick={onClick}
+            bg={primaryColorPurple}
+            size={{ base: 'sm', md: 'lg' }}
+            color="white"
+            _hover={{ bg: primaryColorOrange }}
+            mt="auto"
+            width="100%"
+            rightIcon={<Icon as={FaCheckCircle} />}
+          >
+            {selected ? 'Cancel' : 'Upgrade'}
+          </Button>
+        )}
       </Flex>
     </Box>
   );
