@@ -16,22 +16,25 @@ import {
   TabPanel,
   Textarea,
   Code,
-  useDisclosure,
-  Text,useToast
+  useToast,
+  Text,
+  Input,
+  InputGroup,
+  InputRightElement,
+  HStack,
 } from "@chakra-ui/react";
 import { useRecoilValue } from "recoil";
 import BotState from "../../atoms/BotState";
 import { BASE_URL } from "../../Constants";
+import { CopyIcon } from "@chakra-ui/icons";
 
-const ShareModal = ({ isOpen, onClose, botData , modelName}) => {
+const ShareModal = ({ isOpen, onClose, botData, modelName }) => {
   const [tabIndex, setTabIndex] = useState(0); // To manage tab selection
-  //   const botData = useRecoilValue(BotState);
   const [htmlSnippet, setHtmlSnippet] = useState("");
   const [genCode, setGenCode] = useState("");
-const toast = useToast()
+  const toast = useToast();
+
   // Array of supported languages
-  console.log("botdata",botData);
-  
   const languages = [
     { lang: "js", label: "JavaScript" },
     { lang: "php", label: "PHP" },
@@ -57,6 +60,7 @@ const toast = useToast()
       console.log(error);
     }
   };
+
   const fetchAPIKit = async (language) => {
     try {
       const response = await fetch(
@@ -70,9 +74,7 @@ const toast = useToast()
 
       if (response.ok) {
         const data = await response.text();
-
         const formattedCode = typeof data === "string" ? data : data.toString();
-
         setGenCode(formattedCode);
       }
     } catch (error) {
@@ -80,14 +82,12 @@ const toast = useToast()
     }
   };
 
-  
   useEffect(() => {
     if (botData.status === "approved") {
       fetchHtmlSnippet();
       fetchAPIKit(languages[tabIndex].lang);
     }
-   
-  }, [tabIndex, botData ]);
+  }, [tabIndex, botData]);
 
   const handleApprovalRequest = async () => {
     try {
@@ -98,7 +98,6 @@ const toast = useToast()
           headers: {
             "x-api-key": botData.apiKey,
           },
-        
         }
       );
 
@@ -130,6 +129,31 @@ const toast = useToast()
       });
     }
   };
+
+  const handleCopyToClipboard = () => {
+    navigator.clipboard
+      .writeText(htmlSnippet)
+      .then(() => {
+        toast({
+          title: "Copied to Clipboard",
+          description: "The HTML snippet has been copied to your clipboard.",
+          status: "success",
+          duration: 3000,
+          isClosable: true,
+        });
+      })
+      .catch((err) => {
+        console.error("Failed to copy text: ", err);
+        toast({
+          title: "Failed to Copy",
+          description: "Unable to copy the HTML snippet to the clipboard.",
+          status: "error",
+          duration: 3000,
+          isClosable: true,
+        });
+      });
+  };
+
   return (
     <Modal isOpen={isOpen} onClose={onClose} size="lg">
       <ModalOverlay />
@@ -137,53 +161,85 @@ const toast = useToast()
         <ModalHeader>Share Chatbot Integration</ModalHeader>
         <ModalCloseButton />
         <ModalBody>
-  {botData.status === 'unrequested' ? (
-    <>
-      <Button onClick={handleApprovalRequest} colorScheme="purple">
-        Add Approval Request
-      </Button>
-    </>
-  ) : botData.status === 'pending' ? (
-    <>
-      <Text>Approval Pending</Text>
-    </>
-  ) : botData.status === 'disapproved' ? (
-    <>
-      <Text color="red.500" fontWeight="bold">
-        Request Rejected
-      </Text>
-    </>
-  ) : (
-    <>
-      <Box mb={4}>
-        <Box fontWeight="bold" mb={2}>
-          HTML Snippet
-        </Box>
-        <Textarea readOnly value={htmlSnippet} size="sm" bg="gray.100" />
-      </Box>
-
-      <Tabs isFitted variant="enclosed" index={tabIndex} onChange={setTabIndex}>
-        <TabList>
-          {languages.map((language, index) => (
-            <Tab key={index}>{language.label}</Tab>
-          ))}
-        </TabList>
-
-        <TabPanels>
-          {languages.map((language, index) => (
-            <TabPanel key={index}>
-              <Box>
-                <Code p={3} bg="gray.100" display="block" whiteSpace="pre-wrap">
-                  {genCode || `Loading ${language.label} code...`}
-                </Code>
+          {botData.status === "unrequested" ? (
+            <>
+              <Button onClick={handleApprovalRequest} colorScheme="purple">
+                Add Approval Request
+              </Button>
+            </>
+          ) : botData.status === "pending" ? (
+            <>
+              <Text>Approval Pending</Text>
+            </>
+          ) : botData.status === "disapproved" ? (
+            <>
+              <Text color="red.500" fontWeight="bold">
+                Request Rejected
+              </Text>
+            </>
+          ) : (
+            <>
+              <Box mb={4}>
+              <HStack justifyContent={'space-between'} alignItems={'center'}>
+              <Box fontWeight="bold" mb={2}>
+                  HTML Snippet
+                </Box>
+                <Button bg={'purple.400'}
+                color={'white'}
+                    leftIcon={<CopyIcon/>}
+                      h="1.75rem"
+                      size="sm"
+                      onClick={handleCopyToClipboard}
+                    >
+                      Copy
+                    </Button>
+              </HStack>
+                
+                <InputGroup>
+                  <Textarea
+                    readOnly
+                    value={htmlSnippet}
+                    size="sm"
+                    bg="gray.100"
+                  />
+                  <InputRightElement width="4.5rem">
+                 
+                  </InputRightElement>
+                </InputGroup>
               </Box>
-            </TabPanel>
-          ))}
-        </TabPanels>
-      </Tabs>
-    </>
-  )}
-</ModalBody>
+
+              <Tabs
+                isFitted
+                variant="enclosed"
+                index={tabIndex}
+                onChange={setTabIndex}
+              >
+                <TabList>
+                  {languages.map((language, index) => (
+                    <Tab key={index}>{language.label}</Tab>
+                  ))}
+                </TabList>
+
+                <TabPanels>
+                  {languages.map((language, index) => (
+                    <TabPanel key={index}>
+                      <Box>
+                        <Code
+                          p={3}
+                          bg="gray.100"
+                          display="block"
+                          whiteSpace="pre-wrap"
+                        >
+                          {genCode || `Loading ${language.label} code...`}
+                        </Code>
+                      </Box>
+                    </TabPanel>
+                  ))}
+                </TabPanels>
+              </Tabs>
+            </>
+          )}
+        </ModalBody>
 
         <ModalFooter>
           <Button colorScheme="blue" mr={3} onClick={onClose}>
